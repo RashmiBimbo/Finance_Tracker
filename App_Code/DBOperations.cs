@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Linq;
 using System.Web;
-using Finance_Tracker.App_Code;
+//using Finance_Tracker.App_Code;
 
 namespace Finance_Tracker
 {
@@ -18,9 +18,9 @@ namespace Finance_Tracker
 
         public DBOperations()
         {
-            //ConnStrs = ConnectionStrings;
-            ConStrFinTrack = ConnStrs["AppDBConnStrOriginal"].ConnectionString;
-            ConStrTestFinTrack = ConnStrs["AppDBConnStr"].ConnectionString;
+            ConnStrs = ConfigurationManager.ConnectionStrings;
+              ConStrTestFinTrack = ConnStrs["AppDBConnStrPrimary"].ConnectionString;
+          ConStrFinTrack = ConnStrs["AppDBConnStrSecondary"].ConnectionString;
         }
 
         public OleDbConnection InitializeConnection(string constr)
@@ -30,7 +30,7 @@ namespace Finance_Tracker
             {
                 conn = new OleDbConnection(constr);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -61,7 +61,7 @@ namespace Finance_Tracker
 
         public bool InsertValues(string query, OleDbConnection conn)
         {
-            conn = conn ??ConnTestFinTrack;
+            conn = conn ?? ConnTestFinTrack;
             return ExecNonQuery(query, conn) > 0;
         }
 
@@ -73,6 +73,34 @@ namespace Finance_Tracker
                 conn.Open();
                 cmd = new OleDbCommand(query, conn);
                 return cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+                if (cmd != null) cmd.Dispose();
+            }
+        }
+
+        public object ExecScalarProc(string proc, OleDbConnection conn, Array paramCln = null)
+        {
+            OleDbCommand cmd = null;
+            try
+            {
+                conn = conn ?? ConnTestFinTrack;
+                conn.Open();
+                cmd = new OleDbCommand(proc, conn)
+                {
+                    CommandType = CommandType.StoredProcedure,
+                    CommandTimeout = 60
+                };
+
+                if (paramCln != null) cmd.Parameters.AddRange(paramCln);
+
+                return cmd.ExecuteScalar();
             }
             catch (Exception ex)
             {
@@ -119,9 +147,12 @@ namespace Finance_Tracker
             try
             {
                 conn = conn ?? ConnTestFinTrack;
-                conn.Open();
-                cmd = new OleDbCommand(proc, conn)
+                if(conn.State != ConnectionState.Open) conn.Open();
+                //cmd = new OleDbCommand(proc, conn)
+                cmd = new OleDbCommand()
                 {
+                    Connection = conn,
+                    CommandText = proc,                    
                     CommandType = CommandType.StoredProcedure,
                     CommandTimeout = 60
                 };
@@ -129,7 +160,7 @@ namespace Finance_Tracker
                 dt = GetData(cmd);
                 return dt;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -245,49 +276,6 @@ namespace Finance_Tracker
                     count = count + 1;
             }
             return count;
-        }
-
-        public DataSet ImportExceltoDataset(string Excel)
-        {
-            DataSet dsExcel = new DataSet();
-            // Dim dtexcel As New DataTable()
-            bool hasHeaders = false;
-            int i;
-
-            string HDR = hasHeaders ? "Yes" : "No";
-            string strConn = null;
-
-            if (Excel.Substring(Excel.LastIndexOf('.')).ToLower() == ".xlsx")
-                strConn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Excel + ";Extended Properties=\"Excel 12.0;HDR=" + HDR + ";IMEX=0\"";
-            else
-                strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + Excel + ";Extended Properties=\"Excel 8.0;HDR=" + HDR + ";IMEX=0\"";
-            System.Data.OleDb.OleDbConnection conn = new System.Data.OleDb.OleDbConnection(strConn);
-            conn.Open();
-            DataTable schemaTable = conn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-            // Looping Total Sheet of Xl File
-            // foreach (DataRow schemaRow in schemaTable.Rows)
-            // {
-            // }
-
-            // Looping a first Sheet of Xl File
-            for (i = 0; i <= schemaTable.Rows.Count - 1; i++)
-            {
-                DataRow schemaRow = schemaTable.Rows[i];
-                string sheet = schemaRow["TABLE_NAME"].ToString();
-                var strtblName = sheet;
-                strtblName = strtblName.Replace("$", "");
-                DataTable dtexcel = new DataTable(strtblName);
-                if (!sheet.EndsWith("_"))
-                {
-                    string query = "SELECT  * FROM [" + sheet + "]";
-                    System.Data.OleDb.OleDbDataAdapter daexcel = new System.Data.OleDb.OleDbDataAdapter(query, conn);
-                    // dtexcel.Locale = CultureInfo.CurrentCulture;
-                    daexcel.Fill(dtexcel);
-                }
-                dsExcel.Tables.Add(dtexcel);
-            }
-            conn.Close();
-            return dsExcel;
         }
 
         public string GetDatesByMonth(string strDay, string strMonth, string strYear)
@@ -422,83 +410,5 @@ namespace Finance_Tracker
             return dates;
         }
 
-        public bool ExecuteSP(DataTable dtInsert, string strTbl)
-        {
-            bool blnExecuteQry = true;
-            //switch (ConName)
-            //{
-            //    case Connect.ConName.ConnectionString2:
-            //        {
-            //            try
-            //            {
-            //                var sqlCon = new System.Data.SqlClient.SqlConnection(strSQLCon);
-
-            //                using ((sqlCon))
-            //                {
-            //                    System.Data.SqlClient.SqlCommand sqlComm = new System.Data.SqlClient.SqlCommand();
-
-            //                    sqlComm.Connection = sqlCon;
-
-            //                    sqlComm.CommandText = "SP_CustomerItem";
-            //                    sqlComm.CommandType = CommandType.StoredProcedure;
-
-            //                    sqlComm.Parameters.AddWithValue("@tblSql", dtInsert);
-            //                    // sqlComm.Parameters.AddWithValue("@tblName", strTbl)
-
-            //                    sqlCon.Open();
-
-            //                    blnExecuteQry = sqlComm.ExecuteNonQuery() >= 0;
-            //                }
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                blnExecuteQry = false;
-            //            }
-
-            //            break;
-            //        }
-            //}
-
-            return blnExecuteQry;
-        }
-
-        public bool ExecuteSP_SalePro(DataTable dtInsert, string ProcName)
-        {
-            bool blnExecuteQry = true;
-            //switch (ConName)
-            //{
-            //    case Connect.ConName.ConnectionString2:
-            //        {
-            //            try
-            //            {
-            //                var sqlCon = new System.Data.SqlClient.SqlConnection(strSQLCon);
-
-            //                using ((sqlCon))
-            //                {
-            //                    System.Data.SqlClient.SqlCommand sqlComm = new System.Data.SqlClient.SqlCommand();
-
-            //                    sqlComm.Connection = sqlCon;
-
-            //                    sqlComm.CommandText = ProcName;  // "SP_Insert_Depot_Sale_Projection"
-            //                    sqlComm.CommandType = CommandType.StoredProcedure;
-
-            //                    sqlComm.Parameters.AddWithValue("@tbl_DepotSaleProjection", dtInsert);
-            //                    // sqlComm.Parameters.AddWithValue("@tblName", strTbl)
-
-            //                    sqlCon.Open();
-
-            //                    blnExecuteQry = sqlComm.ExecuteNonQuery() >= 0;
-            //                }
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                blnExecuteQry = false;
-            //            }
-            //            break;
-            //        }
-            //}
-
-            return blnExecuteQry;
-        }
     }
 }
