@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Linq;
 using System.Web;
+using System.Web.UI;
 //using Finance_Tracker.App_Code;
 
 namespace Finance_Tracker
@@ -13,14 +14,15 @@ namespace Finance_Tracker
     {
         public readonly string strSQLCon;
         ConnectionStringSettingsCollection ConnStrs;
-        public readonly string ConStrFinTrack, ConStrTestFinTrack;
-        public OleDbConnection ConnFinTrack, ConnTestFinTrack;
+        public readonly string ConStrSecondary, ConStrPrimary;
+        public OleDbConnection ConnSecondary, ConnPrimary;
 
         public DBOperations()
         {
             ConnStrs = ConfigurationManager.ConnectionStrings;
-              ConStrTestFinTrack = ConnStrs["AppDBConnStrPrimary"].ConnectionString;
-          ConStrFinTrack = ConnStrs["AppDBConnStrSecondary"].ConnectionString;
+            ConStrPrimary = ConnStrs["AppDBConnStrPrimary"].ConnectionString;
+            ConStrSecondary = ConnStrs["AppDBConnStrSecondary"].ConnectionString;
+            AuthenticatConns();
         }
 
         public OleDbConnection InitializeConnection(string constr)
@@ -37,12 +39,12 @@ namespace Finance_Tracker
             return conn;
         }
 
-        public bool AuthenticatCon()
+        public bool AuthenticatConns()
         {
             bool AuthenticatCon = true;
             try
             {
-                ConnFinTrack = new OleDbConnection(ConStrFinTrack);
+                ConnSecondary = new OleDbConnection(ConStrSecondary);
             }
             catch (Exception ex)
             {
@@ -50,7 +52,7 @@ namespace Finance_Tracker
             }
             try
             {
-                ConnTestFinTrack = new OleDbConnection(ConStrTestFinTrack);
+                ConnPrimary = new OleDbConnection(ConStrPrimary);
             }
             catch (Exception ex)
             {
@@ -59,9 +61,15 @@ namespace Finance_Tracker
             return AuthenticatCon;
         }
 
-        public bool InsertValues(string query, OleDbConnection conn)
+        public void PopUp(Page page, string msg)
         {
-            conn = conn ?? ConnTestFinTrack;
+            //ScriptManager.RegisterStartupScript(page, page.GetType(), "showalert", "alert('" + msg + "');", true);
+            ScriptManager.RegisterClientScriptBlock(page, page.GetType(), "showalert", "alert('" + msg + "');", true);
+        }
+
+        public bool InsertUpdateValues(string query, OleDbConnection conn)
+        {
+            conn = conn ?? ConnPrimary;
             return ExecNonQuery(query, conn) > 0;
         }
 
@@ -85,12 +93,12 @@ namespace Finance_Tracker
             }
         }
 
-        public object ExecScalarProc(string proc, OleDbConnection conn, Array paramCln = null)
+        public object ExecScalarProc(string proc, OleDbConnection conn, OleDbParameter[] paramCln = null)
         {
             OleDbCommand cmd = null;
             try
             {
-                conn = conn ?? ConnTestFinTrack;
+                conn = conn ?? ConnPrimary;
                 conn.Open();
                 cmd = new OleDbCommand(proc, conn)
                 {
@@ -140,24 +148,23 @@ namespace Finance_Tracker
         /// <param name="proc"></param>
         /// <param name="conn"></param>
         /// <returns></returns>
-        public DataTable GetDataProc(string proc, OleDbConnection conn, Array paramCln = null)
+        public DataTable GetDataProc(string proc, OleDbConnection conn, OleDbParameter[] paramCln = null)
         {
             DataTable dt;
             OleDbCommand cmd = null;
             try
             {
-                conn = conn ?? ConnTestFinTrack;
-                if(conn.State != ConnectionState.Open) conn.Open();
-                //cmd = new OleDbCommand(proc, conn)
+                conn = conn ?? ConnPrimary;
+                if (conn.State != ConnectionState.Open) conn.Open();
                 cmd = new OleDbCommand()
                 {
                     Connection = conn,
-                    CommandText = proc,                    
+                    CommandText = proc,
                     CommandType = CommandType.StoredProcedure,
                     CommandTimeout = 60
                 };
                 if (paramCln != null) cmd.Parameters.AddRange(paramCln);
-                dt = GetData(cmd);
+                dt = GetDataCmd(cmd);
                 return dt;
             }
             catch (Exception ex)
@@ -173,7 +180,7 @@ namespace Finance_Tracker
 
         public DataTable SelQuery(string strQry, OleDbConnection conn)
         {
-            DataTable results = GetData(strQry, conn ?? ConnTestFinTrack);
+            DataTable results = GetData(strQry, conn ?? ConnPrimary);
             return results;
         }
 
@@ -207,7 +214,7 @@ namespace Finance_Tracker
             }
         }
 
-        private DataTable GetData(OleDbCommand cmd)
+        private DataTable GetDataCmd(OleDbCommand cmd)
         {
             DataTable dt;
             OleDbDataAdapter adapter = null;
@@ -235,7 +242,7 @@ namespace Finance_Tracker
             try
             {
                 string StrQry = " Select 'VC'+Right('00000000'+convert(varchar,(Convert(int,Right(Isnull(Max(" + strColmn + "),0),8)) +1)),8) as pRowID from " + strTable + "";
-                DataTable dtTemp = SelQuery(StrQry, conn ?? ConnTestFinTrack);
+                DataTable dtTemp = SelQuery(StrQry, conn ?? ConnPrimary);
                 GenrateNewID = dtTemp.Rows[0]["pRowID"].ToString();
             }
             catch (Exception ex)

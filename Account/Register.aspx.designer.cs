@@ -24,6 +24,15 @@ namespace Finance_Tracker.Account
         protected global::System.Web.UI.WebControls.Literal ErrorMessage;
 
         /// <summary>
+        /// UpdatePanel1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+
+        /// <summary>
         /// TxtUsrId control.
         /// </summary>
         /// <remarks>
@@ -31,6 +40,15 @@ namespace Finance_Tracker.Account
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtUsrId;
+
+        /// <summary>
+        /// TxtUsrName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtUsrName;
 
         /// <summary>
         /// TxtPassword control.
@@ -51,24 +69,6 @@ namespace Finance_Tracker.Account
         protected global::System.Web.UI.WebControls.TextBox TxtConfirmPassword;
 
         /// <summary>
-        /// DdlCompanyId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlCompanyId;
-
-        /// <summary>
-        /// DdlSubCompany control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlSubCompany;
-
-        /// <summary>
         /// DdlRole control.
         /// </summary>
         /// <remarks>
@@ -78,13 +78,13 @@ namespace Finance_Tracker.Account
         protected global::System.Web.UI.WebControls.DropDownList DdlRole;
 
         /// <summary>
-        /// DdlLocation control.
+        /// DdlLocn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlLocation;
+        protected global::System.Web.UI.WebControls.DropDownList DdlLocn;
 
         /// <summary>
         /// TxtAddress control.
@@ -94,5 +94,14 @@ namespace Finance_Tracker.Account
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtAddress;
+
+        /// <summary>
+        /// BtnRegister control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnRegister;
     }
 }

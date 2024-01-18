@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Finance_Tracker {
-    
-    
-    public partial class SiteMaster {
-        
+namespace Finance_Tracker
+{
+
+
+    public partial class SiteMaster
+    {
+
         /// <summary>
         /// MainContent control.
         /// </summary>

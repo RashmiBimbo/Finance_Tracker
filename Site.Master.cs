@@ -65,16 +65,26 @@ namespace Finance_Tracker
                     throw new InvalidOperationException("Validation of Anti-XSRF token failed.");
                 }
             }
-        }
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-
+            object usrId = Session["User_Id"];
+            if (usrId == null || usrId.ToString() == "")
+                Response.Redirect("~/Account/Login.aspx");
         }
 
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
         {
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+        }
+
+        protected void BtnLogOut_Click(object sender, EventArgs e)
+        {
+            Session.Abandon();
+            Session.RemoveAll();
+            Response.Redirect("~/Account/Login.aspx");
+        }
+
+        private void PopUp(string msg)
+        {
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
     }
 

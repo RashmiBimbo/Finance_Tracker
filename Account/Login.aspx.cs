@@ -12,31 +12,29 @@ namespace Finance_Tracker.Account
 {
     public partial class Login : Page
     {
-        private DBOperations connect = new DBOperations();
+        private DBOperations DbOprn = new DBOperations();
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!connect.AuthenticatCon())
+            if (!DbOprn.AuthenticatConns())
             {
-                ShowPopUpMsg("Database connection could not be established");
+                PopUp("Database connection could not be established");
                 return;
             }
             if (!Page.IsPostBack)
             {
-                Session.Abandon();
-                Session.RemoveAll();
+                if (Request.Browser.Cookies)
+                {
+                    if (!string.IsNullOrEmpty(Response.Cookies["UserId"]?.Value))
+                        TxtUserId.Text = Response.Cookies["UserId"].Value;
+                    if (!string.IsNullOrEmpty(Response.Cookies["PassWord"]?.Value))
+                        TxtUserId.Text = Response.Cookies["PassWord"].Value;
+                }
                 DdlLocn.DataBind();
                 var returnUrl = HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
                     //RegisterHyperLink.NavigateUrl += "?ReturnUrl=" + returnUrl;
-                }
-                if (Request.Browser.Cookies)
-                {
-                    if (!string.IsNullOrEmpty(Response.Cookies["UserName"]?.Value))
-                        TxtUserId.Text = Response.Cookies["UserName"].Value;
-                    if (!string.IsNullOrEmpty(Response.Cookies["PassWord"]?.Value))
-                        TxtUserId.Text = Response.Cookies["PassWord"].Value;
                 }
             }
             //RegisterHyperLink.NavigateUrl = "Register";
@@ -93,20 +91,20 @@ namespace Finance_Tracker.Account
                     //connect. GetDataProc("SP_Login_Validate", connect.ConnTestFinTrack, { locn});
 
                     string mSqlQuery = "EXEC [dbo].[SP_Login_Validate] '" + locn + "', '" + UsrId + "', '" + pswrd + "'";
-                    DataTable dt = connect.SelQuery(mSqlQuery, connect.ConnTestFinTrack);
+                    DataTable dt = DbOprn.SelQuery(mSqlQuery, DbOprn.ConnPrimary);
 
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         bool active = (bool)dt.Rows[0]["Active"];
                         if (!active)
                         {
-                            ShowPopUpMsg("User exists but it is not active!");
+                            PopUp("User exists but it is not active!");
                             return;
                         }
                         if (Request.Browser.Cookies)
                         {
-                            Response.Cookies["UserName"].Expires = DateTime.Now.AddDays(1);
-                            Response.Cookies["UserName"].Value = UsrId;
+                            Response.Cookies["UserId"].Expires = DateTime.Now.AddDays(1);
+                            Response.Cookies["UserId"].Value = UsrId;
                         }
 
                         if (CBRemMe.Checked)
@@ -115,28 +113,26 @@ namespace Finance_Tracker.Account
                             Response.Cookies["PassWord"].Value = pswrd;
                         }
                         FillSession(dt);
-                        //Response.Redirect("~/Home.aspx");
+                        Response.Redirect("~/Default.aspx");
                     }
                     else
-                        ShowPopUpMsg("Kindly check your Location or ID or Password");
+                        PopUp("Kindly check your Location or ID or Password");
                 }
             }
             catch (Exception ex)
             {
-                ShowPopUpMsg( ex.Message);
+                PopUp(ex.Message);
             }
         }
 
         private void FillSession(DataTable dt)
         {
-
             Session["User_Id"] = dt.Rows[0]["User_Id"];
             Session["Password"] = dt.Rows[0]["Password"];
             Session["User_Name"] = dt.Rows[0]["User_Name"];
             Session["Company_Id"] = dt.Rows[0]["Company_Id"];
             Session["Sub_Company_Id"] = dt.Rows[0]["Sub_Company_Id"];
             Session["Role_Id"] = dt.Rows[0]["Role_Id"];
-            Session["Role_Name"] = dt.Rows[0]["Role_Name"];
             Session["Login_Type"] = dt.Rows[0]["Login_Type"];
             Session["Active"] = (bool)dt.Rows[0]["Active"];
             Session["Flag"] = (bool)dt.Rows[0]["Flag"];
@@ -155,26 +151,26 @@ namespace Finance_Tracker.Account
             //Session["Master_File"] = "~/Normal/Normal_.master";
             if (string.IsNullOrEmpty(args[0]))
             {
-                this.ShowPopUpMsg("Please select location ");
+                this.PopUp("Please select location ");
                 DdlLocn.Focus();
                 return false;
             }
             if (string.IsNullOrEmpty(args[1]))
             {
-                this.ShowPopUpMsg("Please enter User Id");
+                this.PopUp("Please enter User Id");
                 TxtUserId.Focus();
                 return false;
             }
             if (string.IsNullOrEmpty(args[2]))
             {
-                this.ShowPopUpMsg("Please enter Password");
+                this.PopUp("Please enter Password");
                 TxtPassword.Focus();
                 return false;
             }
             return true;
         }
 
-        private void ShowPopUpMsg(string strMessage)
+        private void PopUp(string strMessage)
         {
             ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('" + strMessage + "');", true);
         }
@@ -183,7 +179,7 @@ namespace Finance_Tracker.Account
         {
             try
             {
-                DataTable dt = connect.GetDataProc("SP_Get_Locations", connect.ConnTestFinTrack);
+                DataTable dt = DbOprn.GetDataProc("SP_Get_Locations", DbOprn.ConnPrimary);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     DdlLocn.DataSource = dt;
@@ -193,13 +189,9 @@ namespace Finance_Tracker.Account
             }
             catch (Exception ex)
             {
-                ShowPopUpMsg(ex.Message);
+                PopUp(ex.Message);
             }
         }
 
-        protected void BtnLogIn1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
