@@ -42,13 +42,22 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.View tabAdd;
 
         /// <summary>
-        /// DdlType1 control.
+        /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType1;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
+
+        /// <summary>
+        /// DdlCatType1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatType1;
 
         /// <summary>
         /// DdlCat1 control.
@@ -67,6 +76,51 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlReport1;
+
+        /// <summary>
+        /// DdlType1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlType1;
+
+        /// <summary>
+        /// TxtMnth1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtMnth1;
+
+        /// <summary>
+        /// CalendarExtender1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender1;
+
+        /// <summary>
+        /// DivWeek1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivWeek1;
+
+        /// <summary>
+        /// DdlWeek1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlWeek1;
 
         /// <summary>
         /// FUReport control.
@@ -123,13 +177,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.UpdatePanel UpdatePanel2;
 
         /// <summary>
-        /// DdlType2 control.
+        /// DdlCatType2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType2;
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatType2;
 
         /// <summary>
         /// DdlCat2 control.
@@ -159,13 +213,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.TextBox TxtSD;
 
         /// <summary>
-        /// CalendarExtender1 control.
+        /// CalendarExtender2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender1;
+        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender2;
 
         /// <summary>
         /// RequiredFieldValidator3 control.
@@ -186,13 +240,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.TextBox TxtED;
 
         /// <summary>
-        /// CalendarExtender2 control.
+        /// CalendarExtender3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender2;
+        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender3;
 
         /// <summary>
         /// RequiredFieldValidator4 control.
@@ -204,31 +258,31 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator4;
 
         /// <summary>
-        /// DdlRType2 control.
+        /// DdlType2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlRType2;
+        protected global::System.Web.UI.WebControls.DropDownList DdlType2;
 
         /// <summary>
-        /// BtnView control.
+        /// BtnView2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnView;
+        protected global::System.Web.UI.WebControls.Button BtnView2;
 
         /// <summary>
-        /// Div1 control.
+        /// GVReportsDiv2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Div1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GVReportsDiv2;
 
         /// <summary>
         /// GVReports2 control.
@@ -267,13 +321,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.UpdatePanel UpdatePanel4;
 
         /// <summary>
-        /// DdlType3 control.
+        /// DdlCatType3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType3;
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatType3;
 
         /// <summary>
         /// DdlCat3 control.
@@ -294,22 +348,31 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlReport3;
 
         /// <summary>
-        /// DdlMonth3 control.
+        /// DdlType3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlMonth3;
+        protected global::System.Web.UI.WebControls.DropDownList DdlType3;
 
         /// <summary>
-        /// DdlRType3 control.
+        /// TxtMnth3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlRType3;
+        protected global::System.Web.UI.WebControls.TextBox TxtMnth3;
+
+        /// <summary>
+        /// CalendarExtender4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender4;
 
         /// <summary>
         /// BtnView3 control.
