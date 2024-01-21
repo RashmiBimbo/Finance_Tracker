@@ -25,8 +25,8 @@ namespace Finance_Tracker.App_Code
                 Response.ClearHeaders();
                 Response.Charset = "";
                 string FileName = "Demand_Difference_Report " + DateTime.Now + ".xls";
-                StringWriter strwritter = new();
-                HtmlTextWriter htmltextwrtter = new(strwritter);
+                StringWriter strwritter = new StringWriter();
+                HtmlTextWriter htmltextwrtter = new HtmlTextWriter(strwritter);
                 Response.Cache.SetCacheability(HttpCacheability.NoCache);
                 Response.ContentType = "application/vnd.ms-excel";
                 Response.AddHeader("Content-Disposition", "attachment;filename=" + FileName);
