@@ -51,7 +51,7 @@
                                     <div class="col-sm-2">
                                         <asp:DropDownList runat="server" ID="DdlReport1" CssClass="form-control" OnDataBinding="DdlReport_DataBinding"
                                             OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True">
-                                            <asp:ListItem Value="0" Selected="True" >Select</asp:ListItem>
+                                            <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
                                         </asp:DropDownList>
                                         <%--   <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlReport1"
                                             CssClass="text-danger" ErrorMessage="Report is required." ID="RequiredFieldValidator1" />--%>
@@ -61,7 +61,7 @@
                                 <div class="row">
                                     <asp:Label runat="server" AssociatedControlID="DdlType1" CssClass="col-md-2 control-label">Type</asp:Label>
                                     <div class="col-sm-2">
-                                        <asp:DropDownList runat="server" ID="DdlType1" CssClass="form-control" OnSelectedIndexChanged="DdlType3_SelectedIndexChanged" Enabled="False">
+                                        <asp:DropDownList runat="server" ID="DdlType1" CssClass="form-control" Enabled="False">
                                             <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                                             <asp:ListItem Value="M">Monthly</asp:ListItem>
                                             <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -108,12 +108,12 @@
                         <br />
                         <div class="row">
                             <%-- <div>--%>
-                            <asp:Button runat="server" ID="BtnCncl" OnClick="BtnCncl_Click" Text="Cancel" CssClass="col-2 btn btn-default" ForeColor="White" Visible="false" Width="8%" />
+                            <asp:Button runat="server" ID="BtnCncl" OnClick="BtnCncl_Click" Text="Cancel" CssClass="col-2 btn btn-default" ForeColor="White" Visible="false" />
                             <%--</div>
                             <div class="row">
                                 <asp:UpdatePanel runat="server">
                                     <ContentTemplate>--%>
-                            <asp:Button runat="server" ID="BtnAdd" OnClick="BtnAdd_Click" Text="Add" CssClass="btn btn-primary" ForeColor="White" Width="8%" />
+                            <asp:Button runat="server" ID="BtnAdd" OnClick="BtnAdd_Click" Text="Add" CssClass="btn btn-primary" ForeColor="White"/>
                             <%-- </ContentTemplate>
                                     <Triggers>
                                         <asp:PostBackTrigger ControlID="BtnCncl" />
@@ -172,12 +172,11 @@
                             </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
-                    <div class="row">
-                        <div class="col-lg-10" style="padding-right: 2px; margin-left: 5px; margin-right: 5px; width: 100px; height: 50px;">
-                            <asp:Button runat="server" ID="BtnView2" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" UseSubmitBehavior="true" />
-                        </div>
+                    <div class="row" style="margin-left: 2px;">
+                        <asp:Button runat="server" ID="BtnView2" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" UseSubmitBehavior="true" />
                     </div>
-                    <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; padding-top: 5px; padding-left: 0px; padding-right: 0px; margin-top: 10px; margin-left: 5px; margin-right: 5px" runat="server" id="GVReportsDiv2">
+                    <br />
+                    <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv2">
                         <asp:GridView ID="GVReports2"
                             runat="server" Font-Bold="False" CssClass="table table-bordered table-striped table-hover"
                             Font-Size="Medium" ForeColor="#333333" GridLines="Both"
@@ -199,7 +198,7 @@
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report Name" ReadOnly="True" />
                                 <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <asp:TemplateField HeaderText="Location" Visible="true">
+                                <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="HFLocn" Value='<%# Bind("Location") %>' />
                                         <asp:Label ID="LblLocn" runat="server" Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'></asp:Label>
@@ -225,10 +224,8 @@
                             <AlternatingRowStyle BackColor="#7ad0ed" />
                         </asp:GridView>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-10" style="padding-right: 2px; margin-left: 10px; margin-right: 10px; width: 100px; height: 50px;">
-                            <asp:Button runat="server" ID="BtnApprove" OnClick="BtnApprove_Click" Text="Approve" CssClass="btn btn-primary" ForeColor="White" Width="83px" Visible="False" />
-                        </div>
+                    <div class="row" style="margin-left: 2px;">
+                        <asp:Button runat="server" ID="BtnApprove" OnClick="BtnApprove_Click" Text="Approve" CssClass="btn btn-primary" ForeColor="White"  Visible="False" />
                     </div>
                 </asp:View>
                 <asp:View ID="TabApproved" runat="server">
@@ -258,7 +255,7 @@
                             <div class="row">
                                 <label class="col-lg-2 control-label">Type</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="DdlType3_SelectedIndexChanged">
+                                    <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True">
                                         <asp:ListItem Value="">All</asp:ListItem>
                                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                                         <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -282,40 +279,32 @@
                                         </asp:DropDownList>--%>
                             </div>
                             <br />
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <div class="col-lg-10" style="padding-right: 2px; margin-left: 5px; margin-right: 5px; width: 100px; height: 50px;">
-                                                <asp:Button runat="server" ID="BtnView3" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="row" style="margin-left: 2px;">
+                                <asp:Button runat="server" ID="BtnView3" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" />
                             </div>
-                            <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; padding-top: 5px; padding-left: 5px; padding-right: 5px; margin-top: 5px; margin-left: 5px; margin-right: 5px" runat="server" id="GVReportsDiv3">
+                            <br />
+                            <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv3">
                                 <asp:GridView ID="GVReports3"
                                     runat="server" CssClass="table table-bordered table-striped table-hover" CellPadding="20" CellSpacing="15" Font-Bold="False"
                                     Font-Size="Medium" ForeColor="#333333" GridLines="Both"
-                                    RowStyle-HorizontalAlign="LEFT" RowStyle-Wrap="true"
+                                    RowStyle-HorizontalAlign="LEFT" RowStyle-Wrap="false"
                                     HeaderStyle-Wrap="false" TabIndex="10"
                                     OnDataBinding="GVReports3_DataBinding" Visible="False" BorderStyle="Inset" AllowSorting="True" AutoGenerateColumns="False">
-                                    <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="true" Height="5%" Width="5%" />
+                                    <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false"/>
                                     <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
                                     <PagerSettings NextPageText="&gt;" PreviousPageText="&lt;" />
                                     <PagerStyle BackColor="#666666" ForeColor="White" HorizontalAlign="Center" />
                                     <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
-                                    <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="True" />
+                                    <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="false" />
                                     <Columns>
                                         <asp:BoundField DataField="User_Name" HeaderText="User Name" ReadOnly="True" />
                                         <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
                                         <asp:BoundField DataField="Category_Name" HeaderText="Category Name" ReadOnly="True" />
-                                        <asp:BoundField DataField="Report_Name" HeaderText="Task Name" ReadOnly="True" />
+                                        <asp:BoundField DataField="Report_Name" HeaderText="Report name" ReadOnly="True" />
                                         <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                         <asp:BoundField DataField="Type" HeaderText="Type" />
                                         <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
-                                        <%-- <asp:BoundField DataField="Location" HeaderText="Location" ReadOnly="True" ItemStyle-Width="10%" ItemStyle-Height="5%" />--%>
-                                        <asp:TemplateField HeaderText="Location" Visible="true">
+                                        <asp:TemplateField HeaderText="File" Visible="true">
                                             <ItemTemplate>
                                                 <asp:Label ID="LblLocn" runat="server"
                                                     Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'>
@@ -333,26 +322,4 @@
             </asp:MultiView>
         </div>
     </div>
-    <script type="text/javascript">
-        function ValidateFileExt() {
-            var uploadr = document.getElementById('<%= FUReport.ClientID%>')
-            var filePath = uploadr.value;
-            var allowedExt = /(\.xlsx|\.xls)$i/;
-
-            if (!allowedExt.exec(filePath)) {
-                alert('Please upload only Excel files.');
-                uploadr.value = "";
-                return false;
-            }
-            return true;
-        }
-
-        function dateSelected(sender, args) {
-            debugger;
-            var selectedDate = args._selectedDate;
-            var textBox = $get('<%= TxtSD.ClientID %>');
-            textBox.value = selectedDate.format('dd-MMM-yyyy');
-        }
-
-    </script>
 </asp:Content>

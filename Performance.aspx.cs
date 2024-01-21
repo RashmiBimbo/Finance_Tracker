@@ -143,7 +143,7 @@ namespace Finance_Tracker
             {
                 childDdl = DdlCat3;
             }
-            FillDdl(ddl, "SP_Get_CategoryTypes", "Category_Type_Name", "Category_Type_Id");
+            FillDdl(ddl, "SP_Get_CategoryTypes", "0");
             SetCatType(ddl, childDdl);
         }
 
@@ -162,7 +162,7 @@ namespace Finance_Tracker
             {
                 prntddl = DdlCatType3;
             }
-            FillDdl(ddl, "SP_Get_Categories", "Category_Name", "Category_Id", prntddl,
+            FillDdl(ddl, "SP_Get_Categories", "0", prntddl,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Type_Id", prntddl.SelectedValue)
@@ -187,7 +187,7 @@ namespace Finance_Tracker
                 prntddl = DdlCat3;
             }
 
-            FillDdl(ddl, "SP_Get_Reports", "Report_Name", "Report_Id", prntddl,
+            FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Category_Id", prntddl.SelectedValue)
@@ -249,23 +249,19 @@ namespace Finance_Tracker
             }
         }
 
-        private void FillDdl(DropDownList ddl, String proc, string DataTextField, string DataValueField, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
         {
             ddl.Items.Clear();
+            ddl.Items.Add(new ListItem("Select", selectVal));
+            ddl.SelectedIndex = 0;
+            ddl.ToolTip = "Select";
+
             if (prntDdl != null && prntDdl.SelectedIndex == 0)
-            {
-                ddl.Items.Add(new ListItem("Select", "0"));
-                ddl.SelectedIndex = 0;
                 return;
-            }
+
             try
             {
-                DataTable dt = null;
-
-                if (ddl.Equals(DdlReport1))
-                    dt = DdlReport1DS;
-                else
-                    dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
+                DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -274,10 +270,6 @@ namespace Finance_Tracker
                         ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
                     }
                 }
-                else
-                    ddl.Items.Add(new ListItem("Select", "0"));
-
-                ddl.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -595,7 +587,15 @@ namespace Finance_Tracker
             {
                 string User_Id = Session["User_Id"]?.ToString();
                 string Role_Id = Session["Role_Id"]?.ToString();
-                int mnthNo = DateTime.ParseExact(TxtMnth3.Text, MonthFormat, CultureInfo.InvariantCulture).Month;
+                int mnthNo = 0, year = 0;
+                try
+                {
+                    DateTime dt = DateTime.ParseExact(TxtMnth3.Text, MonthFormat, CultureInfo.InvariantCulture);
+                    mnthNo = dt.Month;
+                    year = dt.Year;
+                }
+                catch (Exception ex)
+                { }
 
                 OleDbParameter[] paramCln = new OleDbParameter[]
                 {
@@ -612,7 +612,7 @@ namespace Finance_Tracker
                        Value = 1,
                        OleDbType = OleDbType.Boolean
                    }
-                   ,new OleDbParameter("@ApprYearNo", DateTime.Now.Year)
+                   ,new OleDbParameter("@ApprYearNo", year)
                    ,new OleDbParameter("@ApprMonthNo", mnthNo)
                 };
                 SetGV(paramCln, GVReports3);
@@ -713,66 +713,6 @@ namespace Finance_Tracker
         {
             //ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-        }
-
-        protected void DdlType2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void DdlType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //bool approv = MultiView1.ActiveViewIndex == 2;
-            //DropDownList ddl = (DropDownList)sender;
-            ////DropDownList ddlMnth = approv ? DdlMonth3 : DdlMonth2;
-            ////DropDownList ddlWeek = approv ? DdlWeek3 : DdlWeek2;
-            ////RequiredFieldValidator rfvW =  /*approv? RFVDdlWeek3 :*/ RFVDdlWeek2;
-            ////RequiredFieldValidator rfvM =  /*approv? RFVDdlMonth3 :*/ RFVDdlMonth2;
-
-            //switch (ddl.SelectedValue)
-            //{
-            //    case "":
-            //        {
-            //            ddlMnth.Visible = false;
-            //            //rfvM.Enabled = false;
-            //            ddlWeek.Visible = false;
-            //            //rfvW.Enabled = false;
-            //            break;
-            //        }
-            //    case "M":
-            //        {
-            //            ddlMnth.Visible = true;
-            //            ddlMnth.SelectedIndex = 0;
-            //            //rfvM.Enabled = true;
-            //            ddlWeek.Visible = false;
-            //            //rfvW.Enabled = false;
-            //            break;
-            //        }
-            //    case "W":
-            //        {
-            //            ddlWeek.SelectedIndex = 0;
-            //            ddlWeek.Visible = true;
-            //            //rfvW.Enabled = true;
-            //            ddlMnth.Visible = false;
-            //            //rfvM.Enabled = true;
-            //            break;
-            //        }
-            //}
-        }
-
-        protected void DdlType3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //if (DdlType3.SelectedIndex == 2)
-            //{
-            //    LblWkNo.Visible = true;
-            //    DdlWeek3.Visible = true;
-            //}
-            //else
-            //{
-            //    LblWkNo.Visible = false;
-            //    DdlWeek3.Visible = false;
-            //}
-            //DdlWeek3.SelectedIndex = 0;
         }
 
     }
