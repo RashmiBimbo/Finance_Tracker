@@ -78,16 +78,17 @@ namespace Finance_Tracker
             MultiView1.ActiveViewIndex = eval;
             MultiView1.Views[eval].Focus();
 
+            LblError.Text = "";
             //User Clicked the menu item
             if (sender != null)
             {
-                BtnApprove.Visible = false;
+                BtnSubmit.Visible = false;
 
                 if (Menu1.SelectedValue == "0")
                     ResetSbmtTab();
                 else if (Menu1.SelectedValue == "1")
                 {
-                    Menu1.Items[0].Text = "Submit Task |";
+                    Menu1.Items[0].Text = "Add Task |";
                     GVReports2.DataSource = null;
                     GVReports2.Visible = false;
 
@@ -101,7 +102,7 @@ namespace Finance_Tracker
                 {
                     GVReports3.DataSource = null;
                     GVReports3.Visible = false;
-                    Menu1.Items[0].Text = "Submit Task |";
+                    Menu1.Items[0].Text = "Add Task |";
                     TxtMnth3.Text = DateTime.Now.ToString(MonthFormat);
                 }
             }
@@ -277,8 +278,7 @@ namespace Finance_Tracker
             }
         }
 
-
-        #region Submit Task
+        #region Add Task
 
         protected void TxtMnth_TextChanged(object sender, EventArgs e)
         {
@@ -306,6 +306,7 @@ namespace Finance_Tracker
 
         protected void BtnAdd_Click(object sender, EventArgs e)
         {
+            LblError.Text = "";
             if (ValidateReportDtls())
             {
                 try
@@ -329,10 +330,11 @@ namespace Finance_Tracker
                     {
                         Directory.CreateDirectory(saveFolder);
                     }
-                    String fullPath = $@"{saveFolder}\{Session["User_Name"]}_{DdlReport1.SelectedItem.Text}_{DateTime.Now.Date.ToShortDateString()}{Path.GetExtension(file.FileName)}";
+                    String fullPath = $@"{saveFolder}\{Session["User_Name"]}_{DdlReport1.SelectedItem.Text}_{DateTime.Now.Date.ToString(DateFormat)}{Path.GetExtension(file.FileName)}";
+
                     string Report_Id = DdlReport1.SelectedValue;
-                    SaveReportToDB(fullPath, Report_Id);
                     file.SaveAs(fullPath);
+                    if (!SaveReportToDB(fullPath, Report_Id)) return;
 
                     if (Menu1.Items[0].Text == "Edit Task |")
                     {
@@ -340,14 +342,23 @@ namespace Finance_Tracker
                         Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
                         GVReports2.DataBind();
                         PopUp("File updated successfully!");
+                        LblError.Text = "File updated successfully!";
+                        LblError.CssClass = "col-md-12 control-label text-success";
                     }
                     else
+                    {
                         PopUp("File saved successfully!");
+                        LblError.Text = "File added successfully!";
+                        LblError.Visible = true;
+                        LblError.CssClass = "col-10 control-label text-success ";
+                    }
                     ResetSbmtTab();
                 }
                 catch (Exception ex)
                 {
                     PopUp(ex.Message);
+                    LblError.Text = ex.Message + "\r\n" + ex.StackTrace;
+                    LblError.CssClass = "col-md-2 control-label text-danger ";
                 }
             }
         }
@@ -377,7 +388,7 @@ namespace Finance_Tracker
             return true;
         }
 
-        private void SaveReportToDB(string fullPath, string Report_Id)
+        private bool SaveReportToDB(string fullPath, string Report_Id)
         {
             OleDbParameter[] paramCln =
             {
@@ -388,17 +399,19 @@ namespace Finance_Tracker
                 new OleDbParameter("@Created_By", Session["User_Name"])
             };
 
-            var output = DBOprn.ExecScalarProc("SP_Add_Performance", DBOprn.ConnPrimary, paramCln);
+            var output = DBOprn.ExecScalarProc("SP_Add_OR_Update_Task", DBOprn.ConnPrimary, paramCln);
 
             if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
             {
                 PopUp(output.ToString());
-                return;
+                LblError.Text = output.ToString();
+                LblError.CssClass = "col-10 control-label text-danger ";
+                return false;
             }
+            return true;
         }
 
-        #endregion Submit Task
-
+        #endregion Add Task
 
         #region Edit Task
 
@@ -409,23 +422,20 @@ namespace Finance_Tracker
                 int rowIndex = Convert.ToInt32(e.CommandArgument);
                 GridViewRow row = GVReports2.Rows[rowIndex];
 
-                string id = ((Label)row.Cells[10].Controls[1]).Text;
+                string reportId = ((Label)row.Cells[11].Controls[1]).Text;
 
                 string roleId = Session["Role_Id"]?.ToString();
                 if (!string.IsNullOrWhiteSpace(roleId) && roleId == "1")
                 {
-                    DdlCatType1.SelectedValue = DdlCatType1.Items.FindByText(row.Cells[2].Text)?.Value;
+                    DdlCatType1.SelectedValue = DdlCatType1.Items.FindByText(row.Cells[3].Text)?.Value;
                 }
-                DdlCat1.Items.Add(new ListItem(row.Cells[3].Text, row.Cells[3].Text));
-                DdlCat1.SelectedValue = row.Cells[3].Text;
+                DdlCat1.Items.Add(new ListItem(row.Cells[4].Text, row.Cells[4].Text));
+                DdlCat1.SelectedValue = row.Cells[4].Text;
 
-                DdlReport1.Items.Add(new ListItem(row.Cells[4].Text, id));
-                DdlReport1.SelectedValue = id;
+                DdlReport1.Items.Add(new ListItem(row.Cells[5].Text, reportId));
+                DdlReport1.SelectedValue = reportId;
 
-                String type = row.Cells[6].Text.Trim();
-                DdlType1.SelectedValue = DdlType1.Items.FindByText(type)?.Value;
-
-                DateTime sbmtDt = DateTime.Parse(row.Cells[5].Text);
+                DateTime sbmtDt = DateTime.Parse(row.Cells[6].Text);
                 TxtMnth1.Text = sbmtDt.ToString(MonthFormat);
 
                 if (DdlType1.SelectedValue == "W")
@@ -436,7 +446,10 @@ namespace Finance_Tracker
                     DdlWeek1.Enabled = false;
                 }
 
-                LnkReport.Text = ((HiddenField)row.Cells[7].Controls[1]).Value;
+                String type = row.Cells[7].Text.Trim();
+                DdlType1.SelectedValue = DdlType1.Items.FindByText(type)?.Value;
+
+                LnkReport.Text = ((HiddenField)row.Cells[8].Controls[1]).Value;
 
                 DdlCatType1.Enabled = false;
                 DdlCat1.Enabled = false;
@@ -471,7 +484,7 @@ namespace Finance_Tracker
 
         private void ResetSbmtTab()
         {
-            Menu1.Items[0].Text = "Submit Task |";
+            Menu1.Items[0].Text = "Add Task |";
 
             //enable cat type for admin user only
             string roleId = Session["Role_Id"]?.ToString();
@@ -487,7 +500,8 @@ namespace Finance_Tracker
             DdlReport1.SelectedIndex = 0;
             DdlType1.SelectedIndex = 0;
             TxtMnth1.Text = DateTime.Now.ToString(MonthFormat);
-
+            CalendarExtender1.StartDate= DateTime.Now.AddDays(-DateTime.Now.Day+1).AddMonths(-1);
+            CalendarExtender1.EndDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month)); ;
             DdlCat1.Enabled = true;
             DdlReport1.Enabled = true;
             TxtMnth1.Enabled = true;
@@ -516,13 +530,6 @@ namespace Finance_Tracker
         }
 
         #endregion Edit Task
-
-        private void ResetCtrls()
-        {
-            DdlCatType1.SelectedIndex = 0;
-            DdlCat1.SelectedIndex = 0;
-            DdlReport1.SelectedIndex = 0;
-        }
 
         protected void BtnView_Click(object sender, EventArgs e)
         {
@@ -555,7 +562,7 @@ namespace Finance_Tracker
         {
             try
             {
-                bool approv = MultiView1.ActiveViewIndex == 2;
+                bool submit = MultiView1.ActiveViewIndex == 2;
                 string strtDate = DateTime.Parse(TxtSD.Text).ToString(SqlDateFormat);
                 string endDate = DateTime.Parse(TxtED.Text).ToString(SqlDateFormat);
                 string User_Id = Session["User_Id"]?.ToString();
@@ -573,13 +580,92 @@ namespace Finance_Tracker
                        ,new OleDbParameter("@Type", DdlType2.SelectedValue)
                     };
                 SetGV(paramCln, GVReports2);
-                BtnApprove.Visible = GVReports2.Visible;
+                BtnSubmit.Visible = GVReports2.Visible;
             }
             catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
         }
+
+        protected void CBSubmitH_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (GridViewRow gvRow in GVReports2.Rows)
+            {
+                CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                cb.Checked = ((CheckBox)sender).Checked;
+            }
+        }
+
+        protected void BtnSubmit_Click(object sender, EventArgs e)
+        {
+            string jsonParam = ConstructJSON();
+
+            if (!string.IsNullOrWhiteSpace(jsonParam))
+            {
+                var output = DBOprn.ExecScalarProc("SP_Submit_Tasks", DBOprn.ConnPrimary,
+                    new OleDbParameter[]
+                    {
+                        new OleDbParameter("@Collection", jsonParam)
+                    }
+                );
+
+                if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
+                {
+                    PopUp(output.ToString());
+                    return;
+                }
+                PopUp("Tasks submitted successfully!");
+                GVReports2.DataBind();
+            }
+        }
+
+        private string ConstructJSON()
+        {
+            List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+            try
+            {
+                foreach (GridViewRow gvRow in GVReports2.Rows)
+                {
+                    CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                    if (cb.Checked)
+                    {
+                        string id = ((Label)gvRow.Cells[10].Controls[1]).Text;
+                        string submitDt = DateTime.Now.ToString(SqlDateFormat);
+                        Dictionary<string, string> paramVals = new Dictionary<string, string>()
+                        {
+                            {
+                                "REC_ID",
+                                id
+                            },
+                            {
+                                "SUBMIT_DATE",
+                                submitDt
+                            },
+                            {
+                                "MODIFIED_BY",
+                                Session["User_Name"].ToString()
+                            },
+                            {
+                                "MODIFIED_DATE",
+                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                            }
+                        };
+                        dtls.Add(paramVals);
+                    }
+                    continue;
+                }
+                string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
+                return jsonString;
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
+                return string.Empty;
+            }
+        }
+
+        #endregion View Sbmt Task
 
         protected void GVReports3_DataBinding(object sender, EventArgs e)
         {
@@ -623,80 +709,9 @@ namespace Finance_Tracker
             }
         }
 
-        protected void BtnApprove_Click(object sender, EventArgs e)
-        {
-            string jsonParam = ConstructJSON();
-
-            if (!string.IsNullOrWhiteSpace(jsonParam))
-            {
-                var output = DBOprn.ExecScalarProc("SP_Approve_Performance", DBOprn.ConnPrimary,
-                    new OleDbParameter[]
-                    {
-                        new OleDbParameter("@Collection", jsonParam)
-                    }
-                );
-
-                if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
-                {
-                    PopUp(output.ToString());
-                    return;
-                }
-                PopUp("Tasks approved successfully!");
-                GVReports2.DataBind();
-            }
-        }
-
-        private string ConstructJSON()
-        {
-            string jsonArr = "";
-            int i = 1;
-            int maxI = GVReports2.Rows.Count - 1;
-
-            try
-            {
-                foreach (GridViewRow gvRow in GVReports2.Rows)
-                {
-                    string id = ((Label)gvRow.Cells[9].Controls[1]).Text;
-                    string approvDt = DateTime.Now.ToString(SqlDateFormat);
-                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
-                    {
-                        {
-                            "REC_ID",
-                            id
-                        },
-                        {
-                            "APPROVE_DATE",
-                            approvDt
-                        },
-                        {
-                            "MODIFIED_BY",
-                            Session["User_Name"].ToString()
-                        },
-                        {
-                            "MODIFIED_DATE",
-                            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-                        }
-                    };
-                    string jsonString = JsonConvert.SerializeObject(paramVals, Formatting.Indented);
-                    jsonArr += jsonString + (i <= maxI ? "," : "");
-                    i += 1;
-                }
-                jsonArr = "[" + jsonArr + "]";
-                return jsonArr;
-            }
-            catch (Exception ex)
-            {
-                PopUp(ex.Message);
-                return string.Empty;
-            }
-        }
-
-        #endregion View Sbmt Task
-
-
         private void SetGV(OleDbParameter[] paramCln, GridView gv)
         {
-            DataTable dt = DBOprn.GetDataProc("SP_Get_Performance", DBOprn.ConnPrimary, paramCln);
+            DataTable dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
             if (dt != null && dt.Rows.Count > 0)
             {
                 gv.DataSource = dt;
@@ -711,8 +726,8 @@ namespace Finance_Tracker
 
         public void PopUp(string msg)
         {
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
+            //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
     }

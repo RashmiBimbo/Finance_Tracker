@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
@@ -173,7 +175,7 @@ namespace Finance_Tracker
             ddl.ToolTip = "Select";
 
             if (prntDdl != null && prntDdl.SelectedIndex == 0)
-                return;            
+                return;
             try
             {
                 DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
@@ -243,16 +245,18 @@ namespace Finance_Tracker
 
         private void SetGV(OleDbParameter[] paramCln, GridView gv)
         {
-            DataTable dt = DBOprn.GetDataProc("SP_Get_Performance", DBOprn.ConnPrimary, paramCln);
+            DataTable dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
             if (dt != null && dt.Rows.Count > 0)
             {
                 gv.DataSource = dt;
                 gv.Visible = true;
                 DivExport.Visible = true;
+                BtnReject.Visible = true;
             }
             else
             {
                 gv.Visible = false;
+                BtnReject.Visible = false;
                 DivExport.Visible = false;
                 PopUp("No data found!");
             }
@@ -270,7 +274,6 @@ namespace Finance_Tracker
             string fileName = LBLocn.Text;
             try
             {
-
                 Response.Clear();
                 Response.Buffer = true;
                 Response.ClearContent();
@@ -287,5 +290,78 @@ namespace Finance_Tracker
                 PopUp($"Error occurred: \n {ex.Message}");
             }
         }
+
+        protected void CBRejectH_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (GridViewRow gvRow in GVReports3.Rows)
+            {
+                CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                cb.Checked = ((CheckBox)sender).Checked;
+            }
+        }
+
+        protected void BtnReject_Click(object sender, EventArgs e)
+        {
+            string jsonParam = ConstructJSON();
+
+            if (!string.IsNullOrWhiteSpace(jsonParam))
+            {
+                var output = DBOprn.ExecScalarProc("SP_Reject_Tasks", DBOprn.ConnPrimary,
+                    new OleDbParameter[]
+                    {
+                        new OleDbParameter("@Collection", jsonParam)
+                    }
+                );
+
+                if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
+                {
+                    PopUp(output.ToString());
+                    return;
+                }
+                PopUp("Tasks rejected successfully!");
+                GVReports3.DataBind();
+            }
+        }
+
+        private string ConstructJSON()
+        {
+            List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+            try
+            {
+                foreach (GridViewRow gvRow in GVReports3.Rows)
+                {
+                    CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                    if (cb.Checked)
+                    {
+                        string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                        Dictionary<string, string> paramVals = new Dictionary<string, string>()
+                        {
+                            {
+                                "REC_ID",
+                                id
+                            },
+                            {
+                                "MODIFIED_BY",
+                                Session["User_Name"].ToString()
+                            },
+                            {
+                                "MODIFIED_DATE",
+                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                            }
+                        };
+                        dtls.Add(paramVals);
+                    }
+                    continue;
+                }
+                string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
+                return jsonString;
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
+                return string.Empty;
+            }
+        }
+
     }
 }

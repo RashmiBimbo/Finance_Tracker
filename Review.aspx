@@ -15,7 +15,7 @@
                     <DynamicMenuStyle BackColor="#F7F6F3" />
                     <DynamicSelectedStyle BackColor="#5D7B9D" />
                     <Items>
-                        <asp:MenuItem Text="View Approved Tasks |" Value="0" Selected="true"></asp:MenuItem>
+                        <asp:MenuItem Text="View Submitted Tasks |" Value="0" Selected="true"></asp:MenuItem>
                     </Items>
                     <StaticHoverStyle BackColor="#7C6F57" ForeColor="White" />
                     <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
@@ -94,25 +94,38 @@
                     <br />
                     <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv3">
                         <asp:GridView ID="GVReports3"
-                            runat="server" CssClass="table table-bordered table-striped table-hover" CellPadding="20" CellSpacing="15" Font-Bold="False"
+                            runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
                             Font-Size="Medium" ForeColor="#333333" GridLines="Both"
-                            RowStyle-HorizontalAlign="LEFT" RowStyle-Wrap="False"
-                            HeaderStyle-Wrap="false" TabIndex="10"
-                            OnDataBinding="GVReports3_DataBinding" Visible="False" BorderStyle="Inset" AllowSorting="True" AutoGenerateColumns="False">
-                            <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="False" />
+                            RowStyle-HorizontalAlign="LEFT" TabIndex="10"
+                            OnDataBinding="GVReports3_DataBinding" Visible="False" BorderStyle="Solid" AutoGenerateColumns="False">
+                            <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" Width="0em" />
                             <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
                             <PagerSettings NextPageText="&gt;" PreviousPageText="&lt;" />
                             <PagerStyle BackColor="#666666" ForeColor="White" HorizontalAlign="Center" />
                             <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                             <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
+                            <EditRowStyle BackColor="#7C6F57" />
+                            <AlternatingRowStyle BackColor="#7ad0ed" />
                             <Columns>
+                                <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
+                                    <HeaderTemplate>
+                                        <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Reject"></asp:CheckBox>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="CBReject" runat="server"></asp:CheckBox>
+                                    </ItemTemplate>
+                                    <AlternatingItemTemplate>
+                                        <asp:CheckBox ID="CBReject" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
+                                    </AlternatingItemTemplate>
+                                </asp:TemplateField>
+                                <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <asp:BoundField DataField="User_Name" HeaderText="User Name" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Name" HeaderText="Category Name" ReadOnly="True" />
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report Name" ReadOnly="True" />
-                                <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
+                                <asp:BoundField DataField="Submit_Date" HeaderText="Add Date" />
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
+                                <asp:BoundField DataField="Approve_Date" HeaderText="Submit Date" />
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
@@ -120,10 +133,17 @@
                                         </asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Rec_Id" Visible="false">
+                                    <ItemTemplate>
+                                        <asp:Label ID="LblRecId" runat="server" Text='<%# Bind("Rec_Id")%>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
-                            <EditRowStyle BackColor="#7C6F57" />
-                            <AlternatingRowStyle BackColor="#7ad0ed" />
                         </asp:GridView>
+                    </div>
+                    <div class="row" style="margin-left: 2px;">
+                        <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Visible="False" />
                     </div>
                 </asp:View>
             </asp:MultiView>
@@ -152,6 +172,7 @@
         }
 
         function ExportToExcelXls() {
+            debugger;
 
             // Get the GridView HTML content
             var gridViewHtml = document.getElementById('<%= GVReports3.ClientID %>').outerHTML;

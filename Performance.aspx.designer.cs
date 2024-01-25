@@ -33,13 +33,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.MultiView MultiView1;
 
         /// <summary>
-        /// tabAdd control.
+        /// TabAdd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.View tabAdd;
+        protected global::System.Web.UI.WebControls.View TabAdd;
 
         /// <summary>
         /// UpdatePanel1 control.
@@ -139,6 +139,15 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LnkReport;
+
+        /// <summary>
+        /// LblError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblError;
 
         /// <summary>
         /// BtnCncl control.
@@ -294,22 +303,22 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.GridView GVReports2;
 
         /// <summary>
-        /// BtnApprove control.
+        /// BtnSubmit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnApprove;
+        protected global::System.Web.UI.WebControls.Button BtnSubmit;
 
         /// <summary>
-        /// TabApproved control.
+        /// TabSubmit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.View TabApproved;
+        protected global::System.Web.UI.WebControls.View TabSubmit;
 
         /// <summary>
         /// UpdatePanel4 control.
