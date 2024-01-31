@@ -84,34 +84,44 @@ namespace Finance_Tracker
             //User Clicked the menu item
             if ( sender != null )
             {
-                BtnSubmit.Visible = false;
-                ResetSbmtTab();
+                ResetTab1();
                 if ( Menu1.SelectedValue == "1" )
-                {
-                    Menu1.Items[0].Text = "Add Task |";
-                    GVReports2.DataSource = null;
-                    GVReports2.Visible = false;
-
-                    DateTime now = DateTime.Now;
-                    var startDate = new DateTime(now.Year, now.Month, 1);
-                    var endDate = startDate.AddMonths(1).AddDays(-1);
-                    TxtSD.Text = startDate.ToString(DateFormat);
-                    TxtED.Text = endDate.ToString(DateFormat);
-                    DdlCatType_DataBinding(DdlCatType2, new EventArgs());
-                    DdlCat_DataBinding(DdlCat2, new EventArgs());
-                    DdlReport_DataBinding(DdlReport2, new EventArgs());
-                }
+                    ResetTab2();
                 else if ( Menu1.SelectedValue == "2" )
-                {
-                    GVReports3.DataSource = null;
-                    GVReports3.Visible = false;
-                    Menu1.Items[0].Text = "Add Task |";
-                    TxtMnth3.Text = DateTime.Now.ToString(MonthFormat);
-                    DdlCatType_DataBinding(DdlCatType3, new EventArgs());
-                    DdlCat_DataBinding(DdlCat3, new EventArgs());
-                    DdlReport_DataBinding(DdlReport3, new EventArgs());
-                }
+                    ResetTab3();
             }
+        }
+
+        private void ResetTab2()
+        {
+            DdlCatType_DataBinding(DdlCatType2, new EventArgs());
+            DdlCat_DataBinding(DdlCat2, new EventArgs());
+            DdlReport_DataBinding(DdlReport2, new EventArgs());
+
+            GVReports2.DataSource = null;
+            GVReports2.Visible = false;
+            BtnSubmit.Visible = false;
+
+            DateTime now = DateTime.Now;
+            var startDate = new DateTime(now.Year, now.Month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            TxtSD.Text = startDate.ToString(DateFormat);
+            TxtED.Text = endDate.ToString(DateFormat);
+            DdlType2.SelectedIndex = 0;
+        }
+
+        private void ResetTab3()
+        {
+            DdlCatType_DataBinding(DdlCatType3, new EventArgs());
+            DdlCat_DataBinding(DdlCat3, new EventArgs());
+            DdlReport_DataBinding(DdlReport3, new EventArgs());
+
+            GVReports3.DataSource = null;
+            GVReports3.Visible = false;
+
+            TxtMnth3.Text = DateTime.Now.ToString(MonthFormat);
+            DdlType3.SelectedIndex = 0;
         }
 
         private void SetCatType(DropDownList ddl, DropDownList childDdl)
@@ -383,7 +393,7 @@ namespace Finance_Tracker
                         LblError.Text = "Task added successfully!";
                     }
                     LblError.CssClass = "col-12 control-label text-success ";
-                    ResetSbmtTab();
+                    ResetTab1();
                 }
                 catch ( Exception ex )
                 {
@@ -733,12 +743,12 @@ namespace Finance_Tracker
 
         protected void BtnCncl_Click(object sender, EventArgs e)
         {
-            ResetSbmtTab();
+            ResetTab1();
             Menu1.Items[1].Selected = true;
             Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
         }
 
-        private void ResetSbmtTab()
+        private void ResetTab1()
         {
             Menu1.Items[0].Text = "Add Task |";
 
@@ -851,6 +861,5 @@ namespace Finance_Tracker
             ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
             //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
-
     }
 }

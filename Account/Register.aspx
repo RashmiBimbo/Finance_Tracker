@@ -14,7 +14,7 @@
         <asp:UpdatePanel runat="server" ID="UpdatePanel1">
             <ContentTemplate>
                 <div class="form-group" style="">
-                    <asp:Label runat="server" AssociatedControlID="TxtUsrId" CssClass="col-md-2 control-label">UserId<span style="color:red">&nbsp*</span></asp:Label>
+                    <asp:Label runat="server" AssociatedControlID="TxtUsrId" CssClass="col-md-2 control-label">User Id<span style="color:red">&nbsp*</span></asp:Label>
                     <div class="col-md-10">
                         <asp:TextBox runat="server" ID="TxtUsrId" CssClass="form-control" Width="40%" />
                         <%--<asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUsrId"
