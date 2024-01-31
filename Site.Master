@@ -79,10 +79,10 @@
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
-            <hr />
+          <%--  <hr />
             <footer>
                 <p>&copy; <%: DateTime.Now.Year %> - Finance Tracker</p>
-            </footer>
+            </footer>--%>
         </div>
     </form>
 </body>

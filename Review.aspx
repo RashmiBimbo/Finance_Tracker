@@ -109,33 +109,35 @@
                             <Columns>
                                 <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                     <HeaderTemplate>
-                                        <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Reject"></asp:CheckBox>
+                                        <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Reject" Text=""></asp:CheckBox>
                                     </HeaderTemplate>
                                     <ItemTemplate>
-                                        <asp:CheckBox ID="CBReject" runat="server"></asp:CheckBox>
+                                        <asp:CheckBox ID="CBReject" OnCheckedChanged="CBReject_CheckedChanged" AutoPostBack="true" runat="server"></asp:CheckBox>
                                     </ItemTemplate>
                                     <AlternatingItemTemplate>
                                         <asp:CheckBox ID="CBReject" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
                                     </AlternatingItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
-                                <asp:BoundField DataField="User_Name" HeaderText="User Name" ReadOnly="True" />
+                                <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
-                                <asp:BoundField DataField="Category_Name" HeaderText="Category Name" ReadOnly="True" />
-                                <asp:BoundField DataField="Report_Name" HeaderText="Report Name" ReadOnly="True" />
-                                <asp:BoundField DataField="Submit_Date" HeaderText="Add Date" />
+                                <asp:BoundField DataField="Category_Name" HeaderText="Category" ReadOnly="True" />
+                                <asp:BoundField DataField="Report_Name" HeaderText="Report" ReadOnly="True" />
+                                <%--<asp:BoundField DataField="Submit_Date" HeaderText="Add Date" />--%>
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <asp:BoundField DataField="Approve_Date" HeaderText="Submit Date" />
+                                <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
+                                <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
-                                            Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' ToolTip='<%# Bind("Location")%>'>
+                                            Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'
+                                            ToolTip='<%# Bind("Location")%>'>
                                         </asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Rec_Id" Visible="false">
+                                <asp:TemplateField HeaderText="" Visible="false">
                                     <ItemTemplate>
-                                        <asp:Label ID="LblRecId" runat="server" Text='<%# Bind("Rec_Id")%>'>
+                                        <asp:Label ID="LblRecId" runat="server" Text='<%# Bind("Task_Id")%>'>
                                         </asp:Label>
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -143,7 +145,7 @@
                         </asp:GridView>
                     </div>
                     <div class="row" style="margin-left: 2px;">
-                        <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Visible="False" />
+                        <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Visible="False" Enabled="False" />
                     </div>
                 </asp:View>
             </asp:MultiView>

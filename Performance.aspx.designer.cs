@@ -42,15 +42,6 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.View TabAdd;
 
         /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-
-        /// <summary>
         /// DdlCatType1 control.
         /// </summary>
         /// <remarks>
@@ -87,6 +78,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlType1;
 
         /// <summary>
+        /// TxtDueDt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtDueDt;
+
+        /// <summary>
         /// TxtMnth1 control.
         /// </summary>
         /// <remarks>
@@ -114,6 +114,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivWeek1;
 
         /// <summary>
+        /// LblWeek1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblWeek1;
+
+        /// <summary>
         /// DdlWeek1 control.
         /// </summary>
         /// <remarks>
@@ -132,6 +141,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.FileUpload FUReport;
 
         /// <summary>
+        /// DivLnk control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivLnk;
+
+        /// <summary>
         /// LnkReport control.
         /// </summary>
         /// <remarks>
@@ -139,15 +157,6 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LnkReport;
-
-        /// <summary>
-        /// LblError control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblError;
 
         /// <summary>
         /// BtnCncl control.
@@ -168,6 +177,24 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.Button BtnAdd;
 
         /// <summary>
+        /// LblTaskID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblTaskID;
+
+        /// <summary>
+        /// LblError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblError;
+
+        /// <summary>
         /// TabView control.
         /// </summary>
         /// <remarks>
@@ -175,15 +202,6 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View TabView;
-
-        /// <summary>
-        /// UpdatePanel2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
 
         /// <summary>
         /// DdlCatType2 control.
@@ -319,15 +337,6 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View TabSubmit;
-
-        /// <summary>
-        /// UpdatePanel4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel4;
 
         /// <summary>
         /// DdlCatType3 control.
