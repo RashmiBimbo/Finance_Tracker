@@ -8,17 +8,18 @@ using Owin;
 using Finance_Tracker.Models;
 using System.Data;
 using System.Data.OleDb;
+using System.Web.UI.WebControls;
 
 namespace Finance_Tracker.Account
 {
 
     public partial class Register : Page
     {
-        private DBOperations connect = new DBOperations();
+        private DBOperations DBOprn = new DBOperations();
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!connect.AuthenticatConns())
+            if (!DBOprn.AuthenticatConns())
             {
                 PopUp("Database connection could not be established");
                 return;
@@ -48,6 +49,7 @@ namespace Finance_Tracker.Account
                 string usrName = TxtUsrName.Text;
                 string pswd = TxtPassword.Text;
                 string roleId = DdlRole.SelectedValue;
+                string email = TBEmail.Text;
                 string locId = DdlLocn.SelectedValue.ToUpper();
                 string adrs = TxtAddress.Text;
                 try
@@ -62,7 +64,8 @@ namespace Finance_Tracker.Account
                         new OleDbParameter("@Company_Id", "BBI"),
                         new OleDbParameter("@Sub_Company_Id", "BBI"),
                         new OleDbParameter("@Role_Id", roleId),
-                        new OleDbParameter("@Login_Type", null),
+                        new OleDbParameter("@EMail", email),
+                        new OleDbParameter("@Login_Type", 'C'),
                         new OleDbParameter("@Active", 1),
                         new OleDbParameter("@Flag", 1),
                         new OleDbParameter("@Change_Password_Date", null),
@@ -73,7 +76,7 @@ namespace Finance_Tracker.Account
                         new OleDbParameter("@Created_By", Session["User_Name"])
                     };
 
-                    var output = connect.ExecScalarProc("SP_Register_User", connect.ConnPrimary, paramCln);
+                    var output = DBOprn.ExecScalarProc("SP_Register_User", DBOprn.ConnPrimary, paramCln);
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
@@ -107,7 +110,7 @@ namespace Finance_Tracker.Account
             if (string.IsNullOrWhiteSpace(TxtPassword.Text))
             {
                 PopUp("Password is required");
-                TxtPassword.Focus();
+                TBEmail.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtConfirmPassword.Text))
@@ -122,13 +125,19 @@ namespace Finance_Tracker.Account
                 TxtConfirmPassword.Focus();
                 return false;
             }
+            if (string.IsNullOrWhiteSpace(TBEmail.Text))
+            {
+                PopUp("Email is required");
+                TxtPassword.Focus();
+                return false;
+            }
             if (DdlRole.SelectedValue == "0")
             {
                 PopUp("Role is required");
                 DdlRole.Focus();
                 return false;
             }
-            if (DdlRole.SelectedValue != "1" && DdlLocn.SelectedValue == "0")
+            if (DdlLocn.SelectedValue == "0")
             {
                 PopUp("Location is required for user other than Admin!");
                 DdlLocn.Focus();
@@ -148,6 +157,8 @@ namespace Finance_Tracker.Account
             TxtUsrId.Text = "";
             TxtUsrName.Text = "";
             TxtPassword.Text = "";
+            TxtConfirmPassword.Text = "";
+            TBEmail.Text = "";
             DdlRole.SelectedIndex = 0;
             DdlLocn.SelectedIndex = 0;
             TxtAddress.Text = "";
@@ -155,26 +166,40 @@ namespace Finance_Tracker.Account
 
         protected void DdlLocn_DataBinding(object sender, EventArgs e)
         {
-            DdlLocn.Items.Clear();
-            DataTable dt = connect.GetDataProc("SP_Get_Locations", connect.ConnPrimary);
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                DdlLocn.DataSource = dt;
-                DdlLocn.DataTextField = "Loc_Name";
-                DdlLocn.DataValueField = "Loc_Id";
-            }
+            FillDdl(DdlLocn, "SP_Get_Locations", "");
         }
 
         protected void DdlRole_DataBinding(object sender, EventArgs e)
         {
-            DdlRole.Items.Clear();
-            DataTable dt = connect.GetDataProc("SP_Get_Roles", connect.ConnPrimary);
-            if (dt != null && dt.Rows.Count > 0)
+            FillDdl(DdlRole, "SP_Get_Roles", "0");
+        }
+
+        private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        {
+            ddl.Items.Clear();
+            ddl.Items.Add(new ListItem("Select", selectVal));
+            ddl.SelectedIndex = 0;
+            ddl.ToolTip = "Select";
+
+            if (prntDdl != null && prntDdl.SelectedIndex == 0)
+                return;
+            try
             {
-                DdlRole.DataSource = dt;
-                DdlRole.DataTextField = "Role_Name";
-                DdlRole.DataValueField = "Role_Id";
+                DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
             }
         }
+
     }
 }

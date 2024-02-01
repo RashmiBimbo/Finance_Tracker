@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-md-8">
                 <section id="loginForm">
-                    <div class="form-horizontal" style="margin-left: 0px">
+                    <div class="form-horizontal" style="margin-left: 5px">
                         <hr />
                         <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
                             <p class="text-danger">
@@ -29,19 +29,18 @@
                             </p>
                         </asp:PlaceHolder>
                         <div class="form-group">
-                            <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location</asp:Label>
+                            <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
                                 <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%" />
-                                <%--<asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
-                                CssClass="text-danger" ErrorMessage="Location is required." />--%>
+                                <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
+                                    CssClass="text-danger" ErrorMessage="Location is required." Enabled="true" />
                             </div>
                         </div>
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtUserId" CssClass="col-md-2 control-label">UserId<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
                                 <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" />
-                                <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId"
-                                    CssClass="text-danger" ErrorMessage="User Id is required." />--%>
+                                <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId" CssClass="text-danger" ErrorMessage="User Id is required." />
                             </div>
                         </div>
                         <div class="form-group">

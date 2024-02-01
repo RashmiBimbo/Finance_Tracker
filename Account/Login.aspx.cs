@@ -96,17 +96,23 @@ namespace Finance_Tracker.Account
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         bool active = (bool)dt.Rows[0]["Active"];
+                        int roleID = Convert.ToInt32(dt.Rows[0]["Role_Id"]);
+
                         if (!active)
                         {
                             PopUp("User exists but it is not active!");
                             return;
                         }
+                        //if (roleID != 1 && DdlLocn.SelectedValue == "")
+                        //{
+                        //    this.PopUp("Please select location!");
+                        //    return;
+                        //}
                         if (Request.Browser.Cookies)
                         {
                             Response.Cookies["UserId"].Expires = DateTime.Now.AddDays(1);
                             Response.Cookies["UserId"].Value = UsrId;
                         }
-
                         if (CBRemMe.Checked)
                         {
                             Response.Cookies["PassWord"].Expires = DateTime.Now.AddDays(1);
@@ -179,12 +185,18 @@ namespace Finance_Tracker.Account
         {
             try
             {
+                DdlLocn.Items.Clear();
+                DdlLocn.Items.Add(new ListItem("Select", ""));
+                DdlLocn.SelectedIndex = 0;
+                DdlLocn.ToolTip = "Select";
+
                 DataTable dt = DbOprn.GetDataProc("SP_Get_Locations", DbOprn.ConnPrimary);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    DdlLocn.DataSource = dt;
-                    DdlLocn.DataTextField = "Loc_Name";
-                    DdlLocn.DataValueField = "Loc_Id";
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        DdlLocn.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                    }
                 }
             }
             catch (Exception ex)
