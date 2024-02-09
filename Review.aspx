@@ -27,7 +27,7 @@
                 <asp:View ID="TabApproved" runat="server">
                     <asp:UpdatePanel runat="server" ID="UpdatePanel4">
                         <ContentTemplate>
-                            <div class="row">
+                            <div class="row" runat="server" id="TabApprovedRow1" visible="false">
                                 <asp:Label runat="server" AssociatedControlID="DdlCatType3" CssClass="col-md-2 control-label">Category Type</asp:Label>
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlCatType3" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True">
@@ -46,8 +46,8 @@
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                            </div>
                             <br />
+                            </div>
                             <div class="row">
                                 <label class="col-lg-2 control-label">User Type</label>
                                 <div class="col-sm-2">
@@ -156,7 +156,8 @@
 
     <script type="text/javascript">
 
-        function CallPrint(strid) {
+        function CallPrint (strid)
+        {
             var gridHtml = document.getElementById('<%= GVReports3.ClientID %>').outerHTML;
 
             // Open a new window
@@ -173,7 +174,8 @@
             printWindow.print();
         }
 
-        function ExportToExcelXls() {
+        function ExportToExcelXls ()
+        {
             debugger;
 
             // Get the GridView HTML content
@@ -203,7 +205,8 @@
             document.body.removeChild(link);
         }
 
-        function ExportToExcel() {
+        function ExportToExcel ()
+        {
             //debugger;
             var grid = document.getElementById('<%= GVReports3.ClientID %>');
             //debugger;

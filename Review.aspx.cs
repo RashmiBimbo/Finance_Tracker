@@ -34,8 +34,8 @@ namespace Finance_Tracker
                 if ( usrId == null || usrId == "" )
                     Response.Redirect("~/Account/Login.aspx");
 
-                string RoleId = Session["Role_Id"]?.ToString();
-                if ( RoleId != "1" )
+                int RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
+                if ( !(RoleId == 1 || RoleId == 4) )
                 {
                     Response.Redirect("~/Default.aspx");
                     return;
@@ -53,7 +53,6 @@ namespace Finance_Tracker
         }
 
         #endregion Page Code
-
 
         protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
         {
@@ -114,6 +113,10 @@ namespace Finance_Tracker
         protected void DdlUsrType_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlUsrType, "SP_Get_Roles", "0");
+            int roleId = Convert.ToInt32(Session["Role_Id"]);
+
+            DdlUsrType.Items.FindByValue("4").Enabled = roleId > 4;
+            DdlUsrType.Items.FindByValue("1").Enabled = roleId == 4;
         }
 
         protected void DdlUsr_DataBinding(object sender, EventArgs e)
@@ -235,9 +238,10 @@ namespace Finance_Tracker
                    }
                    ,new OleDbParameter("@ApprYearNo", year)
                    ,new OleDbParameter("@ApprMonthNo", mnthNo)
+                   ,new OleDbParameter("@ApprWeekNo", Convert.ToInt32(0))
+                   ,new OleDbParameter("@Location_Id", Session["Location_Id"])
                 };
                 SetGV(paramCln, GVReports3);
-
             }
             catch ( Exception ex )
             {

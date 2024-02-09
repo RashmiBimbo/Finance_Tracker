@@ -181,7 +181,7 @@
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlType2" CssClass="col-md-2 control-label">Type</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control">
                                         <asp:ListItem Value="">All</asp:ListItem>
                                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                                         <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -309,7 +309,7 @@
                             <div class="row">
                                 <label class="col-lg-2 control-label">Type</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control">
                                         <asp:ListItem Value="">All</asp:ListItem>
                                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                                         <asp:ListItem Value="W">Weekly</asp:ListItem>

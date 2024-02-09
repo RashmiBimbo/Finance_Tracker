@@ -103,6 +103,11 @@ namespace Finance_Tracker.Account
                             PopUp("User exists but it is not active!");
                             return;
                         }
+                        if ( roleID != 4 && DdlLocn.SelectedIndex==0)
+                        {
+                            PopUp("Please select a Location!");
+                            return;
+                        }
                         //if (roleID != 1 && DdlLocn.SelectedValue == "")
                         //{
                         //    this.PopUp("Please select location!");

@@ -51,6 +51,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.UpdatePanel UpdatePanel4;
 
         /// <summary>
+        /// TabApprovedRow1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl TabApprovedRow1;
+
+        /// <summary>
         /// DdlCatType3 control.
         /// </summary>
         /// <remarks>

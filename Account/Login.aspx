@@ -33,11 +33,11 @@
                             <div class="col-md-10">
                                 <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%" />
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
-                                    CssClass="text-danger" ErrorMessage="Location is required." Enabled="true" />
+                                    CssClass="text-danger" ErrorMessage="Location is required." Enabled="false" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <asp:Label runat="server" AssociatedControlID="TxtUserId" CssClass="col-md-2 control-label">UserId<span style="color:red">&nbsp*</span></asp:Label>
+                            <asp:Label runat="server" AssociatedControlID="TxtUserId" CssClass="col-md-2 control-label">User Id<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
                                 <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" />
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId" CssClass="text-danger" ErrorMessage="User Id is required." />

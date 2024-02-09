@@ -52,7 +52,8 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a runat="server" href="~/">Home</a></li>
-                        <li><a runat="server" href="~/Performance">Performance</a></li>
+                        <%--<li><a runat="server" href="~/Performance">Performance</a></li>--%>
+                        <li><a runat="server" href="~/Performance_V2">Performance</a></li>
                         <li><a runat="server" href="~/Review">Review</a></li>
                     </ul>
                     <asp:LoginView runat="server" ViewStateMode="Disabled">

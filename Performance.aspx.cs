@@ -84,6 +84,7 @@ namespace Finance_Tracker
             //User Clicked the menu item
             if ( sender != null )
             {
+                BtnSubmit.Visible = false;
                 ResetTab1();
                 if ( Menu1.SelectedValue == "1" )
                     ResetTab2();
@@ -266,14 +267,12 @@ namespace Finance_Tracker
                 bool isWeekly = type.Equals("W");
                 DivWeek1.Visible = isWeekly;
                 DdlWeek1.Enabled = isWeekly;
-                DdlWeek1.Visible = isWeekly;
-                LblWeek1.Visible = isWeekly;
 
                 string DueDate = row[3].ToString().Trim();
                 DateTime.TryParse(TxtMnth1.Text, out DateTime dt);
 
                 if ( dt != null && int.TryParse(DueDate, out int day) )
-                    DueDate = new DateTime(dt.Year, dt.Month, day).ToString("dd-MMM-yyyy");
+                    DueDate = new DateTime(dt.Year, dt.Month + 1, day).ToString("dd-MMM-yyyy");
                 else
                     DueDate = "Every " + char.ToUpper(DueDate[0]) + DueDate.Substring(1).ToLower();
 
@@ -321,7 +320,7 @@ namespace Finance_Tracker
             {
                 TextBox TB = (TextBox)sender;
                 DateTime dt = DateTime.ParseExact(TB.Text, MonthFormat, CultureInfo.InvariantCulture);
-
+                int dueMnth = dt.Month + 1;
                 if ( dt.Month == 2 ) //feb selected
                 {
                     if ( !DateTime.IsLeapYear(dt.Year) )  //if year is not a leap year, feb contains 28 days i.e. 4 weeks only
@@ -330,7 +329,7 @@ namespace Finance_Tracker
 
                 if ( DdlType1.SelectedIndex == 1 )
                 {
-                    string dueDt = new DateTime(dt.Year, dt.Month, DateTime.Parse(TxtDueDt.Text).Day).ToString("dd-MMM-yyyy");
+                    string dueDt = new DateTime(dt.Year, dueMnth, DateTime.Parse(TxtDueDt.Text).Day).ToString("dd-MMM-yyyy");
                     TxtDueDt.Text = dueDt;
                 }
             }
@@ -353,10 +352,14 @@ namespace Finance_Tracker
                 try
                 {
                     HttpPostedFile file = FUReport.PostedFile;
-                    string ext = Path.GetExtension(file.FileName);
-                    if ( !(ext.Equals(".xlsx") || ext.Equals(".xls")) )
+                    string ext = Path.GetExtension(file.FileName).ToLower();
+
+                    HashSet<string> allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    { ".xls", ".xlsx", ".xlsm", ".xlsb", ".doc", ".docx", ".ppt", ".pptx", ".pdf", ".zip" };
+
+                    if ( !allowedExtensions.Contains(ext) )
                     {
-                        PopUp("Please upload .xls or .xlsx files only");
+                        PopUp("Please upload .xls, .xlsx, .xlsm, .xlsb, .doc, .docx, .ppt, .pptx, .pdf, .zip file only");
                         return;
                     }
 
@@ -371,7 +374,8 @@ namespace Finance_Tracker
                     {
                         Directory.CreateDirectory(saveFolder);
                     }
-                    String fullPath = $@"{saveFolder}\{Session["User_Name"]}_{DdlReport1.SelectedItem.Text}_{DateTime.Now.Date.ToString(DateFormat)}{Path.GetExtension(file.FileName)}";
+                    string dueDt = DdlType1.SelectedValue == "M" ? TxtDueDt.Text : "Week_" + DdlWeek1.SelectedValue + "_" + TxtMnth1.Text;
+                    string fullPath = $@"{saveFolder}\[{Session["User_Name"]}]_[{DdlReport1.SelectedItem.Text}]_Due Date[{dueDt}]_Add Date[{DateTime.Now.Date.ToString(DateFormat)}]{Path.GetExtension(file.FileName)}";
 
                     string Report_Id = DdlReport1.SelectedValue;
                     file.SaveAs(fullPath);
@@ -727,18 +731,6 @@ namespace Finance_Tracker
                     BtnAdd.Text = "Edit";
                 }
             }
-        }
-
-        private int GetWeekNumberOfMonth(DateTime date)
-        {
-            // Calculate the week number of the month
-            int daysInWeek = 7;
-            int dayOfWeek = (int)date.DayOfWeek + 1;
-            int daysToFirstDayOfMonth = date.Day - 1;
-
-            int weekNumber = (daysToFirstDayOfMonth + dayOfWeek - 1) / daysInWeek + 1;
-
-            return weekNumber;
         }
 
         protected void BtnCncl_Click(object sender, EventArgs e)
