@@ -191,7 +191,7 @@ namespace Finance_Tracker.Account
             int roleId = Convert.ToInt32(Session["Role_Id"]);
 
             DdlRole.Items.FindByValue("4").Enabled = roleId > 4;
-            DdlRole.Items.FindByValue("1").Enabled = roleId == 4;
+            DdlRole.Items.FindByValue("1").Enabled = roleId >= 4;
         }
 
         private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)

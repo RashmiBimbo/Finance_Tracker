@@ -42,58 +42,184 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.View TabAdd;
 
         /// <summary>
-        /// DdlCatType1 control.
+        /// DivAddMultiple control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlCatType1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivAddMultiple;
 
         /// <summary>
-        /// DdlCat1 control.
+        /// TxtMnthM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlCat1;
+        protected global::System.Web.UI.WebControls.TextBox TxtMnthM;
 
         /// <summary>
-        /// DdlReport1 control.
+        /// TextBoxWatermarkExtender1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlReport1;
+        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender1;
 
         /// <summary>
-        /// DdlType1 control.
+        /// CETxtMnthM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType1;
+        protected global::AjaxControlToolkit.CalendarExtender CETxtMnthM;
 
         /// <summary>
-        /// TxtDueDt control.
+        /// DdlTypeM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtDueDt;
+        protected global::System.Web.UI.WebControls.DropDownList DdlTypeM;
 
         /// <summary>
-        /// TxtMnth1 control.
+        /// DivWeekM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtMnth1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivWeekM;
+
+        /// <summary>
+        /// LblWeek control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblWeek;
+
+        /// <summary>
+        /// DdlWeekM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlWeekM;
+
+        /// <summary>
+        /// BtnViewAssTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnViewAssTask;
+
+        /// <summary>
+        /// DivGVBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivGVBtn;
+
+        /// <summary>
+        /// DivGVAdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivGVAdd;
+
+        /// <summary>
+        /// GVAdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GVAdd;
+
+        /// <summary>
+        /// BtnAddM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnAddM;
+
+        /// <summary>
+        /// DivAddSingl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivAddSingl;
+
+        /// <summary>
+        /// DdlCatTypeS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatTypeS;
+
+        /// <summary>
+        /// DdlCatS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatS;
+
+        /// <summary>
+        /// DdlReportS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlReportS;
+
+        /// <summary>
+        /// DdlTypeS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlTypeS;
+
+        /// <summary>
+        /// TxtDueDtS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtDueDtS;
+
+        /// <summary>
+        /// TxtMnthS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtMnthS;
 
         /// <summary>
         /// CalendarExtender1 control.
@@ -114,22 +240,22 @@ namespace Finance_Tracker
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivWeek1;
 
         /// <summary>
-        /// LblWeek1 control.
+        /// LblWeekS control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblWeek1;
+        protected global::System.Web.UI.WebControls.Label LblWeekS;
 
         /// <summary>
-        /// DdlWeek1 control.
+        /// DdlWeekS control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlWeek1;
+        protected global::System.Web.UI.WebControls.DropDownList DdlWeekS;
 
         /// <summary>
         /// FUReport control.

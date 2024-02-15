@@ -12,12 +12,10 @@
     <link rel="stylesheet" href="../Content/bootstrap-theme.css" />
 </head>
 <body>
-
     <form runat="server" class="form-horizontal">
         <asp:ScriptManager runat="server" ID="ScriptManager1">
         </asp:ScriptManager>
         <h2 style="margin-left: 25px"><%:  Page.Title %></h2>
-
         <div class="row">
             <div class="col-md-8">
                 <section id="loginForm">
@@ -39,14 +37,14 @@
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtUserId" CssClass="col-md-2 control-label">User Id<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" />
+                                <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" AutoCompleteType="None"/>
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId" CssClass="text-danger" ErrorMessage="User Id is required." />
                             </div>
                         </div>
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtPassword" CssClass="col-md-2 control-label">Password<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password" CssClass="form-control" Width="30%" />
+                                <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password" CssClass="form-control" Width="30%" AutoCompleteType="None"/>
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtPassword" CssClass="text-danger" ErrorMessage="Password is required." />
                             </div>
                         </div>
@@ -71,7 +69,6 @@
                     </p>
                 </section>
             </div>
-
             <div class="col-md-4">
                 <%-- <section id="socialLoginForm">
                     <uc:OpenAuthProviders runat="server" ID="OpenAuthLogin" />
@@ -79,5 +76,6 @@
             </div>
         </div>
     </form>
+
 </body>
 </html>

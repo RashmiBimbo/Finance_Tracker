@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -50,6 +47,9 @@ namespace Finance_Tracker
 
         protected void master_Page_PreLoad(object sender, EventArgs e)
         {
+            object usrId = Session["User_Id"];
+            if (usrId == null || usrId.ToString() == "")
+                Response.Redirect("~/Account/Login.aspx");
             if (!IsPostBack)
             {
                 // Set Anti-XSRF token
@@ -65,9 +65,6 @@ namespace Finance_Tracker
                     throw new InvalidOperationException("Validation of Anti-XSRF token failed.");
                 }
             }
-            object usrId = Session["User_Id"];
-            if (usrId == null || usrId.ToString() == "")
-                Response.Redirect("~/Account/Login.aspx");
         }
 
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
@@ -75,16 +72,18 @@ namespace Finance_Tracker
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
         }
 
-        protected void BtnLogOut_Click(object sender, EventArgs e)
-        {
-            Session.Abandon();
-            Session.RemoveAll();
-            Response.Redirect("~/Account/Login.aspx");
-        }
 
         private void PopUp(string msg)
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
+        }
+
+        protected void BtnLogOut_Click(object sender, EventArgs e)
+        {
+
+            Session.Abandon();
+            Session.RemoveAll();
+            Response.Redirect("~/Account/Login.aspx");
         }
     }
 
