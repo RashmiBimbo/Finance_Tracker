@@ -17,7 +17,7 @@
                     <Items>
                         <asp:MenuItem Selected="True" Text="Add Tasks |" Value="0"></asp:MenuItem>
                         <asp:MenuItem Text="View & Submit Tasks |" Value="1"></asp:MenuItem>
-                        <asp:MenuItem Text="Submitted Tasks |" Value="2"></asp:MenuItem>
+                        <asp:MenuItem Text="Submitted Tasks" Value="2"></asp:MenuItem>
                     </Items>
                     <StaticHoverStyle BackColor="#7C6F57" ForeColor="White" />
                     <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
@@ -31,9 +31,10 @@
                         <div class="row">
                             <asp:Label runat="server" AssociatedControlID="TxtMnthM" CssClass="col-md-2 control-label">Month<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-sm-2">
-                                <asp:TextBox ID="TxtMnthM" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True"></asp:TextBox>
+                                <asp:TextBox ID="TxtMnthM" runat="server" Width="160px" CssClass="form-control" BackColor="White" autocomplete="off" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True"></asp:TextBox>
                                 <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnthM" />
                                 <ajaxToolkit:CalendarExtender ID="CETxtMnthM" runat="server" TargetControlID="TxtMnthM" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                               <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnthM" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidatorM" />--%>
                             </div>
                             <asp:Label runat="server" AssociatedControlID="DdlTypeM" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-sm-2 col-md-2">
@@ -42,6 +43,7 @@
                                     <asp:ListItem Value="M">Monthly</asp:ListItem>
                                     <asp:ListItem Value="W">Weekly</asp:ListItem>
                                 </asp:DropDownList>
+                                <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlTypeM" CssClass="text-danger" ErrorMessage="Please select a type." ID="RequiredFieldValidator2" />--%>
                             </div>
                             <div id="DivWeekM" runat="server" visible="true">
                                 <asp:Label runat="server" AssociatedControlID="DdlWeekM" CssClass="col-md-2 control-label" ID="LblWeek">Week no.<span style="color:red">&nbsp*</span></asp:Label>
@@ -57,10 +59,6 @@
                                 </div>
                                 <br />
                             </div>
-                            <%--<asp:Label runat="server" AssociatedControlID="TxtDueDtM" CssClass="col-md-2 control-label">Due Date</asp:Label>
-                        <div class="col-sm-2">
-                            <asp:TextBox ID="TxtDueDtM" runat="server" Width="160px" CssClass="form-control" BackColor="White" Enabled="false" />
-                        </div>--%>
                             <br />
                         </div>
                         <div class="row">
@@ -176,7 +174,7 @@
                             <div class="col-sm-2">
                                 <asp:TextBox ID="TxtDueDtS" runat="server" Width="160px" CssClass="form-control" BackColor="White" Enabled="false" />
                             </div>
-                            <asp:Label runat="server" AssociatedControlID="TxtMnthS" CssClass="col-md-2 control-label">Month</asp:Label>
+                            <asp:Label runat="server" AssociatedControlID="TxtMnthS" CssClass="col-md-2 control-label">Month<span style="color :red">&nbsp*</span>></asp:Label>
                             <div class="col-sm-2">
                                 <asp:TextBox ID="TxtMnthS" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True"></asp:TextBox>
                                 <ajaxToolkit:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="TxtMnthS" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
@@ -265,19 +263,20 @@
                     </div>
                     <br />
                     <div class="row">
-                        <asp:Label runat="server" AssociatedControlID="TxtSD" CssClass="col-md-2 control-label">Start Date<span style="color:red">&nbsp*</span></asp:Label>
+                        <asp:Label runat="server" AssociatedControlID="TxtMnth2" CssClass="col-md-2 control-label" autocomplete="off">Month<span style="color:red">&nbsp*</span></asp:Label>
                         <div class="col-sm-2">
-                            <asp:TextBox ID="TxtSD" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtSD_TextChanged" Text='<%# DateTime.Now.ToString("dd-MMM-yyyy") %>'></asp:TextBox>
-                            <ajaxToolkit:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="TxtSD" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="dd-MMM-yyyy" Format="dd-MMM-yyyy" />
-                            <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtSD" CssClass="text-danger" ErrorMessage="Please select start date." ID="RequiredFieldValidator3" />
+                            <asp:TextBox ID="TxtMnth2" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True"></asp:TextBox>
+                            <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender2" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth2" />
+                            <ajaxToolkit:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="TxtMnth2" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                           <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnth2" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidator3" />--%>
                         </div>
-                        <asp:Label runat="server" AssociatedControlID="TxtED" CssClass="col-md-2 control-label">End Date<span style="color:red">&nbsp*</span></asp:Label>
+                        <%--<asp:Label runat="server" AssociatedControlID="TxtED" CssClass="col-md-2 control-label">End Date<span style="color:red">&nbsp*</span></asp:Label>
                         <div class="col-sm-2">
                             <asp:TextBox ID="TxtED" runat="server" Width="160px" CssClass="form-control" BackColor="White" CausesValidation="True"></asp:TextBox>
                             <ajaxToolkit:CalendarExtender ID="CalendarExtender3" runat="server" TargetControlID="TxtED" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="dd-MMM-yyyy" Format="dd-MMM-yyyy"
                                 SelectedDate='<%# Eval(DateTime.Now.ToString("dd-MMM-yyyy")) %>' />
                             <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtED" CssClass="text-danger" ErrorMessage="Please select end date." ID="RequiredFieldValidator4" />
-                        </div>
+                        </div>--%>
                         <asp:Label runat="server" AssociatedControlID="DdlType2" CssClass="col-md-2 control-label">Type</asp:Label>
                         <div class="col-sm-2">
                             <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control" AutoPostBack="True">
@@ -320,7 +319,13 @@
                                 <%--1 --%>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <%--2 --%>
-                                <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
+                                <%--  <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />--%>
+                                <asp:TemplateField HeaderText="" Visible="false">
+                                    <ItemTemplate>
+                                        <asp:Label ID="LblCatType" runat="server" Text='<%# Bind("Category_Type")%>'>
+                                        </asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <%--3 --%>
                                 <asp:BoundField DataField="Category_Name" HeaderText="Category Name" ReadOnly="True" />
                                 <%--4 --%>
@@ -414,26 +419,14 @@
                                 <asp:ListItem Value="W">Weekly</asp:ListItem>
                             </asp:DropDownList>
                         </div>
-                        <asp:Label runat="server" AssociatedControlID="TxtMnth3" CssClass="col-md-2 control-label">Month</asp:Label>
+                        <asp:Label runat="server" AssociatedControlID="TxtMnth3" CssClass="col-md-2 control-label">Month<span style="color :red">&nbsp*</span></asp:Label>
                         <div class="col-sm-2">
-                            <asp:TextBox ID="TxtMnth3" runat="server" Width="160px" CssClass="form-control" BackColor="White"></asp:TextBox>
+                            <asp:TextBox ID="TxtMnth3" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" AutoPostBack="True"></asp:TextBox>
+                            <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender3" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth3" />
                             <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth3" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                          <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnth3" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidator1" />--%>
                         </div>
-                        <%--<div id="DivWeekNo" runat="server">
-                                    <asp:Label class="col-lg-2 control-label" ID="LblWkNo" runat="server" Visible="False" Font-Bold="True">Week No.</asp:Label>
-                                    <div class="col-sm-2">
-                                        <asp:DropDownList runat="server" ID="DdlWeek3" CssClass="form-control" Visible="false">
-                                            <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
-                                            <asp:ListItem Value="1">1</asp:ListItem>
-                                            <asp:ListItem Value="2">2</asp:ListItem>
-                                            <asp:ListItem Value="3">3</asp:ListItem>
-                                            <asp:ListItem Value="4">4</asp:ListItem>
-                                            <asp:ListItem Value="5">5</asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>--%>
                     </div>
-                    <br />
                     <div class="row" style="margin-left: 2px;">
                         <asp:Button runat="server" ID="BtnView3" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" />
                     </div>
@@ -454,19 +447,22 @@
                             <Columns>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <%--<asp:BoundField DataField="User_Name" HeaderText="User Name" ReadOnly="True" />--%>
-                                <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
+                                <%--<asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />--%>
                                 <asp:BoundField DataField="Category_Name" HeaderText="Category Name" ReadOnly="True" />
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report name" ReadOnly="True" />
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <%--5 --%>
                                 <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                 <asp:BoundField DataField="Add_Date" HeaderText="Add Date" />
                                 <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
+                                <asp:BoundField DataField="Is_Approved" HeaderText="Approved" />
+                                <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
-                                        <asp:Label ID="LblLocn" runat="server"
+                                        <asp:HiddenField runat="server" ID="HFLocn" Value='<%# Bind("Location") %>' />
+                                        <asp:LinkButton CssClass="control-label" ID="LnkReportSbmt" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' />
+                                        <%--<asp:Label ID="LblLocn" runat="server" on
                                             Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'>
-                                        </asp:Label>
+                                        </asp:Label>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -529,7 +525,7 @@
             //headerCheckBox.checked = (countChecked === rowCheckboxes.length);
         }
         function handleCheckBoxChange (cb) {
-           //debugger;
+        //debugger;
             //var gv = document.getElementById('<%= GVAdd.ClientID %>');
             //debugger;
             //var checkboxes = gv.getElementsByTagName('input');

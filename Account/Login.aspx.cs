@@ -87,7 +87,19 @@ namespace Finance_Tracker.Account
                         Response.Cookies["PassWord"].Value = pswrd;
                     }
                     FillSession(dt);
-                    Response.Redirect("~/Default.aspx");
+                    if (!(bool)Session["Changed_Password"])
+                    {
+                        // Register the ChngPswd() function as a client script block
+                        //string script = "<script type='text/javascript'>ChngPswd();</script>";
+                        //ScriptManager.RegisterStartupScript(this, this.GetType(), "confirmScript", script, false);
+                        Response.Redirect("~/Account/ResetPassword.aspx");
+                        return;
+                    }
+                    else
+                    {
+                        Response.Redirect("~/Default.aspx");
+                        return;
+                    }
                 }
                 else
                     PopUp("Kindly check your Location or ID or Password");

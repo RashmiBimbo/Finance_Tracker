@@ -1,45 +1,69 @@
-﻿<%@ Page Title="Reset Password" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ResetPassword.aspx.cs" Inherits="Finance_Tracker.Account.ResetPassword" Async="true" %>
+﻿<%@ Page Title="Change Password" Language="C#" AutoEventWireup="true" CodeBehind="ResetPassword.aspx.cs" Inherits="Finance_Tracker.Account.ResetPassword" Async="true" %>
 
-<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <h2><%: Title %>.</h2>
-    <p class="text-danger">
-        <asp:Literal runat="server" ID="ErrorMessage" />
-    </p>
+<!DOCTYPE html>
 
-    <div class="form-horizontal">
-        <h4>Enter your new password</h4>
-        <hr />
-        <asp:ValidationSummary runat="server" CssClass="text-danger" />
-        <div class="form-group">
-            <asp:Label runat="server" AssociatedControlID="Email" CssClass="col-md-2 control-label">Email</asp:Label>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - Finance Tracker</title>
+    <link rel="stylesheet" href="../Content/bootstrap-theme.css" />
+</head>
+<body>
+    <form runat="server" class="form-horizontal">
+        <asp:ScriptManager runat="server" ID="ScriptManager1">
+        </asp:ScriptManager>
+        <h2 style="margin-left: 25px">Change Password (Mandatory)</h2>
+        <div class="row">
             <div class="col-md-10">
-                <asp:TextBox runat="server" ID="Email" CssClass="form-control" TextMode="Email" />
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="Email"
-                    CssClass="text-danger" ErrorMessage="The email field is required." />
+                <section id="ChangePswdForm">
+                    <div class="form-horizontal" style="margin-left: 5px">
+                        <hr />
+                        <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
+                            <p class="text-danger">
+                                <%--<asp:Literal runat="server" ID="FailureText" />--%>
+                            </p>
+                        </asp:PlaceHolder>
+                        <asp:UpdatePanel runat="server" ID="UpdatePanel1">
+                            <ContentTemplate>
+                                <div class="form-group">
+                                    <asp:Label runat="server" AssociatedControlID="TxtOldPswd" CssClass="col-md-2 control-label">Old Password<span style="color:red">&nbsp*</span></asp:Label>
+                                    <div class="col-md-10">
+                                        <asp:TextBox runat="server" ID="TxtOldPswd" TextMode="Password" CssClass="form-control" Width="40%" />
+                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtOldPswd" ID="RequiredFieldValidator2"
+                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <asp:Label runat="server" AssociatedControlID="TxtNewPswd" CssClass="col-md-2 control-label">New password<span style="color:red">&nbsp*</span></asp:Label>
+                                    <div class="col-md-10">
+                                        <asp:TextBox runat="server" ID="TxtNewPswd" TextMode="Password" CssClass="form-control" Width="40%" />
+                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtNewPswd" ID="RequiredFieldValidator3"
+                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
+                                        <asp:CompareValidator runat="server" ControlToCompare="TxtNewPswd" ControlToValidate="TxtConfirmPswd" ID="CompareValidator3" CssClass="text-danger" Display="Dynamic" ErrorMessage="New password and confirm password do not match." />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <asp:Label runat="server" AssociatedControlID="TxtConfirmPswd" CssClass="col-md-2 control-label">Confirm password<span style="color:red">&nbsp*</span></asp:Label>
+                                    <div class="col-md-10">
+                                        <asp:TextBox runat="server" ID="TxtConfirmPswd" TextMode="Password" CssClass="form-control" Width="40%" />
+                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtConfirmPswd" ID="RequiredFieldValidator1"
+                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
+                                        <asp:CompareValidator runat="server" ControlToCompare="TxtNewPswd" ControlToValidate="TxtConfirmPswd" ID="CompareValidator1" CssClass="text-danger" Display="Dynamic" ErrorMessage="New password and confirm password do not match." />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <button type="button" class="btn btn-primary" runat="server" id="BtnOk" onserverclick="BtnOk_ServerClick">Save</button>
+                                    </div>
+                                </div>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="form-group">
-            <asp:Label runat="server" AssociatedControlID="Password" CssClass="col-md-2 control-label">Password</asp:Label>
-            <div class="col-md-10">
-                <asp:TextBox runat="server" ID="Password" TextMode="Password" CssClass="form-control" />
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="Password"
-                    CssClass="text-danger" ErrorMessage="The password field is required." />
-            </div>
-        </div>
-        <div class="form-group">
-            <asp:Label runat="server" AssociatedControlID="ConfirmPassword" CssClass="col-md-2 control-label">Confirm password</asp:Label>
-            <div class="col-md-10">
-                <asp:TextBox runat="server" ID="ConfirmPassword" TextMode="Password" CssClass="form-control" />
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="ConfirmPassword"
-                    CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
-                <asp:CompareValidator runat="server" ControlToCompare="Password" ControlToValidate="ConfirmPassword"
-                    CssClass="text-danger" Display="Dynamic" ErrorMessage="The password and confirmation password do not match." />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <asp:Button runat="server" OnClick="Reset_Click" Text="Reset" CssClass="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</asp:Content>
+    </form>
+
+</body>
+</html>

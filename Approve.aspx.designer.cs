@@ -33,6 +33,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.TextBox TxtMnth;
 
         /// <summary>
+        /// TextBoxWatermarkExtender3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender3;
+
+        /// <summary>
         /// CETxtMnth control.
         /// </summary>
         /// <remarks>
@@ -139,5 +148,14 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GVApproved;
+
+        /// <summary>
+        /// BtnReject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnReject;
     }
 }

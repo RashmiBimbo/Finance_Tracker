@@ -29,7 +29,8 @@
             <div class="row">
                 <asp:Label runat="server" AssociatedControlID="TxtMnth" CssClass="col-md-2 control-label">Month<span style=" color:red;">&nbsp*</span></asp:Label>
                 <div class="col-sm-2">
-                    <asp:TextBox ID="TxtMnth" runat="server" Width="160px" CssClass="form-control" BackColor="White"></asp:TextBox>
+                    <asp:TextBox ID="TxtMnth" runat="server" Width="160px" CssClass="form-control" BackColor="White" AutoPostBack="True" OnTextChanged="TxtMnth_TextChanged"></asp:TextBox>
+                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender3" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth" />
                     <ajaxToolkit:CalendarExtender ID="CETxtMnth" runat="server" TargetControlID="TxtMnth" CssClass="modal-content"
                         DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
                 </div>
@@ -83,7 +84,7 @@
                                             <asp:CheckBox ID="CBApprov" OnCheckedChanged="CBApprov_CheckedChanged" AutoPostBack="true" runat="server"></asp:CheckBox>
                                         </ItemTemplate>
                                         <AlternatingItemTemplate>
-                                            <asp:CheckBox ID="CBApprov" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
+                                            <asp:CheckBox ID="CBApprov" runat="server" BackColor="#7ad0ed" OnCheckedChanged="CBApprov_CheckedChanged" AutoPostBack="true"></asp:CheckBox>
                                         </AlternatingItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
@@ -131,6 +132,17 @@
                                 <EditRowStyle BackColor="#7C6F57" />
                                 <AlternatingRowStyle BackColor="#7ad0ed" />
                                 <Columns>
+                                    <asp:TemplateField HeaderText="Approve" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
+                                        <HeaderTemplate>
+                                            <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Approve" Text=""></asp:CheckBox>
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <asp:CheckBox ID="CBReject" OnCheckedChanged="CBReject_CheckedChanged" AutoPostBack="true" runat="server"></asp:CheckBox>
+                                        </ItemTemplate>
+                                        <AlternatingItemTemplate>
+                                            <asp:CheckBox ID="CBReject" OnCheckedChanged="CBReject_CheckedChanged" AutoPostBack="true" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
+                                        </AlternatingItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                     <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
                                     <asp:BoundField DataField="Report_Name" HeaderText="Task" ReadOnly="True" />
@@ -155,12 +167,15 @@
                                 </Columns>
                             </asp:GridView>
                         </div>
+                        <div class="row" style="margin-left: 2px;">
+                            <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Enabled="False" />
+                        </div>
                     </div>
                 </asp:View>
             </asp:MultiView>
         </div>
     </div>
-    <script language="C#" runat="server" >
+    <script language="C#" runat="server">
 
         protected void LBLocn_Click1()
         {
@@ -170,7 +185,8 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script type="text/javascript">
-        function downloadFile (folder, fileName) {
+        function downloadFile (folder, fileName)
+        {
             //debugger;
             //var xhr = new XMLHttpRequest();
             ////var lastIndex = fullPath.lastIndexOf('/');
@@ -199,7 +215,8 @@
             //};
             //xhr.send();
         }
-        function submitData () {
+        function submitData ()
+        {
             // Make an AJAX call to the server
             // Example using jQuery:
             $.ajax({
@@ -207,10 +224,12 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({}),
-                success: function (response) {
+                success: function (response)
+                {
                     // Handle success response
                 },
-                error: function (xhr, status, error) {
+                error: function (xhr, status, error)
+                {
                     // Handle error
                 }
             });

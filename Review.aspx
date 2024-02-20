@@ -46,7 +46,7 @@
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                            <br />
+                                <br />
                             </div>
                             <div class="row">
                                 <label class="col-lg-2 control-label">User Type</label>
@@ -72,9 +72,10 @@
                             </div>
                             <br />
                             <div class="row">
-                                <asp:Label runat="server" AssociatedControlID="TxtMnth3" CssClass="col-md-2 control-label">Month</asp:Label>
+                                <asp:Label runat="server" AssociatedControlID="TxtMnth3" CssClass="col-md-2 control-label">Month<span style="color :red">&nbsp*</span>></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:TextBox ID="TxtMnth3" runat="server" Width="160px" CssClass="form-control" BackColor="White"></asp:TextBox>
+                                    <asp:TextBox ID="TxtMnth3" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth3_TextChanged" AutoPostBack="True"></asp:TextBox>
+                                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth3" />
                                     <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth3" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
                                 </div>
                             </div>
@@ -107,7 +108,7 @@
                             <EditRowStyle BackColor="#7C6F57" />
                             <AlternatingRowStyle BackColor="#7ad0ed" />
                             <Columns>
-                                <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
+                                <%-- <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                     <HeaderTemplate>
                                         <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Reject" Text=""></asp:CheckBox>
                                     </HeaderTemplate>
@@ -117,7 +118,7 @@
                                     <AlternatingItemTemplate>
                                         <asp:CheckBox ID="CBReject" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
                                     </AlternatingItemTemplate>
-                                </asp:TemplateField>
+                                </asp:TemplateField>--%>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
@@ -144,9 +145,9 @@
                             </Columns>
                         </asp:GridView>
                     </div>
-                    <div class="row" style="margin-left: 2px;">
+                    <%--  <div class="row" style="margin-left: 2px;">
                         <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Visible="False" Enabled="False" />
-                    </div>
+                    </div>--%>
                 </asp:View>
             </asp:MultiView>
         </div>

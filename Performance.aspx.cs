@@ -25,7 +25,7 @@ namespace Finance_Tracker
         private readonly int crntYr = Today.Year;
         private readonly int crntMnth = Today.Month;
         private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
-        private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year,Today.Month));
+        private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
         private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
 
         private readonly DBOperations DBOprn = new DBOperations();
@@ -35,7 +35,7 @@ namespace Finance_Tracker
             get
             {
                 DataTable dt = (DataTable)Session["Performance_DdlReport1DS"];
-                if ( !(dt?.Rows.Count > 0) )
+                if (!(dt?.Rows.Count > 0))
                 {
                     dt = DBOprn.GetDataProc("SP_Get_Reports", DBOprn.ConnPrimary,
                         new OleDbParameter[]
@@ -43,14 +43,14 @@ namespace Finance_Tracker
                             new OleDbParameter("@Category_Id", DdlCatS.SelectedValue)
                         }
                     );
-                    if ( dt.Rows.Count == 0 )
+                    if (dt.Rows.Count == 0)
                         dt = null;
                 }
                 return dt;
             }
             set
             {
-                if ( !(value?.Rows.Count > 0) )
+                if (!(value?.Rows.Count > 0))
                     value = null;
                 Session["Performance_DdlReport1DS"] = value;
             }
@@ -61,7 +61,7 @@ namespace Finance_Tracker
             get
             {
                 DataTable dt = (DataTable)Session["Performance_GVAddDS"];
-                if ( !(dt?.Rows.Count > 0) )
+                if (!(dt?.Rows.Count > 0))
                 {
                     string fromDt = TxtMnthM.ToolTip.Split(',')[0];
                     string toDt = TxtMnthM.ToolTip.Split(',')[1];
@@ -77,7 +77,7 @@ namespace Finance_Tracker
                            ,new OleDbParameter("@Report_Type", DdlTypeM.SelectedValue)
                         }
                     );
-                    if ( dt.Rows.Count == 0 )
+                    if (dt.Rows.Count == 0)
                         dt = null;
                     Session["Performance_GVAddDS"] = dt;
                 }
@@ -85,7 +85,7 @@ namespace Finance_Tracker
             }
             set
             {
-                if ( !(value?.Rows.Count > 0) )
+                if (!(value?.Rows.Count > 0))
                     value = null;
                 Session["Performance_GVAddDS"] = value;
             }
@@ -95,14 +95,18 @@ namespace Finance_Tracker
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if ( !Page.IsPostBack )
+            if (!Page.IsPostBack)
             {
                 string usrId = Session["User_Id"]?.ToString();
-                if ( usrId == null || usrId == emp )
+                if (usrId == null || usrId == emp)
                 {
                     Response.Redirect("~/Account/Login.aspx");
                     return;
                 }
+                TxtMnthM.Attributes.Add("autocomplete", "off");
+                TxtMnth2.Attributes.Add("autocomplete", "off");
+                TxtMnth3.Attributes.Add("autocomplete", "off");
+
                 DdlCatType_DataBinding(DdlCatTypeS, new EventArgs());
                 DdlCat_DataBinding(DdlCatS, new EventArgs());
                 DdlReport_DataBinding(DdlReportS, new EventArgs());
@@ -131,12 +135,12 @@ namespace Finance_Tracker
 
             LblError.Text = emp;
             //User Clicked the menu item
-            if ( sender != null )
+            if (sender != null)
             {
                 BtnSubmit.Visible = false;
                 ResetTab1();
                 Menu1.Items[0].Text = "Add Tasks |";
-                switch ( Menu1.SelectedValue )
+                switch (Menu1.SelectedValue)
                 {
                     case "0":
                     {
@@ -192,13 +196,13 @@ namespace Finance_Tracker
         protected void BtnViewAssTask_Click(object sender, EventArgs e)
         {
             DivGVBtn.Visible = false;
-            if ( TxtMnthM.Text == emp )
+            if (TxtMnthM.Text == emp)
             {
                 PopUp("Please select a Month!");
                 TxtMnthM.Focus();
                 return;
             }
-            if ( !TryParseExact(TxtMnthM.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt) )
+            if (!TryParseExact(TxtMnthM.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
             {
                 PopUp("Please enter month in correct format like 'Jan-2024'!");
                 TxtMnthM.Focus();
@@ -208,13 +212,13 @@ namespace Finance_Tracker
             {
                 TxtMnthM.ToolTip = dt.ToString(SqlDateFormat) + "," + new DateTime(dt.Year, dt.Month, DaysInMonth(dt.Year, dt.Month)).ToString(SqlDateFormat);
             }
-            if ( DdlTypeM.SelectedIndex == 0 )
+            if (DdlTypeM.SelectedIndex == 0)
             {
                 PopUp("Please select Task type!");
                 DdlTypeM.Focus();
                 return;
             }
-            if ( DdlTypeM.SelectedIndex == 2 && DdlWeekM.SelectedIndex == 0 )
+            if (DdlTypeM.SelectedIndex == 2 && DdlWeekM.SelectedIndex == 0)
             {
                 PopUp("Please select a Week!");
                 DdlWeekM.Focus();
@@ -230,10 +234,10 @@ namespace Finance_Tracker
             GVAdd.SelectedIndex = -1;
             try
             {
-                if ( GVAdd.DataSource == null )
+                if (GVAdd.DataSource == null)
                 {
                     DataTable dt = GVAddDS;
-                    if ( dt != null )
+                    if (dt != null)
                     {
                         GVAdd.DataSource = dt;
                         DivGVBtn.Visible = true;
@@ -245,7 +249,7 @@ namespace Finance_Tracker
                     }
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -253,7 +257,7 @@ namespace Finance_Tracker
 
         protected void GVAdd_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if ( e.Row.RowType == DataControlRowType.DataRow )
+            if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 // Attach client-side onclick event to the row
                 //e.Row.Attributes["onclick"] = "SelectRow(this);";
@@ -263,17 +267,17 @@ namespace Finance_Tracker
 
         protected void GVAdd_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ( GVAdd.SelectedIndex == -1 ) return;
+            if (GVAdd.SelectedIndex == -1) return;
 
             DataTable dSrc = GVAddDS;
-            if ( dSrc == null || dSrc.Rows.Count == 0 ) return;
+            if (dSrc == null || dSrc.Rows.Count == 0) return;
 
             GridViewRow slctRo = GVAdd.Rows[GVAdd.SelectedIndex];
 
             int sno = ToInt32(slctRo.Cells[2].Text);
             DataRow dRo = dSrc.Select($"sno = {sno}")?[0];
 
-            if ( dRo == null ) return;
+            if (dRo == null) return;
 
             //string typ = dRo["Type_Orgnl"].ToString();
             //DdlTypeM.SelectedValue = typ;
@@ -282,7 +286,7 @@ namespace Finance_Tracker
             string dueDt = dRo["Due_Date"].ToString();
             DateTime dt;
             int mnthNo = crntMnth, year = crntYr;
-            if ( int.TryParse(dueDt, out int day) )
+            if (int.TryParse(dueDt, out int day))
             {
                 try
                 {
@@ -290,7 +294,7 @@ namespace Finance_Tracker
                     mnthNo = dt.Month;
                     year = dt.Year;
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 { }
                 //TxtDueDtM.Text = new DateTime(year, mnthNo, day).ToString(DateFormat);
                 DivWeekM.Visible = false;
@@ -304,19 +308,19 @@ namespace Finance_Tracker
 
         protected void CBSubmitH_CheckedChanged1(object sender, EventArgs e)
         {
-            foreach ( GridViewRow gvRow in GVAdd.Rows )
+            foreach (GridViewRow gvRow in GVAdd.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[1].Controls[1];
                 bool chked = ((CheckBox)sender).Checked;
-                if ( cb.Checked != chked )
+                if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
                     chKCountGVAdd += chked ? 1 : -1;
                 }
             }
-            if ( GVAdd.Rows.Count < chKCountGVAdd )
+            if (GVAdd.Rows.Count < chKCountGVAdd)
                 chKCountGVAdd = GVAdd.Rows.Count;
-            else if ( chKCountGVAdd < 0 )
+            else if (chKCountGVAdd < 0)
                 chKCountGVAdd = 0;
             BtnAddM.Enabled = chKCountGVAdd > 0;
         }
@@ -325,9 +329,9 @@ namespace Finance_Tracker
         {
             CheckBox cb = (CheckBox)sender;
             chKCountGVAdd += cb.Checked ? 1 : -1;
-            if ( GVAdd.Rows.Count < chKCountGVAdd )
+            if (GVAdd.Rows.Count < chKCountGVAdd)
                 chKCountGVAdd = GVAdd.Rows.Count;
-            else if ( chKCountGVAdd < 0 )
+            else if (chKCountGVAdd < 0)
                 chKCountGVAdd = 0;
             BtnAddM.Enabled = chKCountGVAdd > 0;
             GridViewRow row = GVAdd.HeaderRow;
@@ -337,28 +341,28 @@ namespace Finance_Tracker
 
         protected void BtnAddM_Click(object sender, EventArgs e)
         {
-            if ( DdlTypeM.SelectedIndex == 0 )
+            if (DdlTypeM.SelectedIndex == 0)
             {
                 PopUp("Please select a type!");
                 DdlTypeM.Focus();
                 return;
             }
-            if ( string.IsNullOrEmpty(TxtMnthM.Text) )
+            if (string.IsNullOrEmpty(TxtMnthM.Text))
             {
                 PopUp("Please select a month!");
                 TxtMnthM.Focus();
                 return;
             }
-            if ( DdlTypeM.SelectedValue == "W" && DdlWeekM.SelectedValue == "0" )
+            if (DdlTypeM.SelectedValue == "W" && DdlWeekM.SelectedValue == "0")
             {
                 PopUp("Please select a week!");
                 DdlWeekM.Focus();
                 return;
             }
             string jsonParam = ConstructJSON_M(out int chkCnt);
-            if ( chkCnt == 0 ) PopUp("Please check any row to add!");
+            if (chkCnt == 0) PopUp("Please check any row to add!");
 
-            if ( SubMission("SP_Add_Multiple_Tasks", jsonParam) )
+            if (SubMission("SP_Add_Multiple_Tasks", jsonParam))
             {
                 PopUp("Tasks added successfully!");
                 GVAddDS = null;
@@ -373,19 +377,19 @@ namespace Finance_Tracker
             chkCnt = 0;
             string jsonString = emp;
             DataTable dSrc = GVAddDS;
-            if ( dSrc == null || dSrc.Rows.Count == 0 ) return jsonString;
+            if (dSrc == null || dSrc.Rows.Count == 0) return jsonString;
 
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
-            foreach ( GridViewRow gvRow in GVAdd.Rows )
+            foreach (GridViewRow gvRow in GVAdd.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if ( !cb.Checked )
+                if (!cb.Checked)
                     continue;
                 chkCnt++;
                 int sno = ToInt32(gvRow.Cells[1].Text);
                 DataRow dRo = dSrc.Select($"sno = {sno}")?[0];
 
-                if ( dRo == null ) return jsonString;
+                if (dRo == null) return jsonString;
 
                 string fromDt = TxtMnthM.ToolTip.Split(',')[0];
                 string toDt = TxtMnthM.ToolTip.Split(',')[1];
@@ -396,7 +400,7 @@ namespace Finance_Tracker
                 Label LblRoErr = (Label)gvRow.Cells[7].FindControl("LblRoErr");
 
                 dynamic fuAdd = (FileUpload)gvRow.Cells[6].FindControl("FUAdd");
-                if ( !fuAdd.HasFile )
+                if (!fuAdd.HasFile)
                 {
                     LblRoErr.Text = "Please upload a File!";
                     LblRoErr.CssClass = "control-label text-danger ";
@@ -406,7 +410,7 @@ namespace Finance_Tracker
                 else
                     LblRoErr.Text = emp;
 
-                if ( !FileOprn(fuAdd.PostedFile, TxtMnthM.Text, weekNo, DdlTypeM.SelectedValue, reportName, out string fullPath, out string msg) )
+                if (!FileOprn(fuAdd.PostedFile, TxtMnthM.Text, weekNo, DdlTypeM.SelectedValue, reportName, out string fullPath, out string msg))
                 {
                     LblRoErr.Text = msg;
                     LblRoErr.CssClass = "control-label text-danger ";
@@ -446,7 +450,7 @@ namespace Finance_Tracker
 
             //enable cat type for admin user only
             string roleId = Session["Role_Id"]?.ToString();
-            if ( !string.IsNullOrWhiteSpace(roleId) && roleId == "1" )
+            if (!string.IsNullOrWhiteSpace(roleId) && roleId == "1")
             {
                 DdlCatTypeS.SelectedIndex = 0;
                 DdlCatType_SelectedIndexChanged(DdlCatTypeS, new EventArgs());
@@ -462,8 +466,8 @@ namespace Finance_Tracker
             TxtMnthS.Text = Now.ToString(MonthFormat);
             TxtMnthS.Enabled = true;
 
-            CalendarExtender1.StartDate = Now.AddDays(Now.Day + 1).AddMonths(-1);
-            CalendarExtender1.EndDate = new DateTime(crntYr, crntMnth, DaysInMonth(crntYr, crntMnth));
+            CalendarExtender1.StartDate = lstMnth;
+            CalendarExtender1.EndDate = crntMnthLastDay;
 
             DdlWeekS.SelectedIndex = 0;
             DdlWeekS.Enabled = true;
@@ -491,9 +495,13 @@ namespace Finance_Tracker
             var startDate = new DateTime(crntYr, crntMnth, 1);
             var endDate = startDate.AddMonths(1).AddDays(-1);
 
-            TxtSD.Text = startDate.ToString(DateFormat);
-            TxtED.Text = endDate.ToString(DateFormat);
+            //TxtSD.Text = startDate.ToString(DateFormat);
+            //TxtED.Text = endDate.ToString(DateFormat);
+            TxtMnth2.Text = TextBoxWatermarkExtender2.WatermarkText;
             DdlType2.SelectedIndex = 0;
+            CalendarExtender2.StartDate = lstMnth;
+            CalendarExtender2.EndDate = crntMnthLastDay;
+
         }
 
         private void ResetTab3()
@@ -505,8 +513,11 @@ namespace Finance_Tracker
             GVReports3.DataSource = null;
             GVReports3.Visible = false;
 
-            TxtMnth3.Text = Now.ToString(MonthFormat);
+            TxtMnth3.Text = TextBoxWatermarkExtender3.WatermarkText;
             DdlType3.SelectedIndex = 0;
+            //CalendarExtender4.StartDate = lstMnth;
+            //CalendarExtender4.EndDate = crntMnthLastDay;
+
         }
 
         private void SetCatType(DropDownList ddl, DropDownList childDdl)
@@ -514,7 +525,7 @@ namespace Finance_Tracker
             try
             {
                 string roleId = Session["Role_Id"]?.ToString();
-                if ( !string.IsNullOrWhiteSpace(roleId) && roleId != "1" )
+                if (!string.IsNullOrWhiteSpace(roleId) && roleId != "1")
                 {
                     string catType = roleId == "2" ? "Corporate" : roleId == "3" ? "Plant" : emp;
                     catType = ddl.Items.FindByText(catType)?.Value;
@@ -524,7 +535,7 @@ namespace Finance_Tracker
                     childDdl.DataBind();
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -533,15 +544,15 @@ namespace Finance_Tracker
         protected void DdlCatType_DataBinding(object sender, EventArgs e)
         {
             DropDownList ddl = (DropDownList)sender, childDdl = null;
-            if ( ddl.Equals(DdlCatTypeS) )
+            if (ddl.Equals(DdlCatTypeS))
             {
                 childDdl = DdlCatS;
             }
-            else if ( ddl.Equals(DdlCatType2) )
+            else if (ddl.Equals(DdlCatType2))
             {
                 childDdl = DdlCat2;
             }
-            else if ( ddl.Equals(DdlCatType3) )
+            else if (ddl.Equals(DdlCatType3))
             {
                 childDdl = DdlCat3;
             }
@@ -552,15 +563,15 @@ namespace Finance_Tracker
         protected void DdlCat_DataBinding(object sender, EventArgs e)
         {
             DropDownList ddl = (DropDownList)sender, prntddl = null;
-            if ( ddl.Equals(DdlCatS) )
+            if (ddl.Equals(DdlCatS))
             {
                 prntddl = DdlCatTypeS;
             }
-            else if ( ddl.Equals(DdlCat2) )
+            else if (ddl.Equals(DdlCat2))
             {
                 prntddl = DdlCatType2;
             }
-            else if ( ddl.Equals(DdlCat3) )
+            else if (ddl.Equals(DdlCat3))
             {
                 prntddl = DdlCatType3;
             }
@@ -576,15 +587,15 @@ namespace Finance_Tracker
         {
             DropDownList ddl = (DropDownList)sender, prntddl = null;
 
-            if ( ddl.Equals(DdlReportS) )
+            if (ddl.Equals(DdlReportS))
             {
                 prntddl = DdlCatS;
             }
-            else if ( ddl.Equals(DdlReport2) )
+            else if (ddl.Equals(DdlReport2))
             {
                 prntddl = DdlCat2;
             }
-            else if ( ddl.Equals(DdlReport3) )
+            else if (ddl.Equals(DdlReport3))
             {
                 prntddl = DdlCat3;
             }
@@ -603,17 +614,17 @@ namespace Finance_Tracker
             DropDownList grndchild = null;
             DropDownList ddl = (DropDownList)sender;
             ddl.ToolTip = ddl.SelectedItem.Text;
-            if ( sender.Equals(DdlCatTypeS) )
+            if (sender.Equals(DdlCatTypeS))
             {
                 child = DdlCatS;
                 grndchild = DdlReportS;
             }
-            else if ( sender.Equals(DdlCatType2) )
+            else if (sender.Equals(DdlCatType2))
             {
                 child = DdlCat2;
                 grndchild = DdlReport2;
             }
-            else if ( sender.Equals(DdlCatType3) )
+            else if (sender.Equals(DdlCatType3))
             {
                 child = DdlCat3;
                 grndchild = DdlReport3;
@@ -628,11 +639,11 @@ namespace Finance_Tracker
             DropDownList child = null;
             ddl.ToolTip = ddl.SelectedItem.Text;
 
-            if ( sender.Equals(DdlCatS) )
+            if (sender.Equals(DdlCatS))
                 child = DdlReportS;
-            else if ( sender.Equals(DdlCat2) )
+            else if (sender.Equals(DdlCat2))
                 child = DdlReport2;
-            else if ( sender.Equals(DdlCat3) )
+            else if (sender.Equals(DdlCat3))
                 child = DdlReport3;
 
             child.DataBind();
@@ -643,7 +654,7 @@ namespace Finance_Tracker
             DropDownList ddl = (DropDownList)sender;
             ddl.ToolTip = ddl.SelectedItem.Text;
 
-            if ( ddl.Equals(DdlReportS) )
+            if (ddl.Equals(DdlReportS))
             {
                 DataRow row = DdlReport1DS.Select($"Report_Id = {DdlReportS.SelectedValue}")[0];
                 string type = row[2].ToString().Trim();
@@ -656,7 +667,7 @@ namespace Finance_Tracker
                 string DueDate = row[3].ToString().Trim();
                 TryParse(TxtMnthS.Text, out DateTime dt);
 
-                if ( dt != null && int.TryParse(DueDate, out int day) )
+                if (dt != null && int.TryParse(DueDate, out int day))
                     DueDate = new DateTime(dt.Year, dt.Month, day).ToString(DateFormat);
                 else
                     DueDate = "Every " + char.ToUpper(DueDate[0]) + DueDate.Substring(1).ToLower();
@@ -672,22 +683,22 @@ namespace Finance_Tracker
             ddl.SelectedIndex = 0;
             ddl.ToolTip = "Select";
 
-            if ( prntDdl != null && prntDdl.SelectedIndex == 0 )
+            if (prntDdl != null && prntDdl.SelectedIndex == 0)
                 return;
 
             try
             {
                 DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
-                if ( dt != null && dt.Rows.Count > 0 )
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    for ( int i = 0; i < dt.Rows.Count; i++ )
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
                     }
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -706,42 +717,49 @@ namespace Finance_Tracker
                 DropDownList ddlWeek = addMultpl ? DdlWeekM : DdlWeekS;
                 DropDownList ddlType = addMultpl ? DdlTypeM : DdlTypeS;
                 TextBox txtDueDt = TxtDueDtS;
-                DateTime dt = ParseExact(TB.Text, MonthFormat, CultureInfo.InvariantCulture);
+
+                bool convert = TryParseExact(TB.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt);
+                if (!convert)
+                {
+                    PopUp("Please enter month in correct format like 'Jan-2024'");
+                    TB.Text = TextBoxWatermarkExtender1.WatermarkText;
+                    return;
+                }
 
                 int yr = dt.Year, mnth = dt.Month;
                 DateTime strtDt = new DateTime(yr, mnth, 01);
                 string fromDt = strtDt.ToString(SqlDateFormat);
-                string toDt = strtDt.AddDays(DaysInMonth(yr, mnth)).ToString(SqlDateFormat);
+                string toDt = strtDt.AddDays(DaysInMonth(yr, mnth) - 1).ToString(SqlDateFormat);
                 TB.ToolTip = fromDt + "," + toDt;
 
                 ddlWeek.SelectedIndex = 0;
                 ddlWeek.Items[5].Enabled = true;
 
-                if ( dt.Month == 2 ) //feb selected
+                if (dt.Month == 2) //feb selected
                 {
-                    if ( !IsLeapYear(dt.Year) )  //if year is not a leap year, feb contains 28 days i.e. 4 weeks only
+                    if (!IsLeapYear(dt.Year))  //if year is not a leap year, feb contains 28 days i.e. 4 weeks only
                         ddlWeek.Items[5].Enabled = false; //disable week no. 5
                 }
-                if ( addMultpl )
+                if (addMultpl)
                 {
                     GVAdd.SelectedIndex = -1;
                     DivGVBtn.Visible = false;
-                    if ( dt < lstMnth)
+                    if (dt < lstMnth)
                     {
                         TxtMnthM.Text = lstMnth.ToString(MonthFormat);
                     }
-                    else if ( dt > crntMnthLastDay)
+                    else if (dt > crntMnthLastDay)
                     {
                         TxtMnthM.Text = crntMnthLastDay.ToString(MonthFormat);
                     }
                 }
-                else if ( ddlType.SelectedIndex == 1 )
+                else if (ddlType.SelectedIndex == 1)
                 {
                     string dueDt = new DateTime(dt.Year, dt.Month, Parse(txtDueDt.Text).Day).ToString("dd-MMM-yyyy");
                     txtDueDt.Text = dueDt;
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -750,26 +768,26 @@ namespace Finance_Tracker
         protected void BtnAdd_Click(object sender, EventArgs e)
         {
             LblError.Text = emp;
-            if ( BtnAdd.Text == "OK" )
+            if (BtnAdd.Text == "OK")
             {
                 BtnCncl_Click(null, null);
                 return;
             }
-            if ( ValidateReportDtls() )
+            if (ValidateReportDtls())
             {
                 try
                 {
                     string Report_Id = DdlReportS.SelectedValue;
                     string weekNo = DdlWeekM.SelectedValue;
-                    if ( !FileOprn(FUReport.PostedFile, TxtMnthS.Text, weekNo, DdlTypeS.SelectedValue, DdlReportS.SelectedItem.Text, out string fullPath, out string msg) )
+                    if (!FileOprn(FUReport.PostedFile, TxtMnthS.Text, weekNo, DdlTypeS.SelectedValue, DdlReportS.SelectedItem.Text, out string fullPath, out string msg))
                     {
                         PopUp(msg);
                         return;
                     }
 
-                    if ( Menu1.Items[0].Text == "Edit Task |" )
+                    if (Menu1.Items[0].Text == "Edit Task |")
                     {
-                        if ( !UpdateTask("SP_Update_Task", fullPath, LblTaskID.Text) ) return;
+                        if (!UpdateTask("SP_Update_Task", fullPath, LblTaskID.Text)) return;
                         Menu1.Items[1].Selected = true;
                         Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
                         GVReports2.DataBind();
@@ -777,9 +795,9 @@ namespace Finance_Tracker
                         LblError.Text = "Task updated successfully!";
                         //delete old file
                     }
-                    else if ( Menu1.Items[0].Text == "Add Task |" )
+                    else if (Menu1.Items[0].Text == "Add Task |")
                     {
-                        if ( !AddTaskToDB("SP_Add_Task", fullPath, Report_Id) ) return;
+                        if (!AddTaskToDB("SP_Add_Task", fullPath, Report_Id)) return;
                         PopUp("Task added successfully!");
                         LblError.Text = "Task added successfully!";
                     }
@@ -787,7 +805,7 @@ namespace Finance_Tracker
                     ResetTab1();
                     Menu1.Items[0].Text = "Add Tasks |";
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
                     PopUp(ex.Message);
                     LblError.Text = ex.Message;
@@ -808,13 +826,13 @@ namespace Finance_Tracker
                 HashSet<string> allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                     { ".xls", ".xlsx", ".xlsm", ".xlsb", ".doc", ".docx", ".ppt", ".pptx", ".pdf", ".zip" };
 
-                if ( !allowedExtensions.Contains(ext) )
+                if (!allowedExtensions.Contains(ext))
                 {
                     msg = "Please upload .xls, .xlsx, .xlsm, .xlsb, .doc, .docx, .ppt, .pptx, .pdf, .zip files only";
                     return false;
                 }
 
-                if ( file.ContentLength == 0 )
+                if (file.ContentLength == 0)
                 {
                     msg = "Please do not enter empty file!";
                     return false;
@@ -825,7 +843,7 @@ namespace Finance_Tracker
 
                 string saveFolder = appFoldr + $@"Upload\{year}\{month}";
 
-                if ( !Directory.Exists(saveFolder) )
+                if (!Directory.Exists(saveFolder))
                     Directory.CreateDirectory(saveFolder);
 
                 //string dueDt = DdlTypeS.SelectedValue == "M" ? TxtDueDtS.Text : "Week_" + DdlWeekS.SelectedValue + "_" + TxtMnthS.Text;
@@ -836,7 +854,7 @@ namespace Finance_Tracker
                 fullPath = $@"{saveFolder}\{Session["User_Name"]}_{rprtName}{dueDt}_{today.ToString(DateFormat)}{Path.GetExtension(file.FileName)}";
 
 
-                if ( string.IsNullOrWhiteSpace(fullPath) )
+                if (string.IsNullOrWhiteSpace(fullPath))
                 {
                     msg = "Error occurred at FileOprn(HttpPostedFile file, string fileName, string fileType, string weekNo, out string fullPath, out string msg)";
                     return false;
@@ -844,7 +862,7 @@ namespace Finance_Tracker
                 file.SaveAs(fullPath);
                 return true;
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
                 return false;
@@ -853,37 +871,37 @@ namespace Finance_Tracker
 
         private bool ValidateReportDtls()
         {
-            if ( DdlCatTypeS.SelectedIndex == 0 )
+            if (DdlCatTypeS.SelectedIndex == 0)
             {
                 PopUp("Please select a Category Type!");
                 DdlCatTypeS.Focus();
                 return false;
             }
-            if ( DdlCatS.SelectedIndex == 0 )
+            if (DdlCatS.SelectedIndex == 0)
             {
                 PopUp("Please select a Category!");
                 DdlCatS.Focus();
                 return false;
             }
-            if ( DdlReportS.SelectedIndex == 0 )
+            if (DdlReportS.SelectedIndex == 0)
             {
                 PopUp("Please select a Report Name!");
                 DdlReportS.Focus();
                 return false;
             }
-            if ( string.IsNullOrEmpty(TxtMnthS.Text) )
+            if (string.IsNullOrEmpty(TxtMnthS.Text))
             {
                 PopUp("Please select a month!");
                 TxtMnthS.Focus();
                 return false;
             }
-            if ( DdlTypeS.SelectedValue == "W" && DdlWeekS.SelectedValue == "0" )
+            if (DdlTypeS.SelectedValue == "W" && DdlWeekS.SelectedValue == "0")
             {
                 PopUp("Please select a week!");
                 DdlTypeS.Focus();
                 return false;
             }
-            if ( !FUReport.HasFile )
+            if (!FUReport.HasFile)
             {
                 PopUp("Please upload a File!");
                 FUReport.Focus();
@@ -909,7 +927,7 @@ namespace Finance_Tracker
 
             var output = DBOprn.ExecScalarProc(proc, DBOprn.ConnPrimary, paramCln);
 
-            if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
+            if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
             {
                 PopUp(output.ToString());
                 LblError.Text = output.ToString();
@@ -935,7 +953,7 @@ namespace Finance_Tracker
             };
             var output = DBOprn.ExecScalarProc(proc, DBOprn.ConnPrimary, paramCln);
 
-            if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
+            if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
             {
                 PopUp(output.ToString());
                 LblError.Text = output.ToString();
@@ -949,36 +967,51 @@ namespace Finance_Tracker
 
         protected void BtnView_Click(object sender, EventArgs e)
         {
-            if ( sender.Equals(BtnView2) )
+
+            if (sender.Equals(BtnView2))
+            {
+                if (string.IsNullOrEmpty(TxtMnth2.Text) || !DateTime.TryParse(TxtMnth2.Text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
+                {
+                    PopUp("Please select a month!");
+                    return;
+                }
                 GVReports2.DataBind();
-            else if ( sender.Equals(BtnView3) )
+            }
+            else if (sender.Equals(BtnView3))
+            {
+                if (string.IsNullOrEmpty(TxtMnth3.Text) || !TryParse(TxtMnth3.Text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
+                {
+                    PopUp("Please select a month!");
+                    return;
+                }
                 GVReports3.DataBind();
+            }
         }
 
         #region View Sbmt Task
 
         protected void TxtSD_TextChanged(object sender, EventArgs e)
         {
-            try
-            {
-                DateTime sDate = Parse(TxtSD.Text);
-                CalendarExtender3.StartDate = sDate;
+            //try
+            //{
+            //    DateTime sDate = Parse(TxtSD.Text);
+            //    CalendarExtender3.StartDate = sDate;
 
-                if ( sDate > Parse(TxtED.Text) )
-                    TxtED.Text = sDate.ToString(DateFormat);
-            }
-            catch ( Exception ex )
-            {
-                PopUp(ex.Message);
-            }
+            //    if (sDate > Parse(TxtED.Text))
+            //        TxtED.Text = sDate.ToString(DateFormat);
+            //}
+            //catch (Exception ex)
+            //{
+            //    PopUp(ex.Message);
+            //}
         }
 
         protected void GVReports2_DataBinding(object sender, EventArgs e)
         {
             try
             {
-                string strtDate = Parse(TxtSD.Text).ToString(SqlDateFormat);
-                string endDate = Parse(TxtED.Text).ToString(SqlDateFormat);
+                string strtDate = TxtMnth2.ToolTip.Split(',')[0];
+                string endDate = TxtMnth2.ToolTip.Split(',')[1];
                 string User_Id = Session["User_Id"]?.ToString();
                 string Role_Id = Session["Role_Id"]?.ToString();
 
@@ -996,7 +1029,7 @@ namespace Finance_Tracker
                 SetGV(paramCln, GVReports2);
                 BtnSubmit.Visible = GVReports2.Visible;
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -1004,19 +1037,19 @@ namespace Finance_Tracker
 
         protected void CBSubmitH_CheckedChanged(object sender, EventArgs e)
         {
-            foreach ( GridViewRow gvRow in GVReports2.Rows )
+            foreach (GridViewRow gvRow in GVReports2.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 bool chked = ((CheckBox)sender).Checked;
-                if ( cb.Checked != chked )
+                if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
                     chKCount += chked ? 1 : -1;
                 }
             }
-            if ( GVReports2.Rows.Count < chKCount )
+            if (GVReports2.Rows.Count < chKCount)
                 chKCount = GVReports2.Rows.Count;
-            else if ( chKCount < 0 )
+            else if (chKCount < 0)
                 chKCount = 0;
             BtnSubmit.Enabled = chKCount > 0;
         }
@@ -1025,9 +1058,9 @@ namespace Finance_Tracker
         {
             CheckBox cb = (CheckBox)sender;
             chKCount += cb.Checked ? 1 : -1;
-            if ( GVReports2.Rows.Count < chKCount )
+            if (GVReports2.Rows.Count < chKCount)
                 chKCount = GVReports2.Rows.Count;
-            else if ( chKCount < 0 )
+            else if (chKCount < 0)
                 chKCount = 0;
             BtnSubmit.Enabled = chKCount > 0;
             GridViewRow row = GVReports2.HeaderRow;
@@ -1038,7 +1071,7 @@ namespace Finance_Tracker
         protected void BtnSubmit_Click(object sender, EventArgs e)
         {
             string jsonParam = ConstructJSON();
-            if ( SubMission("SP_Submit_Tasks", jsonParam) )
+            if (SubMission("SP_Submit_Tasks", jsonParam))
             {
                 PopUp("Tasks submitted successfully!");
                 GVReports2.DataBind();
@@ -1050,7 +1083,7 @@ namespace Finance_Tracker
         {
             try
             {
-                if ( string.IsNullOrWhiteSpace(jsonParam) )
+                if (string.IsNullOrWhiteSpace(jsonParam))
                     return false;
 
                 var output = DBOprn.ExecScalarProc(proc, DBOprn.ConnPrimary,
@@ -1059,14 +1092,14 @@ namespace Finance_Tracker
                         new OleDbParameter("@Collection", jsonParam)
                     }
                 );
-                if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
+                if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
                     PopUp(output.ToString());
                     return false;
                 }
                 return true;
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
                 return false;
@@ -1077,10 +1110,10 @@ namespace Finance_Tracker
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
-            foreach ( GridViewRow gvRow in GVReports2.Rows )
+            foreach (GridViewRow gvRow in GVReports2.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if ( cb.Checked )
+                if (cb.Checked)
                 {
                     string id = ((Label)gvRow.Cells[11].Controls[1]).Text;
                     string submitDt = Now.ToString(SqlDateFormat);
@@ -1119,15 +1152,15 @@ namespace Finance_Tracker
 
         protected void BtnEdit_Command(object sender, CommandEventArgs e)
         {
-            if ( e.CommandName == "EditRow" )
+            if (e.CommandName == "EditRow")
             {
                 int rowIndex = ToInt32(e.CommandArgument);
                 GridViewRow row = GVReports2.Rows[rowIndex];
 
                 string roleId = Session["Role_Id"]?.ToString();
-                if ( !string.IsNullOrWhiteSpace(roleId) && roleId == "1" )
+                if (!string.IsNullOrWhiteSpace(roleId) && roleId == "1")
                 {
-                    DdlCatTypeS.SelectedValue = DdlCatTypeS.Items.FindByText(row.Cells[2].Text)?.Value;
+                    DdlCatTypeS.SelectedValue = DdlCatTypeS.Items.FindByText(((Label)row.Cells[2].Controls[1]).Text)?.Value;
                     DdlCatTypeS.ToolTip = DdlCatTypeS.SelectedItem.Text;
                 }
                 DdlCatS.Items.Add(new ListItem(row.Cells[3].Text, row.Cells[3].Text));
@@ -1147,7 +1180,7 @@ namespace Finance_Tracker
                 DateTime toDate = Parse(((Label)row.Cells[13].Controls[1]).Text);
                 TxtMnthS.Text = toDate.ToString(MonthFormat);
 
-                if ( row.Cells[7].Text.ToUpper() == "WEEKLY" )
+                if (row.Cells[7].Text.ToUpper() == "WEEKLY")
                 {
                     DdlWeekS.SelectedValue = ((Label)row.Cells[14].Controls[1]).Text;
                     DivWeek1.Visible = true;
@@ -1168,7 +1201,7 @@ namespace Finance_Tracker
                 TxtMnthS.Enabled = false;
 
                 LinkButton btn = (LinkButton)sender;
-                if ( btn.Text == "View" )
+                if (btn.Text == "View")
                 {
                     BtnCncl.Visible = false;
                     Menu1.Items[0].Text = "View Added Task |";
@@ -1176,7 +1209,7 @@ namespace Finance_Tracker
                     //FUReport.Visible = false;
                     BtnAdd.Text = "OK";
                 }
-                else if ( btn.Text == "Edit" )
+                else if (btn.Text == "Edit")
                 {
                     BtnCncl.Visible = true;
                     Menu1.Items[0].Text = "Edit Task |";
@@ -1197,12 +1230,26 @@ namespace Finance_Tracker
             Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
         }
 
-
         protected void LnkReport_Click(object sender, EventArgs e)
         {
+            string fullPath = emp;
             try
             {
-                string fullPath = LnkReport.Text;
+                LinkButton lnkBtn = (LinkButton)sender;
+                switch (lnkBtn.ID)
+                {
+                    case "LnkReportSbmt":
+                    {
+                        GridViewRow row = (GridViewRow)lnkBtn.NamingContainer;
+                        fullPath = ((HiddenField)row.Cells[9].Controls[1]).Value.ToString();
+                        break;
+                    }
+                    case "LnkReport":
+                    {
+                        fullPath = lnkBtn.Text;
+                        break;
+                    }
+                }
                 string fileName = Path.GetFileName(fullPath);
 
                 Response.Clear();
@@ -1216,7 +1263,7 @@ namespace Finance_Tracker
                 Response.TransmitFile(fullPath);
                 Response.End();
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -1237,7 +1284,7 @@ namespace Finance_Tracker
                     mnthNo = dt.Month;
                     year = dt.Year;
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 { }
 
                 OleDbParameter[] paramCln = new OleDbParameter[]
@@ -1260,7 +1307,7 @@ namespace Finance_Tracker
                 };
                 SetGV(paramCln, GVReports3);
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }
@@ -1269,7 +1316,7 @@ namespace Finance_Tracker
         private void SetGV(OleDbParameter[] paramCln, GridView gv)
         {
             DataTable dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
-            if ( dt != null && dt.Rows.Count > 0 )
+            if (dt != null && dt.Rows.Count > 0)
             {
                 gv.DataSource = dt;
                 gv.Visible = true;
@@ -1300,7 +1347,7 @@ namespace Finance_Tracker
                 year = dt.Year;
                 return true;
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             { return false; }
         }
         //GVAdd.Rows.Cast<GridViewRow>().ToList().ForEach(row => ((FileUpload) row.Cells[6].FindControl("FUAdd")).Enabled = false);

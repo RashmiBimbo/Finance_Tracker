@@ -72,7 +72,6 @@ namespace Finance_Tracker
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
         }
 
-
         private void PopUp(string msg)
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);

@@ -24,7 +24,8 @@ namespace Finance_Tracker
         private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
 
         private readonly DBOperations DBOprn = new DBOperations();
-        private static int chKCount = 0;
+        private static int chKCountA = 0;
+        private static int chKCountR = 0;
 
         private DataTable GVReportsDS
         {
@@ -72,7 +73,7 @@ namespace Finance_Tracker
 
         private DataTable GetData(bool IsApproved)
         {
-            DataTable dt = null;            
+            DataTable dt = null;
             try
             {
                 //string fromDt = new DateTime(year, mnthNo, 01).ToString(SqlDateFormat);
@@ -124,8 +125,10 @@ namespace Finance_Tracker
                     return;
                 }
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
+                TxtMnth.Attributes.Add("autocomplete", "off");
 
-                chKCount = 0;
+                chKCountA = 0;
+                chKCountR = 0;
             }
         }
 
@@ -142,7 +145,7 @@ namespace Finance_Tracker
             MultiView1.ActiveViewIndex = eval;
             MultiView1.Views[eval].Focus();
 
-            TxtMnth.Text = Now.ToString(MonthFormat);
+            //TxtMnth.Text = Now.ToString(MonthFormat);
             DdlUsr_DataBinding(DdlUsr, new EventArgs());
             DdlType.SelectedIndex = 0;
 
@@ -220,7 +223,7 @@ namespace Finance_Tracker
             if (!TryParseExact(TxtMnth.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
             {
                 PopUp("Please enter month in correct format like 'Jan-2024'!");
-                TxtMnth.Text = crntMnthDay1.ToString(MonthFormat);
+                TxtMnth.Text = TextBoxWatermarkExtender3.WatermarkText;
                 TxtMnth.ToolTip = crntMnthDay1.ToString(SqlDateFormat) + "," + crntMnthLastDay.ToString(SqlDateFormat);
                 TxtMnth.Focus();
                 return;
@@ -274,29 +277,29 @@ namespace Finance_Tracker
                 if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
-                    chKCount += chked ? 1 : -1;
+                    chKCountA += chked ? 1 : -1;
                 }
             }
-            if (GVReports.Rows.Count < chKCount)
-                chKCount = GVReports.Rows.Count;
-            else if (chKCount < 0)
-                chKCount = 0;
+            if (GVReports.Rows.Count < chKCountA)
+                chKCountA = GVReports.Rows.Count;
+            else if (chKCountA < 0)
+                chKCountA = 0;
 
-            BtnApprove.Enabled = chKCount > 0;
+            BtnApprove.Enabled = chKCountA > 0;
         }
 
         protected void CBApprov_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cb = (CheckBox)sender;
-            chKCount += cb.Checked ? 1 : -1;
-            if (GVReports.Rows.Count < chKCount)
-                chKCount = GVReports.Rows.Count;
-            else if (chKCount < 0)
-                chKCount = 0;
-            BtnApprove.Enabled = chKCount > 0;
+            chKCountA += cb.Checked ? 1 : -1;
+            if (GVReports.Rows.Count < chKCountA)
+                chKCountA = GVReports.Rows.Count;
+            else if (chKCountA < 0)
+                chKCountA = 0;
+            BtnApprove.Enabled = chKCountA > 0;
             GridViewRow row = GVReports.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
-            cbH.Checked = (GVReports.Rows.Count == chKCount);
+            cbH.Checked = (GVReports.Rows.Count == chKCountA);
         }
 
         protected void BtnApprove_Click(object sender, EventArgs e)
@@ -321,7 +324,10 @@ namespace Finance_Tracker
                     }
                     PopUp("Tasks approved successfully!");
 
-                    ResetGVReports();
+
+                    GVReports.DataSource = null;
+                    GVReportsDS = null;
+                    GVReports.DataBind();
                 }
             }
             catch (Exception ex)
@@ -361,7 +367,7 @@ namespace Finance_Tracker
                         };
                     dtls.Add(paramVals);
                     cb.Checked = false;
-                    chKCount--;
+                    chKCountA--;
                 }
                 continue;
             }
@@ -382,7 +388,7 @@ namespace Finance_Tracker
             catch (Exception ex)
             {
                 PopUp("Please enter the month in correct format!");
-                TxtMnth.Text = crntMnthDay1.ToString(MonthFormat);
+                TxtMnth.Text = TextBoxWatermarkExtender3.WatermarkText;
                 TxtMnth.ToolTip = crntMnthDay1.ToString(SqlDateFormat) + "," + crntMnthLastDay.ToString(SqlDateFormat);
             }
         }
@@ -429,20 +435,108 @@ namespace Finance_Tracker
             }
         }
 
-        [System.Web.Services.WebMethod]
-        public static void HandleSubmit()
+        protected void CBRejectH_CheckedChanged(object sender, EventArgs e)
         {
-            // Handle the submit logic
+            foreach (GridViewRow gvRow in GVApproved.Rows)
+            {
+                CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                bool chked = ((CheckBox)sender).Checked;
+                if (cb.Checked != chked)
+                {
+                    cb.Checked = chked;
+                    chKCountR += chked ? 1 : -1;
+                }
+            }
+            if (GVApproved.Rows.Count < chKCountR)
+                chKCountR = GVApproved.Rows.Count;
+            else if (chKCountR < 0)
+                chKCountR = 0;
+            BtnReject.Enabled = chKCountR > 0;
         }
 
-        protected void btnSubmit_ServerClick(object sender, EventArgs e)
+        protected void CBReject_CheckedChanged(object sender, EventArgs e)
         {
-            PopUp("Called btnSubmit_ServerClick");
+            CheckBox cb = (CheckBox)sender;
+            chKCountR += cb.Checked ? 1 : -1;
+            if (GVApproved.Rows.Count < chKCountR)
+                chKCountR = GVApproved.Rows.Count;
+            else if (chKCountA < 0)
+                chKCountR = 0;
+            BtnReject.Enabled = chKCountR > 0;
+            GridViewRow row = GVApproved.HeaderRow;
+            CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
+            cbH.Checked = (GVApproved.Rows.Count == chKCountR);
         }
 
-        protected void Unnamed_ServerChange(object sender, EventArgs e)
+        protected void BtnReject_Click(object sender, EventArgs e)
         {
-            PopUp("Called Unnamed_ServerChange");
+            try
+            {
+                string jsonParam = ConstructJSONReject();
+
+                if (!string.IsNullOrWhiteSpace(jsonParam))
+                {
+                    var output = DBOprn.ExecScalarProc("SP_Reject_Tasks", DBOprn.ConnPrimary,
+                        new OleDbParameter[]
+                        {
+                            new OleDbParameter("@Collection", jsonParam)
+                        }
+                    );
+
+                    if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
+                    {
+                        PopUp(output.ToString());
+                        return;
+                    }
+                    PopUp("Tasks rejected successfully!");
+                    GVApprovedDS = null;
+                    GVApproved.DataSource = null;
+                    GVApproved.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
+            }
+        }
+
+        private string ConstructJSONReject()
+        {
+            List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+
+            foreach (GridViewRow gvRow in GVApproved.Rows)
+            {
+                CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                if (cb.Checked)
+                {
+                    string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
+                        {
+                            {
+                                "REC_ID",
+                                id
+                            },
+                            {
+                                "MODIFIED_BY",
+                                Session["User_Name"].ToString()
+                            },
+                            {
+                                "MODIFIED_DATE",
+                                Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                            }
+                        };
+                    dtls.Add(paramVals);
+                    cb.Checked = false;
+                    chKCountR--;
+                }
+                continue;
+            }
+            string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
+            return jsonString;
+        }
+
+        protected void TxtMnth_TextChanged1(object sender, EventArgs e)
+        {
 
         }
     }

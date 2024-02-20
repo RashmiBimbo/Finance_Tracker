@@ -62,7 +62,7 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a runat="server" href="~/Account/Register">Register</a></li>
                                 <li>
-                                    <asp:LinkButton Text="Log Out" runat="server" id="BtnLogOut" ForeColor="White" OnClick="BtnLogOut_Click"/>
+                                    <asp:LinkButton Text="Log Out" runat="server" id="BtnLogOut" ForeColor="White" OnClick="BtnLogOut_Click" OnClientClick="BtnLogOut_OnClientClick();"/>
                                 </li>
                             </ul>
                         </AnonymousTemplate>
@@ -87,5 +87,11 @@
             </footer>--%>
         </div>
     </form>
+    <script>
+        function BtnLogOut_OnClientClick  () {
+            console.log("BtnLogOut_OnClientClick() called");
+        }
+    </script>
 </body>
+    
 </html>
