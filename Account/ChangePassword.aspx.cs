@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Web.UI;
 using System.Data.OleDb;
+using System.Web.UI;
 
 namespace Finance_Tracker.Account
 {
-    public partial class ResetPassword : Page
+    public partial class ChangePassword : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -52,19 +52,19 @@ namespace Finance_Tracker.Account
         {
             if (string.IsNullOrWhiteSpace(TxtOldPswd.Text))
             {
-                PopUp("Old password is required");
+                PopUp("Old password is required.");
                 TxtOldPswd.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtNewPswd.Text))
             {
-                PopUp("New password is required");
+                PopUp("New password is required.");
                 TxtNewPswd.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtConfirmPswd.Text))
             {
-                PopUp("Confirm password is required");
+                PopUp("Confirm password is required.");
                 TxtConfirmPswd.Focus();
                 return false;
             }
@@ -75,6 +75,7 @@ namespace Finance_Tracker.Account
             }
             return true;
         }
+
         public void PopUp(string msg)
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);

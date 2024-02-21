@@ -60,31 +60,31 @@ namespace Finance_Tracker
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl TabApprovedRow1;
 
         /// <summary>
-        /// DdlCatType3 control.
+        /// DdlCatType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlCatType3;
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatType;
 
         /// <summary>
-        /// DdlCat3 control.
+        /// DdlCat control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlCat3;
+        protected global::System.Web.UI.WebControls.DropDownList DdlCat;
 
         /// <summary>
-        /// DdlReport3 control.
+        /// DdlReport control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlReport3;
+        protected global::System.Web.UI.WebControls.DropDownList DdlReport;
 
         /// <summary>
         /// DdlUsrType control.
@@ -105,22 +105,22 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlUsr;
 
         /// <summary>
-        /// DdlType3 control.
+        /// DdlType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType3;
+        protected global::System.Web.UI.WebControls.DropDownList DdlType;
 
         /// <summary>
-        /// TxtMnth3 control.
+        /// TxtMnth control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtMnth3;
+        protected global::System.Web.UI.WebControls.TextBox TxtMnth;
 
         /// <summary>
         /// TextBoxWatermarkExtender1 control.
@@ -141,13 +141,13 @@ namespace Finance_Tracker
         protected global::AjaxControlToolkit.CalendarExtender CalendarExtender4;
 
         /// <summary>
-        /// BtnView3 control.
+        /// BtnView control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnView3;
+        protected global::System.Web.UI.WebControls.Button BtnView;
 
         /// <summary>
         /// DivExport control.
@@ -177,21 +177,21 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.ImageButton IB_ExportExcel;
 
         /// <summary>
-        /// GVReportsDiv3 control.
+        /// GVReportsDiv control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GVReportsDiv3;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GVReportsDiv;
 
         /// <summary>
-        /// GVReports3 control.
+        /// GVReports control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVReports3;
+        protected global::System.Web.UI.WebControls.GridView GVReports;
     }
 }

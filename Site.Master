@@ -37,7 +37,7 @@
             </Scripts>
         </asp:ScriptManager>
 
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-inverse navbar-fixed-top" id="div1">
             <div class="container">
                 <%-- <div class="navbar navbar-default">
                  <div class="container-fluid">--%>
@@ -53,28 +53,37 @@
                     <ul class="nav navbar-nav">
                         <li><a runat="server" href="~/">Home</a></li>
                         <%--<li><a runat="server" href="~/Performance_old">Performance</a></li>--%>
-                        <li><a runat="server" href="~/Performance">Performance</a></li>
-                        <li><a runat="server" href="~/Review">Review</a></li>
-                        <li><a runat="server" href="~/Approve">Approve</a></li>
+                        <li><a runat="server" href="~/Performance" id="LnkPerformance">Performance</a></li>
+                        <li><a runat="server" href="~/Review" id="LnkReview">Review</a></li>
+                        <li><a runat="server" href="~/Approve" id="LnkApprove">Approve</a></li>
                     </ul>
-                    <asp:LoginView runat="server" ViewStateMode="Disabled">
-                        <AnonymousTemplate>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a runat="server" href="~/Account/Register">Register</a></li>
+                    <%--  <asp:LoginView runat="server" ViewStateMode="Disabled">--%>
+
+                    <%-- <AnonymousTemplate>--%>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a runat="server" href="~/Account/Register" id="LnkRegister" >Register</a></li>
+                        <li class="dropdown" onclick="ToggleClass(this);" id="LiDdn">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true"><%: Session["User_Name"] %><span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a runat="server" href="~/Account/ChangePassword">Change Password</a></li>
+                                <%-- <li class="divider"></li>--%>
                                 <li>
-                                    <asp:LinkButton Text="Log Out" runat="server" id="BtnLogOut" ForeColor="White" OnClick="BtnLogOut_Click" OnClientClick="BtnLogOut_OnClientClick();"/>
+                                    <asp:LinkButton Text="Log Out" runat="server" ID="BtnLogOut" OnClick="BtnLogOut_Click" OnClientClick="BtnLogOut_OnClientClick();" />
                                 </li>
+                                <%--<li class="divider"></li>--%>
                             </ul>
-                        </AnonymousTemplate>
-                        <LoggedInTemplate>
+                        </li>
+                    </ul>
+                    <%--  </AnonymousTemplate>--%>
+                    <%--  <LoggedInTemplate>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Session["User_Name"] %> !</a></li>
                                 <li>
                                     <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                 </li>
                             </ul>
-                        </LoggedInTemplate>
-                    </asp:LoginView>
+                        </LoggedInTemplate>--%>
+                    <%--  </asp:LoginView>--%>
                 </div>
             </div>
         </div>
@@ -88,10 +97,23 @@
         </div>
     </form>
     <script>
-        function BtnLogOut_OnClientClick  () {
+        function BtnLogOut_OnClientClick ()
+        {
             console.log("BtnLogOut_OnClientClick() called");
+        }
+        function ToggleClass (ctrl)
+        {
+            console.log("ToggleClass called");
+            if (ctrl.className === "dropdown open")
+            {
+                ctrl.className = "dropdown";
+            }
+            else if (ctrl.className === "dropdown")
+            {
+                ctrl.className = "dropdown open";
+            }
         }
     </script>
 </body>
-    
+
 </html>

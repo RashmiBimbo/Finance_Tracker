@@ -31,24 +31,22 @@
                                     <div class="col-md-10">
                                         <asp:TextBox runat="server" ID="TxtOldPswd" TextMode="Password" CssClass="form-control" Width="40%" />
                                         <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtOldPswd" ID="RequiredFieldValidator2"
-                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
+                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="Old password is required." />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <asp:Label runat="server" AssociatedControlID="TxtNewPswd" CssClass="col-md-2 control-label">New password<span style="color:red">&nbsp*</span></asp:Label>
+                                    <asp:Label runat="server" AssociatedControlID="TxtNewPswd" CssClass="col-md-2 control-label">New Password<span style="color:red">&nbsp*</span></asp:Label>
                                     <div class="col-md-10">
                                         <asp:TextBox runat="server" ID="TxtNewPswd" TextMode="Password" CssClass="form-control" Width="40%" />
                                         <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtNewPswd" ID="RequiredFieldValidator3"
-                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
-                                        <asp:CompareValidator runat="server" ControlToCompare="TxtNewPswd" ControlToValidate="TxtConfirmPswd" ID="CompareValidator3" CssClass="text-danger" Display="Dynamic" ErrorMessage="New password and confirm password do not match." />
+                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="New password is required." />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <asp:Label runat="server" AssociatedControlID="TxtConfirmPswd" CssClass="col-md-2 control-label">Confirm password<span style="color:red">&nbsp*</span></asp:Label>
+                                    <asp:Label runat="server" AssociatedControlID="TxtConfirmPswd" CssClass="col-md-2 control-label">Confirm Password<span style="color:red">&nbsp*</span></asp:Label>
                                     <div class="col-md-10">
                                         <asp:TextBox runat="server" ID="TxtConfirmPswd" TextMode="Password" CssClass="form-control" Width="40%" />
-                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtConfirmPswd" ID="RequiredFieldValidator1"
-                                            CssClass="text-danger" Display="Dynamic" ErrorMessage="The confirm password field is required." />
+                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtConfirmPswd" ID="RequiredFieldValidator1" CssClass="text-danger" Display="Dynamic" ErrorMessage="Confirm password is required."></asp:RequiredFieldValidator>
                                         <asp:CompareValidator runat="server" ControlToCompare="TxtNewPswd" ControlToValidate="TxtConfirmPswd" ID="CompareValidator1" CssClass="text-danger" Display="Dynamic" ErrorMessage="New password and confirm password do not match." />
                                     </div>
                                 </div>

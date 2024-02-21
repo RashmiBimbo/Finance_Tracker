@@ -9,7 +9,7 @@
     </p>
     <div class="form-horizontal">
         <br />
-        <h4>Create a new account</h4>
+        <h3>Create a new account</h3>
         <hr />
         <asp:UpdatePanel runat="server" ID="UpdatePanel1">
             <ContentTemplate>

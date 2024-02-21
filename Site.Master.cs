@@ -52,6 +52,11 @@ namespace Finance_Tracker
                 Response.Redirect("~/Account/Login.aspx");
             if (!IsPostBack)
             {
+                string roleId = Session["Role_Id"]?.ToString() ?? string.Empty;
+                bool isApprover = Session["Is_Approver"] != null ? Convert.ToBoolean(Session["Is_Approver"]) : false;
+                LnkReview.Visible = roleId.Equals("1") || roleId.Equals("4");
+                LnkRegister.Visible = roleId.Equals("1") || roleId.Equals("4");
+                LnkApprove.Visible = isApprover;
                 // Set Anti-XSRF token
                 ViewState[AntiXsrfTokenKey] = Page.ViewStateUserKey;
                 ViewState[AntiXsrfUserNameKey] = Context.User.Identity.Name ?? String.Empty;

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Web;
@@ -17,11 +18,70 @@ namespace Finance_Tracker
         const string DateFormat = "dd-MMM-yyyy";
         const string MonthFormat = "MMM-yyyy";
         const string SqlDateFormat = "yyyy-MM-dd";
-
+        private readonly DateTime today = Today;
+        private readonly int crntYr = Today.Year;
+        private readonly int crntMnth = Today.Month;
+        private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
+        private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
+        private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
         private readonly DBOperations DBOprn = new DBOperations();
         private static int chKCount = 0;
 
         #region Page Code
+
+        private DataTable GVReportsDS
+        {
+            get
+            {
+                DataTable dt = (DataTable)Session["Review_GVReportsDS"];
+
+                if (!(dt?.Rows.Count > 0))
+                {
+                    dt = GetData(true);
+                    Session["Review_GVReportsDS"] = dt;
+                }
+                return dt;
+            }
+            set
+            {
+                if (!(value?.Rows.Count > 0))
+                    Session["Review_GVReportsDS"] = null;
+                else
+                    Session["Review_GVReportsDS"] = value;
+            }
+        }
+
+        private DataTable GetData(bool IsApproved)
+        {
+            DataTable dt = null;
+            try
+            {
+                string fromDt = TxtMnth.ToolTip.Split(',')[0];
+                string toDt = TxtMnth.ToolTip.Split(',')[1];
+
+                OleDbParameter[] paramCln = new OleDbParameter[]
+                {
+                     new OleDbParameter("@From_Date", fromDt)
+                    ,new OleDbParameter("@To_Date",  toDt)
+                    ,new OleDbParameter("@Type",  DdlType.SelectedValue)
+                    ,new OleDbParameter("@Approver_Id", string.Empty)
+                    ,new OleDbParameter("@IsApproved", IsApproved)
+                    ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
+                    ,new OleDbParameter("@Report_Id",Convert.ToInt16(0))
+                    ,new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
+                    ,new OleDbParameter("@Location_Id",  Session["Location_Id"].ToString())
+                };
+                dt = DBOprn.GetDataProc("SP_Get_Submit_Tasks_SubOrdinates", DBOprn.ConnPrimary, paramCln);
+                if (!(dt?.Rows.Count > 0))
+                    dt = null;
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
+                return null;
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -42,9 +102,9 @@ namespace Finance_Tracker
                     Response.Redirect("~/Default.aspx");
                     return;
                 }
-                TxtMnth3.Attributes.Add("autocomplete", "off");
+                TxtMnth.Attributes.Add("autocomplete", "off");
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
-                DdlCatType_DataBinding(DdlCatType3, new EventArgs());
+                DdlCatType_DataBinding(DdlCatType, new EventArgs());
                 DdlUsrType_DataBinding(DdlUsrType, new EventArgs());
                 chKCount = 0;
             }
@@ -66,29 +126,25 @@ namespace Finance_Tracker
             //User Clicked the menu item
             if (Menu1.SelectedValue == "0")
             {
-                GVReports3.DataSource = null;
-                GVReports3.Visible = false;
-                //TxtMnth3.Text = DateTime.Now.ToString(MonthFormat);
-                TxtMnth3.Text = TextBoxWatermarkExtender1.WatermarkText;
+                GVReports.DataSource = null;
+                GVReports.Visible = false;
+                //TxtMnth.Text = DateTime.Now.ToString(MonthFormat);
+                TxtMnth.Text = TextBoxWatermarkExtender1.WatermarkText;
             }
         }
 
         protected void DdlCatType_DataBinding(object sender, EventArgs e)
         {
-            DropDownList ddl = (DropDownList)sender, childDdl = null;
-            if (ddl.Equals(DdlCatType3))
-            {
-                childDdl = DdlCat3;
-            }
+            DropDownList ddl = (DropDownList)sender;
             FillDdl(ddl, "SP_Get_CategoryTypes", "0");
         }
 
         protected void DdlCat_DataBinding(object sender, EventArgs e)
         {
             DropDownList ddl = (DropDownList)sender, prntddl = null;
-            if (ddl.Equals(DdlCat3))
+            if (ddl.Equals(DdlCat))
             {
-                prntddl = DdlCatType3;
+                prntddl = DdlCatType;
             }
             FillDdl(ddl, "SP_Get_Categories", "0", prntddl,
                 new OleDbParameter[]
@@ -101,9 +157,9 @@ namespace Finance_Tracker
         protected void DdlReport_DataBinding(object sender, EventArgs e)
         {
             DropDownList ddl = (DropDownList)sender, prntddl = null;
-            if (ddl.Equals(DdlReport3))
+            if (ddl.Equals(DdlReport))
             {
-                prntddl = DdlCat3;
+                prntddl = DdlCat;
             }
 
             FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
@@ -129,6 +185,7 @@ namespace Finance_Tracker
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
+                   ,new OleDbParameter("@Location_Id", Session["Location_Id"].ToString())                   
                 }
             );
         }
@@ -139,10 +196,10 @@ namespace Finance_Tracker
             DropDownList grndchild = null;
             DropDownList ddl = (DropDownList)sender;
             ddl.ToolTip = ddl.SelectedItem.Text;
-            if (sender.Equals(DdlCatType3))
+            if (sender.Equals(DdlCatType))
             {
-                child = DdlCat3;
-                grndchild = DdlReport3;
+                child = DdlCat;
+                grndchild = DdlReport;
             }
             child.DataBind();
             grndchild.DataBind();
@@ -154,8 +211,8 @@ namespace Finance_Tracker
             DropDownList child = null;
             ddl.ToolTip = ddl.SelectedItem.Text;
 
-            if (sender.Equals(DdlCat3))
-                child = DdlReport3;
+            if (sender.Equals(DdlCat))
+                child = DdlReport;
             child.DataBind();
         }
 
@@ -205,82 +262,40 @@ namespace Finance_Tracker
 
         protected void BtnView_Click(object sender, EventArgs e)
         {
-            if (TxtMnth3.Text == string.Empty)
+            if (TxtMnth.Text == string.Empty)
             {
                 PopUp("Please select a Month!");
-                TxtMnth3.Focus();
+                TxtMnth.Focus();
                 return;
             }
 
-            if (!TryParseExact(TxtMnth3.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+            if (!TryParseExact(TxtMnth.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             {
                 PopUp("Please enter month in correct format like 'Jan-2024'!");
                 return;
             }
-                if (sender.Equals(BtnView3))
-                GVReports3.DataBind();
+            GVReportsDS = null;
+            GVReports.DataSource = null;
+            GVReports.DataBind();
         }
 
-        protected void GVReports3_DataBinding(object sender, EventArgs e)
+        protected void GVReports_DataBinding(object sender, EventArgs e)
         {
-            try
+            if (GVReports.DataSource == null)
             {
-                string User_Id = DdlUsr.SelectedValue;
-                string Role_Id = DdlUsrType.SelectedValue;
-                int mnthNo = 0, year = 0;
-                try
+                DataTable dt = GVReportsDS;
+                if (dt != null)
                 {
-                    DateTime dt = DateTime.ParseExact(TxtMnth3.Text, MonthFormat, CultureInfo.InvariantCulture);
-                    mnthNo = dt.Month;
-                    year = dt.Year;
+                    GVReports.DataSource = dt;
+                    GVReports.Visible = true;
+                    DivExport.Visible = true;
                 }
-                catch (Exception ex)
-                { }
-
-                OleDbParameter[] paramCln = new OleDbParameter[]
+                else
                 {
-                    new OleDbParameter("@Start_Date", null)
-                   ,new OleDbParameter("@End_Date",  null)
-                   ,new OleDbParameter("@User_Id", User_Id)
-                   ,new OleDbParameter("@Role_Id", Role_Id)
-                   ,new OleDbParameter("@Category_Type_Id", DdlCatType3.SelectedValue)
-                   ,new OleDbParameter("@Category_Id", DdlCat3.SelectedValue)
-                   ,new OleDbParameter("@Report_Id", DdlReport3.SelectedValue)
-                   ,new OleDbParameter("@Type", DdlType3.SelectedValue)
-                   ,new OleDbParameter() {
-                       ParameterName = "@IsApproved",
-                       Value = 1,
-                       OleDbType = OleDbType.Boolean
-                   }
-                   ,new OleDbParameter("@ApprYearNo", year)
-                   ,new OleDbParameter("@ApprMonthNo", mnthNo)
-                   ,new OleDbParameter("@ApprWeekNo", Convert.ToInt32(0))
-                   ,new OleDbParameter("@Location_Id", Session["Location_Id"])
-                };
-                SetGV(paramCln, GVReports3);
-            }
-            catch (Exception ex)
-            {
-                PopUp(ex.Message);
-            }
-        }
-
-        private void SetGV(OleDbParameter[] paramCln, GridView gv)
-        {
-            DataTable dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                gv.DataSource = dt;
-                gv.Visible = true;
-                DivExport.Visible = true;
-                //BtnReject.Visible = true;
-            }
-            else
-            {
-                gv.Visible = false;
-                //BtnReject.Visible = false;
-                DivExport.Visible = false;
-                PopUp("No data found!");
+                    GVReports.Visible = false;
+                    DivExport.Visible = false;
+                    PopUp("No data found!");
+                }
             }
         }
 
@@ -315,7 +330,7 @@ namespace Finance_Tracker
 
         protected void CBRejectH_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (GridViewRow gvRow in GVReports3.Rows)
+            foreach (GridViewRow gvRow in GVReports.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 bool chked = ((CheckBox)sender).Checked;
@@ -325,8 +340,8 @@ namespace Finance_Tracker
                     chKCount += chked ? 1 : -1;
                 }
             }
-            if (GVReports3.Rows.Count < chKCount)
-                chKCount = GVReports3.Rows.Count;
+            if (GVReports.Rows.Count < chKCount)
+                chKCount = GVReports.Rows.Count;
             else if (chKCount < 0)
                 chKCount = 0;
             //BtnReject.Enabled = chKCount > 0;
@@ -336,14 +351,14 @@ namespace Finance_Tracker
         {
             CheckBox cb = (CheckBox)sender;
             chKCount += cb.Checked ? 1 : -1;
-            if (GVReports3.Rows.Count < chKCount)
-                chKCount = GVReports3.Rows.Count;
+            if (GVReports.Rows.Count < chKCount)
+                chKCount = GVReports.Rows.Count;
             else if (chKCount < 0)
                 chKCount = 0;
             //BtnReject.Enabled = chKCount > 0;
-            GridViewRow row = GVReports3.HeaderRow;
+            GridViewRow row = GVReports.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
-            cbH.Checked = (GVReports3.Rows.Count == chKCount);
+            cbH.Checked = (GVReports.Rows.Count == chKCount);
         }
 
         protected void BtnReject_Click(object sender, EventArgs e)
@@ -367,7 +382,7 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    GVReports3.DataBind();
+                    GVReports.DataBind();
                 }
             }
             catch (Exception ex)
@@ -380,12 +395,12 @@ namespace Finance_Tracker
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
-            foreach (GridViewRow gvRow in GVReports3.Rows)
+            foreach (GridViewRow gvRow in GVReports.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 if (cb.Checked)
                 {
-                    string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                    string id = ((HiddenField)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Value;
                     Dictionary<string, string> paramVals = new Dictionary<string, string>()
                         {
                             {
@@ -411,7 +426,7 @@ namespace Finance_Tracker
             return jsonString;
         }
 
-        protected void TxtMnth3_TextChanged(object sender, EventArgs e)
+        protected void TxtMnth_TextChanged(object sender, EventArgs e)
         {
             try
             {
