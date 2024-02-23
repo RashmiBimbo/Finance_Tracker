@@ -127,7 +127,7 @@
                                 <%--<asp:BoundField DataField="Submit_Date" HeaderText="Add Date" />--%>
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                 <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
-                                <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
+                                <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
