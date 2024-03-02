@@ -52,11 +52,8 @@ namespace Finance_Tracker
                 Response.Redirect("~/Account/Login.aspx");
             if (!IsPostBack)
             {
-                string roleId = Session["Role_Id"]?.ToString() ?? string.Empty;
-                bool isApprover = Session["Is_Approver"] != null ? Convert.ToBoolean(Session["Is_Approver"]) : false;
-                LnkReview.Visible = roleId.Equals("1") || roleId.Equals("4");
-                LnkRegister.Visible = roleId.Equals("1") || roleId.Equals("4");
-                LnkApprove.Visible = isApprover;
+                SetAccess();
+
                 // Set Anti-XSRF token
                 ViewState[AntiXsrfTokenKey] = Page.ViewStateUserKey;
                 ViewState[AntiXsrfUserNameKey] = Context.User.Identity.Name ?? String.Empty;
@@ -72,6 +69,21 @@ namespace Finance_Tracker
             }
         }
 
+        private void SetAccess()
+        {
+            string roleId = Session["Role_Id"]?.ToString() ?? string.Empty;
+            bool isApprover = Session["Is_Approver"] != null && Convert.ToBoolean(Session["Is_Approver"]);
+            bool isAdmin = roleId.Equals("1");
+            bool isSuprAdmin = roleId.Equals("1");
+
+            LnkReview.Visible = isAdmin || isSuprAdmin;
+            LnkRegister.Visible = isAdmin || isSuprAdmin;
+            LnkApprove.Visible = isApprover;
+            LnkMasters.Visible = isAdmin || isApprover;
+            LnkReports.Visible = false;
+            LnkUTA.Visible = isAdmin || isApprover;
+        }
+
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
         {
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
@@ -79,16 +91,14 @@ namespace Finance_Tracker
 
         private void PopUp(string msg)
         {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
+            ScriptManager.RegisterClientScriptBlock(this, GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         protected void BtnLogOut_Click(object sender, EventArgs e)
         {
-
             Session.Abandon();
             Session.RemoveAll();
             Response.Redirect("~/Account/Login.aspx");
         }
     }
-
 }

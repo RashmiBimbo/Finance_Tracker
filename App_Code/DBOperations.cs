@@ -16,6 +16,16 @@ namespace Finance_Tracker
         ConnectionStringSettingsCollection ConnStrs;
         public readonly string ConStrSecondary, ConStrPrimary;
         public OleDbConnection ConnSecondary, ConnPrimary;
+        public const string Admin = "ADMIN", corporate = "CORPORATE", plant = "PLANT", superAdmin = "SUPERADMIN";
+
+        public static readonly Dictionary<string, string> LoginTypes = new Dictionary<string, string>
+        {
+            { "1", Admin },
+            { "2", corporate },
+            { "3", plant },
+            { "4", superAdmin }
+        };
+
 
         public DBOperations()
         {

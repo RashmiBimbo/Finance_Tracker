@@ -36,7 +36,7 @@
                 </div>
                 <label class="col-lg-2 control-label">Type</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control">
+                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" onchange="updateTooltip(this);">
                         <asp:ListItem Value="">All</asp:ListItem>
                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                         <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -44,7 +44,7 @@
                 </div>
                 <label class="col-lg-2 control-label">User</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control"
+                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" onchange="updateTooltip(this);"
                         OnDataBinding="DdlUsr_DataBinding">
                         <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
@@ -185,6 +185,13 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script type="text/javascript">
+        function updateTooltip (ddl)
+        {
+            if (ddl.selectedIndex !== -1)
+            {
+                ddl.title = ddl.options[ddl.selectedIndex].text;
+            }
+        }
         function downloadFile (folder, fileName)
         {
             //debugger;
@@ -214,6 +221,10 @@
             //    }
             //};
             //xhr.send();
+        }
+        function ConsoleLog (this)
+        {
+            console.log( "hi");
         }
         function submitData ()
         {

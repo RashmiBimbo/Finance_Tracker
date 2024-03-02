@@ -42,6 +42,33 @@ namespace Finance_Tracker
         protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkApprove;
 
         /// <summary>
+        /// LnkMasters control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkMasters;
+
+        /// <summary>
+        /// LnkReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkReports;
+
+        /// <summary>
+        /// LnkUTA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkUTA;
+
+        /// <summary>
         /// LnkRegister control.
         /// </summary>
         /// <remarks>

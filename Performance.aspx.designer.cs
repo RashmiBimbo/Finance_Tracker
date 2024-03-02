@@ -465,15 +465,6 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlReport3;
 
         /// <summary>
-        /// DdlType3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType3;
-
-        /// <summary>
         /// TxtMnth3 control.
         /// </summary>
         /// <remarks>
@@ -499,6 +490,15 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.CalendarExtender CalendarExtender4;
+
+        /// <summary>
+        /// DdlType3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlType3;
 
         /// <summary>
         /// BtnView3 control.

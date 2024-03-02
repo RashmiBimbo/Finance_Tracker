@@ -10,6 +10,8 @@ using System.Data;
 using System.Data.OleDb;
 using System.Web.UI.WebControls;
 using System.Collections.Generic;
+using System.Net.Mail;
+using Microsoft.Ajax.Utilities;
 
 namespace Finance_Tracker.Account
 {
@@ -17,32 +19,24 @@ namespace Finance_Tracker.Account
     public partial class Register : Page
     {
         private DBOperations DBOprn = new DBOperations();
-
-        private static readonly Dictionary<string, string> LoginTypes = new Dictionary<string, string>
-        {
-            { "1", "A" },
-            { "2", "C" },
-            { "3", "P" },
-            { "4", "S" }
-        };
-
+        int RoleId;
         protected void Page_Load(object sender, EventArgs e)
         {
-            if ( !DBOprn.AuthenticatConns() )
+            RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
+            if (!DBOprn.AuthenticatConns())
             {
                 PopUp("Database connection could not be established");
                 return;
             }
-            if ( !Page.IsPostBack )
+            if (!Page.IsPostBack)
             {
                 string usrId = Session["User_Id"]?.ToString();
-                if ( string.IsNullOrWhiteSpace(usrId) )
-                    Response.Redirect("~/Account/Login.aspx");
+                if (string.IsNullOrWhiteSpace(usrId))
+                    Response.Redirect("~/Account/Login");
 
-                int RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
-                if ( !(RoleId == 1 || RoleId == 4 ))
+                if (!(RoleId == 1 || RoleId == 4))
                 {
-                    Response.Redirect("~/Default.aspx");
+                    Response.Redirect("~/Default");
                     return;
                 }
                 DdlRole.DataBind();
@@ -52,7 +46,7 @@ namespace Finance_Tracker.Account
 
         protected void BtnRegister_Click(object sender, EventArgs e)
         {
-            if ( ValidateDtls() )
+            if (ValidateDtls())
             {
                 string usrId = TxtUsrId.Text;
                 string usrName = TxtUsrName.Text;
@@ -61,12 +55,12 @@ namespace Finance_Tracker.Account
                 string email = TBEmail.Text;
                 string locId = DdlLocn.SelectedIndex == 0 ? null : DdlLocn.SelectedValue.ToUpper();
                 string adrs = TxtAddress.Text;
-                string loginType = LoginTypes[DdlRole.SelectedValue].ToUpper();
+                char loginType = DBOperations.LoginTypes[DdlRole.SelectedValue].First();
                 try
                 {
                     string userIpAdrs = HttpContext.Current.Request.UserHostAddress.ToUpper();
                     int usrRoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
-                    if ( usrRoleId != 4 && slctdRoleId == "4" )
+                    if (usrRoleId != 4 && slctdRoleId == "4")
                     {
                         PopUp("You are not authorized to create a super admin user!");
                         return;
@@ -93,7 +87,7 @@ namespace Finance_Tracker.Account
 
                     var output = DBOprn.ExecScalarProc("SP_Register_User", DBOprn.ConnPrimary, paramCln);
 
-                    if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
+                    if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
                         PopUp(output.ToString());
                         return;
@@ -101,7 +95,7 @@ namespace Finance_Tracker.Account
                     PopUp("User added successfully!");
                     ResetCtrls();
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
                     PopUp(ex.Message);
                 }
@@ -110,49 +104,63 @@ namespace Finance_Tracker.Account
 
         private bool ValidateDtls()
         {
-            if ( string.IsNullOrWhiteSpace(TxtUsrId.Text) )
+            if (string.IsNullOrWhiteSpace(TxtUsrId.Text))
             {
                 PopUp("User Id is required");
                 TxtUsrId.Focus();
                 return false;
             }
-            if ( string.IsNullOrWhiteSpace(TxtUsrName.Text) )
+            if (string.IsNullOrWhiteSpace(TxtUsrName.Text))
             {
                 PopUp("User Name is required");
                 TxtUsrName.Focus();
                 return false;
             }
-            if ( string.IsNullOrWhiteSpace(TxtPassword.Text) )
+            if (string.IsNullOrWhiteSpace(TxtPassword.Text))
             {
                 PopUp("Password is required");
                 TBEmail.Focus();
                 return false;
             }
-            if ( string.IsNullOrWhiteSpace(TxtConfirmPassword.Text) )
+            if (string.IsNullOrWhiteSpace(TxtConfirmPassword.Text))
             {
                 PopUp("Confirm Password is required");
                 TxtConfirmPassword.Focus();
                 return false;
             }
-            if ( !TxtConfirmPassword.Text.Equals(TxtPassword.Text) )
+            if (!TxtConfirmPassword.Text.Equals(TxtPassword.Text))
             {
                 PopUp("The password and confirmation password do not match.");
                 TxtConfirmPassword.Focus();
                 return false;
             }
-            if ( string.IsNullOrWhiteSpace(TBEmail.Text) )
+            if (string.IsNullOrWhiteSpace(TBEmail.Text))
             {
                 PopUp("Email is required");
                 TxtPassword.Focus();
                 return false;
             }
-            if ( DdlRole.SelectedValue == "0" )
+            try
+            {
+                MailAddress mail = new MailAddress(TBEmail.Text);
+            }
+            catch (FormatException e)
+            {
+                PopUp("Either email address is not in a recognized format or it contains non-ASCII characters.\n Please enter a valid email address!");
+                return false;
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
+                return false;
+            }
+            if (DdlRole.SelectedValue == "0")
             {
                 PopUp("Role is required");
                 DdlRole.Focus();
                 return false;
             }
-            if ( DdlLocn.SelectedValue == "" && DdlRole.SelectedValue != "4" )
+            if (DdlLocn.SelectedValue == "" && DdlRole.SelectedValue != "4")
             {
                 PopUp("Location is required for user other than Super Admin!");
                 DdlLocn.Focus();
@@ -182,16 +190,29 @@ namespace Finance_Tracker.Account
         protected void DdlLocn_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlLocn, "SP_Get_Locations", "");
+            string usrLocn = (string)Session["Location_Id"];
+            if (string.IsNullOrWhiteSpace(usrLocn)) Response.Redirect("~/Account/Login");
+            if (RoleId == 1)
+            {
+                DdlLocn.Enabled = false;
+                //DdlLocn.Items.Cast<ListItem>().ToList().ForEach(locn => locn.Enabled = (locn.Value.ToUpper() == usrLocn));
+                DdlLocn.SelectedIndex = DdlLocn.Items.IndexOf(DdlLocn.Items.FindByValue(usrLocn));
+            }
+            else
+            {
+                DdlLocn.Enabled = true;
+                DdlLocn.SelectedIndex = 0;
+            }
         }
 
         protected void DdlRole_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlRole, "SP_Get_Roles", "0");
 
-            int roleId = Convert.ToInt32(Session["Role_Id"]);
+            //int roleId = Convert.ToInt32(Session["Role_Id"]);
 
-            DdlRole.Items.FindByValue("4").Enabled = roleId > 4;
-            DdlRole.Items.FindByValue("1").Enabled = roleId >= 4;
+            DdlRole.Items.FindByValue("4").Enabled = RoleId > 4;
+            DdlRole.Items.FindByValue("1").Enabled = RoleId >= 4;
         }
 
         private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
@@ -201,21 +222,21 @@ namespace Finance_Tracker.Account
             ddl.SelectedIndex = 0;
             ddl.ToolTip = "Select";
 
-            if ( prntDdl != null && prntDdl.SelectedIndex == 0 )
+            if (prntDdl != null && prntDdl.SelectedIndex == 0)
                 return;
             try
             {
                 DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
-                if ( dt != null && dt.Rows.Count > 0 )
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    for ( int i = 0; i < dt.Rows.Count; i++ )
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
                     }
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 PopUp(ex.Message);
             }

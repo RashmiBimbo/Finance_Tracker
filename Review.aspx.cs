@@ -236,9 +236,9 @@ namespace Finance_Tracker
         private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
         {
             ddl.Items.Clear();
-            ddl.Items.Add(new ListItem("Select", selectVal));
+            ddl.Items.Add(new ListItem("All", selectVal));
             ddl.SelectedIndex = 0;
-            ddl.ToolTip = "Select";
+            ddl.ToolTip = "All";
 
             if (prntDdl != null && prntDdl.SelectedIndex == 0)
                 return;

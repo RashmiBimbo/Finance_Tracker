@@ -52,18 +52,24 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a runat="server" href="~/">Home</a></li>
-                        <%--<li><a runat="server" href="~/Performance_old">Performance</a></li>--%>
                         <li><a runat="server" href="~/Performance" id="LnkPerformance">Performance</a></li>
                         <li><a runat="server" href="~/Review" id="LnkReview">Review</a></li>
                         <li><a runat="server" href="~/Approve" id="LnkApprove">Approve</a></li>
+                        <li class="dropdown" onclick="ToggleClass(this);" onmouseover="ToggleClass(this);" onmouseout="ToggleClass(this);">
+                            <a runat="server" id="LnkMasters" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Masters<span class="caret" /></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a runat="server" id="LnkReports" href="~/Masters/Reports" visible="false">Reports</a></li>
+                                <li><a runat="server" id="LnkUTA" href="~/Masters/UserTaskAssignment">Task Assignment</a></li>
+                            </ul>
+                        </li>
                     </ul>
                     <%--  <asp:LoginView runat="server" ViewStateMode="Disabled">--%>
 
                     <%-- <AnonymousTemplate>--%>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a runat="server" href="~/Account/Register" id="LnkRegister" >Register</a></li>
-                        <li class="dropdown" onclick="ToggleClass(this);" id="LiDdn">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true"><%: Session["User_Name"] %><span class="caret"></span></a>
+                        <li><a runat="server" href="~/Account/Register" id="LnkRegister">Register</a></li>
+                        <li class="dropdown" onclick="ToggleClass(this);" onmouseover="ToggleClass(this);" onmouseout="ToggleClass(this);" onblur="this.className ='dropdown';" id="LiDdn">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true"><%: Session["User_Name"] %><span class="caret" /></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a runat="server" href="~/Account/ChangePassword">Change Password</a></li>
                                 <%-- <li class="divider"></li>--%>
@@ -103,7 +109,6 @@
         }
         function ToggleClass (ctrl)
         {
-            console.log("ToggleClass called");
             if (ctrl.className === "dropdown open")
             {
                 ctrl.className = "dropdown";
@@ -112,6 +117,10 @@
             {
                 ctrl.className = "dropdown open";
             }
+        }
+        function ConsoleLog ()
+        {
+            console.log("onblur called");
         }
     </script>
 </body>

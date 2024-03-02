@@ -116,12 +116,12 @@ namespace Finance_Tracker
                 string usrId = Session["User_Id"]?.ToString();
                 if (usrId == null || usrId == "")
                 {
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
                     return;
                 }
                 if (Session["Is_Approver"].ToString() == "0")
                 {
-                    Response.Redirect("~/Default.aspx");
+                    Response.Redirect("~/Default");
                     return;
                 }
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
@@ -258,7 +258,7 @@ namespace Finance_Tracker
                 else
                 {
                     GVReportsDiv.Visible = false;
-                    PopUp("No data available!");
+                    PopUp("No data found!");
                 }
             }
         }
@@ -406,7 +406,7 @@ namespace Finance_Tracker
                 else
                 {
                     DivApproved.Visible = false;
-                    PopUp("No data available!");
+                    PopUp("No data found!");
                 }
             }
         }
