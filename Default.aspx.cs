@@ -4,14 +4,34 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.OleDb;
 
 namespace Finance_Tracker
 {
-    public partial class _Default : Page
+    public partial class Default : Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!Page.IsPostBack)
+            {
+                string usrId = Session["User_Id"]?.ToString();
+                if (usrId == null || usrId == "")
+                {
+                    Response.Redirect("~/Account/Login.aspx");
+                    return;
+                }
+                if (!(bool)Session["Changed_Password"])
+                {
+                    Response.Redirect("~/Account/ResetPassword.aspx");
+                    return;
+                }
+            }
         }
+
+        public void PopUp(string msg)
+        {
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
+        }
+
     }
 }

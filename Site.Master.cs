@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -50,8 +47,13 @@ namespace Finance_Tracker
 
         protected void master_Page_PreLoad(object sender, EventArgs e)
         {
+            object usrId = Session["User_Id"];
+            if (usrId == null || usrId.ToString() == "")
+                Response.Redirect("~/Account/Login.aspx");
             if (!IsPostBack)
             {
+                SetAccess();
+
                 // Set Anti-XSRF token
                 ViewState[AntiXsrfTokenKey] = Page.ViewStateUserKey;
                 ViewState[AntiXsrfUserNameKey] = Context.User.Identity.Name ?? String.Empty;
@@ -65,14 +67,31 @@ namespace Finance_Tracker
                     throw new InvalidOperationException("Validation of Anti-XSRF token failed.");
                 }
             }
-            object usrId = Session["User_Id"];
-            if (usrId == null || usrId.ToString() == "")
-                Response.Redirect("~/Account/Login.aspx");
+        }
+
+        private void SetAccess()
+        {
+            string roleId = Session["Role_Id"]?.ToString() ?? string.Empty;
+            bool isApprover = Session["Is_Approver"] != null && Convert.ToBoolean(Session["Is_Approver"]);
+            bool isAdmin = roleId.Equals("1");
+            bool isSuprAdmin = roleId.Equals("1");
+
+            LnkReview.Visible = isAdmin || isSuprAdmin;
+            LnkRegister.Visible = isAdmin || isSuprAdmin;
+            LnkApprove.Visible = isApprover;
+            LnkMasters.Visible = isAdmin || isApprover;
+            LnkReports.Visible = false;
+            LnkUTA.Visible = isAdmin || isApprover;
         }
 
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
         {
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+        }
+
+        private void PopUp(string msg)
+        {
+            ScriptManager.RegisterClientScriptBlock(this, GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         protected void BtnLogOut_Click(object sender, EventArgs e)
@@ -81,11 +100,5 @@ namespace Finance_Tracker
             Session.RemoveAll();
             Response.Redirect("~/Account/Login.aspx");
         }
-
-        private void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-        }
     }
-
 }

@@ -16,26 +16,22 @@ namespace Finance_Tracker.Account
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!DbOprn.AuthenticatConns())
-            {
-                PopUp("Database connection could not be established");
-                return;
-            }
+
             if (!Page.IsPostBack)
             {
+                if (!DbOprn.AuthenticatConns())
+                {
+                    PopUp("Database connection could not be established");
+                    return;
+                }
                 if (Request.Browser.Cookies)
                 {
-                    if (!string.IsNullOrEmpty(Response.Cookies["UserId"]?.Value))
-                        TxtUserId.Text = Response.Cookies["UserId"].Value;
-                    if (!string.IsNullOrEmpty(Response.Cookies["PassWord"]?.Value))
-                        TxtUserId.Text = Response.Cookies["PassWord"].Value;
+                    //if (!string.IsNullOrEmpty(Response.Cookies["UserId"]?.Value))
+                    //    TxtUserId.Text = Response.Cookies["UserId"].Value;
+                    //if (!string.IsNullOrEmpty(Response.Cookies["PassWord"]?.Value))
+                    //    TxtUserId.Text = Response.Cookies["PassWord"].Value;
                 }
                 DdlLocn.DataBind();
-                var returnUrl = HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
-                if (!string.IsNullOrEmpty(returnUrl))
-                {
-                    //RegisterHyperLink.NavigateUrl += "?ReturnUrl=" + returnUrl;
-                }
             }
             //RegisterHyperLink.NavigateUrl = "Register";
             // Enable this once you have account confirmation enabled for password reset functionality
@@ -43,87 +39,70 @@ namespace Finance_Tracker.Account
             //OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
         }
 
-        //protected void LogIn(object sender, EventArgs e)
-        //{
-        //    if (IsValid)
-        //    {
-        //        // Validate the user password
-        //        var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
-        //        var signinManager = Context.GetOwinContext().GetUserManager<ApplicationSignInManager>();
-
-        //        // This doen't count login failures towards account lockout
-        //        // To enable password failures to trigger lockout, change to shouldLockout: true
-        //        var result = signinManager.PasswordSignIn(Email.Text, Password.Text, RememberMe.Checked, shouldLockout: false);
-
-        //        switch (result)
-        //        {
-        //            case SignInStatus.Success:
-        //                IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
-        //                break;
-        //            case SignInStatus.LockedOut:
-        //                Response.Redirect("/Account/Lockout");
-        //                break;
-        //            case SignInStatus.RequiresVerification:
-        //                Response.Redirect(String.Format("/Account/TwoFactorAuthenticationSignIn?ReturnUrl={0}&RememberMe={1}", 
-        //                                                Request.QueryString["ReturnUrl"],
-        //                                                RememberMe.Checked),
-        //                                  true);
-        //                break;
-        //            case SignInStatus.Failure:
-        //            default:
-        //                FailureText.Text = "Invalid login attempt";
-        //                ErrorMessage.Visible = true;
-        //                break;
-        //        }
-        //    }
-        //}
-
         protected void BtnLogIn_Click(object sender, EventArgs e)
         {
             string locn = DdlLocn.SelectedValue;
-            string UsrId = TxtUserId.Text;
+            string UsrId = TxtUserId.Text.ToUpper();
             string pswrd = TxtPassword.Text;
             try
             {
-                if (IsValid)
+                if (!IsValid)
+                    return;
+
+                //if (!ValidateUser(locn, UsrId, pswrd)) return;
+                //connect. GetDataProc("SP_Login_Validate", connect.ConnTestFinTrack, { locn});
+
+                string mSqlQuery = "EXEC [dbo].[SP_Login_Validate] '" + locn + "', '" + UsrId + "', '" + pswrd + "'";
+                DataTable dt = DbOprn.SelQuery(mSqlQuery, DbOprn.ConnPrimary);
+
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    //if (!ValidateUser(locn, UsrId, pswrd)) return;
-                    //connect. GetDataProc("SP_Login_Validate", connect.ConnTestFinTrack, { locn});
+                    bool active = (bool)dt.Rows[0]["Active"];
+                    int roleID = Convert.ToInt32(dt.Rows[0]["Role_Id"]);
 
-                    string mSqlQuery = "EXEC [dbo].[SP_Login_Validate] '" + locn + "', '" + UsrId + "', '" + pswrd + "'";
-                    DataTable dt = DbOprn.SelQuery(mSqlQuery, DbOprn.ConnPrimary);
-
-                    if (dt != null && dt.Rows.Count > 0)
+                    if (!active)
                     {
-                        bool active = (bool)dt.Rows[0]["Active"];
-                        int roleID = Convert.ToInt32(dt.Rows[0]["Role_Id"]);
+                        PopUp("User exists but it is not active!");
+                        return;
+                    }
+                    if (roleID != 4 && DdlLocn.SelectedIndex == 0)
+                    {
+                        PopUp("Please select a Location!");
+                        return;
+                    }
 
-                        if (!active)
-                        {
-                            PopUp("User exists but it is not active!");
-                            return;
-                        }
-                        //if (roleID != 1 && DdlLocn.SelectedValue == "")
-                        //{
-                        //    this.PopUp("Please select location!");
-                        //    return;
-                        //}
-                        if (Request.Browser.Cookies)
-                        {
-                            Response.Cookies["UserId"].Expires = DateTime.Now.AddDays(1);
-                            Response.Cookies["UserId"].Value = UsrId;
-                        }
-                        if (CBRemMe.Checked)
-                        {
-                            Response.Cookies["PassWord"].Expires = DateTime.Now.AddDays(1);
-                            Response.Cookies["PassWord"].Value = pswrd;
-                        }
-                        FillSession(dt);
-                        Response.Redirect("~/Default.aspx");
+                    //if (roleID != 1 && DdlLocn.SelectedValue == "")
+                    //{
+                    //    this.PopUp("Please select location!");
+                    //    return;
+                    //}
+                    if (Request.Browser.Cookies)
+                    {
+                        Response.Cookies["UserId"].Expires = DateTime.Now.AddDays(1);
+                        Response.Cookies["UserId"].Value = UsrId;
+                    }
+                    if (CBRemMe.Checked)
+                    {
+                        Response.Cookies["PassWord"].Expires = DateTime.Now.AddDays(1);
+                        Response.Cookies["PassWord"].Value = pswrd;
+                    }
+                    FillSession(dt);
+                    if (!(bool)Session["Changed_Password"])
+                    {
+                        // Register the ChngPswd() function as a client script block
+                        //string script = "<script type='text/javascript'>ChngPswd();</script>";
+                        //ScriptManager.RegisterStartupScript(this, this.GetType(), "confirmScript", script, false);
+                        Response.Redirect("~/Account/ResetPassword.aspx");
+                        return;
                     }
                     else
-                        PopUp("Kindly check your Location or ID or Password");
+                    {
+                        Response.Redirect("~/Default.aspx");
+                        return;
+                    }
                 }
+                else
+                    PopUp("Kindly check your Location or ID or Password");
             }
             catch (Exception ex)
             {
@@ -134,7 +113,6 @@ namespace Finance_Tracker.Account
         private void FillSession(DataTable dt)
         {
             Session["User_Id"] = dt.Rows[0]["User_Id"];
-            Session["Password"] = dt.Rows[0]["Password"];
             Session["User_Name"] = dt.Rows[0]["User_Name"];
             Session["Company_Id"] = dt.Rows[0]["Company_Id"];
             Session["Sub_Company_Id"] = dt.Rows[0]["Sub_Company_Id"];
@@ -150,6 +128,8 @@ namespace Finance_Tracker.Account
             Session["Created_By"] = dt.Rows[0]["Created_By"];
             Session["Modified_Date"] = dt.Rows[0]["Modified_Date"];
             Session["Modified_By"] = dt.Rows[0]["Modified_By"];
+            Session["Is_Approver"] = dt.Rows[0]["Is_Approver"];
+            Session["Changed_Password"] = (bool)dt.Rows[0]["Changed_Password"];
         }
 
         private bool ValidateUser(params string[] args)
@@ -205,5 +185,39 @@ namespace Finance_Tracker.Account
             }
         }
 
+        //protected void LogIn(object sender, EventArgs e)
+        //{
+        //    if (IsValid)
+        //    {
+        //        // Validate the user password
+        //        var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        //        var signinManager = Context.GetOwinContext().GetUserManager<ApplicationSignInManager>();
+
+        //        // This doen't count login failures towards account lockout
+        //        // To enable password failures to trigger lockout, change to shouldLockout: true
+        //        var result = signinManager.PasswordSignIn(Email.Text, Password.Text, RememberMe.Checked, shouldLockout: false);
+
+        //        switch (result)
+        //        {
+        //            case SignInStatus.Success:
+        //                IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
+        //                break;
+        //            case SignInStatus.LockedOut:
+        //                Response.Redirect("/Account/Lockout");
+        //                break;
+        //            case SignInStatus.RequiresVerification:
+        //                Response.Redirect(String.Format("/Account/TwoFactorAuthenticationSignIn?ReturnUrl={0}&RememberMe={1}", 
+        //                                                Request.QueryString["ReturnUrl"],
+        //                                                RememberMe.Checked),
+        //                                  true);
+        //                break;
+        //            case SignInStatus.Failure:
+        //            default:
+        //                FailureText.Text = "Invalid login attempt";
+        //                ErrorMessage.Visible = true;
+        //                break;
+        //        }
+        //    }
+        //}
     }
 }

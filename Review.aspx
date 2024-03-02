@@ -8,7 +8,7 @@
         <h3>Review</h3>
         <hr style="padding: 1px; margin-top: 10px; margin-bottom: 10px; position: inherit;" />
         <div class="form-group">
-            <div style="">
+            <div>
                 <asp:Menu ID="Menu1" runat="server" BackColor="#006666" DynamicHorizontalOffset="2" Font-Names="Verdana" Font-Size="0.83em" ForeColor="White" Orientation="Horizontal" StaticSubMenuIndent="10px" OnMenuItemClick="Menu1_MenuItemClick" CssClass="form-control">
                     <DynamicHoverStyle BackColor="#3399FF" ForeColor="White" />
                     <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
@@ -27,27 +27,27 @@
                 <asp:View ID="TabApproved" runat="server">
                     <asp:UpdatePanel runat="server" ID="UpdatePanel4">
                         <ContentTemplate>
-                            <div class="row">
-                                <asp:Label runat="server" AssociatedControlID="DdlCatType3" CssClass="col-md-2 control-label">Category Type</asp:Label>
+                            <div class="row" runat="server" id="TabApprovedRow1" visible="false">
+                                <asp:Label runat="server" AssociatedControlID="DdlCatType" CssClass="col-md-2 control-label">Category Type</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlCatType3" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlCatType" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True">
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <asp:Label runat="server" AssociatedControlID="DdlCat3" CssClass="col-md-2 control-label">Category</asp:Label>
+                                <asp:Label runat="server" AssociatedControlID="DdlCat" CssClass="col-md-2 control-label">Category</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlCat3" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlCat" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True">
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <asp:Label runat="server" AssociatedControlID="DdlReport3" CssClass="col-md-2 control-label">Report</asp:Label>
+                                <asp:Label runat="server" AssociatedControlID="DdlReport" CssClass="col-md-2 control-label">Report</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlReport3" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlReport" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True">
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
+                                <br />
                             </div>
-                            <br />
                             <div class="row">
                                 <label class="col-lg-2 control-label">User Type</label>
                                 <div class="col-sm-2">
@@ -63,7 +63,7 @@
                                 </div>
                                 <label class="col-lg-2 control-label">Type</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" AutoPostBack="True">
                                         <asp:ListItem Value="">All</asp:ListItem>
                                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                                         <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -72,10 +72,11 @@
                             </div>
                             <br />
                             <div class="row">
-                                <asp:Label runat="server" AssociatedControlID="TxtMnth3" CssClass="col-md-2 control-label">Month</asp:Label>
+                                <asp:Label runat="server" AssociatedControlID="TxtMnth" CssClass="col-md-2 control-label">Month<span style="color :red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:TextBox ID="TxtMnth3" runat="server" Width="160px" CssClass="form-control" BackColor="White"></asp:TextBox>
-                                    <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth3" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                                    <asp:TextBox ID="TxtMnth" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" AutoPostBack="True"></asp:TextBox>
+                                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth" />
+                                    <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
                                 </div>
                             </div>
                         </ContentTemplate>
@@ -83,21 +84,21 @@
                     <br />
                     <div class="row" style="margin-left: 2px; display: flex; align-items: baseline;">
                         <div style="margin-right: 1.5%;">
-                            <asp:Button runat="server" ID="BtnView3" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" />
+                            <asp:Button runat="server" ID="BtnView" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" />
                         </div>
                         <div id="DivExport" runat="server" visible="false" class="flex" style="vertical-align: bottom;">
-                            <asp:ImageButton ID="IB_Print" runat="server" Height="20px" Width="32px" ImageAlign="AbsBottom" ImageUrl="~/App_Themes/Images/printer.png" OnClientClick="javascript:CallPrint('GVReportsDiv3')" Style="align-self: baseline; vertical-align: bottom" ToolTip="Print" />
+                            <asp:ImageButton ID="IB_Print" runat="server" Height="20px" Width="32px" ImageAlign="AbsBottom" ImageUrl="~/App_Themes/Images/printer.png" OnClientClick="javascript:CallPrint('GVReportsDiv')" Style="align-self: baseline; vertical-align: bottom" ToolTip="Print" />
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <asp:ImageButton ID="IB_ExportExcel" runat="server" Height="25px" Width="40px" OnClientClick="ExportToExcelXls()" ImageAlign="AbsBottom" ImageUrl="~/App_Themes/Images/export-excel.png" ToolTip="Export to Excel" />
                         </div>
                     </div>
                     <br />
-                    <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv3">
-                        <asp:GridView ID="GVReports3"
+                    <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv">
+                        <asp:GridView ID="GVReports"
                             runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
                             Font-Size="Medium" ForeColor="#333333" GridLines="Both"
                             RowStyle-HorizontalAlign="LEFT" TabIndex="10"
-                            OnDataBinding="GVReports3_DataBinding" Visible="False" BorderStyle="Solid" AutoGenerateColumns="False">
+                            OnDataBinding="GVReports_DataBinding" Visible="False" BorderStyle="Solid" AutoGenerateColumns="False">
                             <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" Width="0em" />
                             <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
                             <PagerSettings NextPageText="&gt;" PreviousPageText="&lt;" />
@@ -107,7 +108,7 @@
                             <EditRowStyle BackColor="#7C6F57" />
                             <AlternatingRowStyle BackColor="#7ad0ed" />
                             <Columns>
-                                <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
+                                <%-- <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                     <HeaderTemplate>
                                         <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Reject" Text=""></asp:CheckBox>
                                     </HeaderTemplate>
@@ -117,16 +118,16 @@
                                     <AlternatingItemTemplate>
                                         <asp:CheckBox ID="CBReject" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
                                     </AlternatingItemTemplate>
-                                </asp:TemplateField>
+                                </asp:TemplateField>--%>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
-                                <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />
+                                <asp:BoundField DataField="Category_Type_Name" HeaderText="Category Type" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Name" HeaderText="Category" ReadOnly="True" />
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report" ReadOnly="True" />
                                 <%--<asp:BoundField DataField="Submit_Date" HeaderText="Add Date" />--%>
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                 <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
-                                <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
+                                <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
@@ -137,16 +138,15 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="" Visible="false">
                                     <ItemTemplate>
-                                        <asp:Label ID="LblRecId" runat="server" Text='<%# Bind("Task_Id")%>'>
-                                        </asp:Label>
+                                        <asp:HiddenField runat="server" ID="HFTaskId" Value='<%# Bind("Task_Id")%>' Visible="false"/>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                     </div>
-                    <div class="row" style="margin-left: 2px;">
+                    <%--  <div class="row" style="margin-left: 2px;">
                         <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Visible="False" Enabled="False" />
-                    </div>
+                    </div>--%>
                 </asp:View>
             </asp:MultiView>
         </div>
@@ -156,8 +156,9 @@
 
     <script type="text/javascript">
 
-        function CallPrint(strid) {
-            var gridHtml = document.getElementById('<%= GVReports3.ClientID %>').outerHTML;
+        function CallPrint (strid)
+        {
+            var gridHtml = document.getElementById('<%= GVReports.ClientID %>').outerHTML;
 
             // Open a new window
             var printWindow = window.open('', '_blank', 'width=600,height=600');
@@ -173,11 +174,12 @@
             printWindow.print();
         }
 
-        function ExportToExcelXls() {
+        function ExportToExcelXls ()
+        {
             debugger;
 
             // Get the GridView HTML content
-            var gridViewHtml = document.getElementById('<%= GVReports3.ClientID %>').outerHTML;
+            var gridViewHtml = document.getElementById('<%= GVReports.ClientID %>').outerHTML;
 
             // Create a Blob from the HTML content
             var blob = new Blob([gridViewHtml], { type: 'application/vnd.ms-excel' });
@@ -203,9 +205,10 @@
             document.body.removeChild(link);
         }
 
-        function ExportToExcel() {
+        function ExportToExcel ()
+        {
             //debugger;
-            var grid = document.getElementById('<%= GVReports3.ClientID %>');
+            var grid = document.getElementById('<%= GVReports.ClientID %>');
             //debugger;
 
             // Convert GridView data to a worksheet

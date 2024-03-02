@@ -13,9 +13,9 @@
     </asp:PlaceHolder>
     <webopt:BundleReference runat="server" Path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-
 </head>
 <body>
+
     <form runat="server">
         <asp:ScriptManager runat="server">
             <Scripts>
@@ -37,9 +37,9 @@
             </Scripts>
         </asp:ScriptManager>
 
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-inverse navbar-fixed-top" id="div1">
             <div class="container">
-               <%-- <div class="navbar navbar-default">
+                <%-- <div class="navbar navbar-default">
                  <div class="container-fluid">--%>
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -52,38 +52,77 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a runat="server" href="~/">Home</a></li>
-                        <li><a runat="server" href="~/Performance">Performance</a></li>
-                        <li><a runat="server" href="~/Review">Review</a></li>
-                    </ul>
-                    <asp:LoginView runat="server" ViewStateMode="Disabled">
-                        <AnonymousTemplate>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a runat="server" href="~/Account/Register">Register</a></li>
-                                <li>
-                                    <asp:LinkButton ID="LinkButton1" runat="server" OnClick="BtnLogOut_Click" ForeColor="White">Log Out</asp:LinkButton>
-                                </li>
+                        <li><a runat="server" href="~/Performance" id="LnkPerformance">Performance</a></li>
+                        <li><a runat="server" href="~/Review" id="LnkReview">Review</a></li>
+                        <li><a runat="server" href="~/Approve" id="LnkApprove">Approve</a></li>
+                        <li class="dropdown" onclick="ToggleClass(this);" onmouseover="ToggleClass(this);" onmouseout="ToggleClass(this);">
+                            <a runat="server" id="LnkMasters" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Masters<span class="caret" /></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a runat="server" id="LnkReports" href="~/Masters/Reports" visible="false">Reports</a></li>
+                                <li><a runat="server" id="LnkUTA" href="~/Masters/UserTaskAssignment">Task Assignment</a></li>
                             </ul>
-                        </AnonymousTemplate>
-                        <LoggedInTemplate>
+                        </li>
+                    </ul>
+                    <%--  <asp:LoginView runat="server" ViewStateMode="Disabled">--%>
+
+                    <%-- <AnonymousTemplate>--%>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a runat="server" href="~/Account/Register" id="LnkRegister">Register</a></li>
+                        <li class="dropdown" onclick="ToggleClass(this);" onmouseover="ToggleClass(this);" onmouseout="ToggleClass(this);" onblur="this.className ='dropdown';" id="LiDdn">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true"><%: Session["User_Name"] %><span class="caret" /></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a runat="server" href="~/Account/ChangePassword">Change Password</a></li>
+                                <%-- <li class="divider"></li>--%>
+                                <li>
+                                    <asp:LinkButton Text="Log Out" runat="server" ID="BtnLogOut" OnClick="BtnLogOut_Click" OnClientClick="BtnLogOut_OnClientClick();" />
+                                </li>
+                                <%--<li class="divider"></li>--%>
+                            </ul>
+                        </li>
+                    </ul>
+                    <%--  </AnonymousTemplate>--%>
+                    <%--  <LoggedInTemplate>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Session["User_Name"] %> !</a></li>
                                 <li>
                                     <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                 </li>
                             </ul>
-                        </LoggedInTemplate>
-                    </asp:LoginView>
+                        </LoggedInTemplate>--%>
+                    <%--  </asp:LoginView>--%>
                 </div>
             </div>
         </div>
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
-          <%--  <hr />
+            <%--  <hr />
             <footer>
                 <p>&copy; <%: DateTime.Now.Year %> - Finance Tracker</p>
             </footer>--%>
         </div>
     </form>
+    <script>
+        function BtnLogOut_OnClientClick ()
+        {
+            console.log("BtnLogOut_OnClientClick() called");
+        }
+        function ToggleClass (ctrl)
+        {
+            if (ctrl.className === "dropdown open")
+            {
+                ctrl.className = "dropdown";
+            }
+            else if (ctrl.className === "dropdown")
+            {
+                ctrl.className = "dropdown open";
+            }
+        }
+        function ConsoleLog ()
+        {
+            console.log("onblur called");
+        }
+    </script>
 </body>
+
 </html>

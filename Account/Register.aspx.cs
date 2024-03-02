@@ -9,6 +9,9 @@ using Finance_Tracker.Models;
 using System.Data;
 using System.Data.OleDb;
 using System.Web.UI.WebControls;
+using System.Collections.Generic;
+using System.Net.Mail;
+using Microsoft.Ajax.Utilities;
 
 namespace Finance_Tracker.Account
 {
@@ -16,9 +19,10 @@ namespace Finance_Tracker.Account
     public partial class Register : Page
     {
         private DBOperations DBOprn = new DBOperations();
-
+        int RoleId;
         protected void Page_Load(object sender, EventArgs e)
         {
+            RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
             if (!DBOprn.AuthenticatConns())
             {
                 PopUp("Database connection could not be established");
@@ -27,13 +31,12 @@ namespace Finance_Tracker.Account
             if (!Page.IsPostBack)
             {
                 string usrId = Session["User_Id"]?.ToString();
-                if (usrId == null || usrId == "")
-                    Response.Redirect("~/Account/Login.aspx");
+                if (string.IsNullOrWhiteSpace(usrId))
+                    Response.Redirect("~/Account/Login");
 
-                string RoleId = Session["Role_Id"]?.ToString();
-                if (RoleId != "1")
+                if (!(RoleId == 1 || RoleId == 4))
                 {
-                    Response.Redirect("~/Default.aspx");
+                    Response.Redirect("~/Default");
                     return;
                 }
                 DdlRole.DataBind();
@@ -45,17 +48,23 @@ namespace Finance_Tracker.Account
         {
             if (ValidateDtls())
             {
-                string usrId = TxtUsrId.Text.ToUpper();
+                string usrId = TxtUsrId.Text;
                 string usrName = TxtUsrName.Text;
                 string pswd = TxtPassword.Text;
-                string roleId = DdlRole.SelectedValue;
+                string slctdRoleId = DdlRole.SelectedValue;
                 string email = TBEmail.Text;
-                string locId = DdlLocn.SelectedValue.ToUpper();
+                string locId = DdlLocn.SelectedIndex == 0 ? null : DdlLocn.SelectedValue.ToUpper();
                 string adrs = TxtAddress.Text;
+                char loginType = DBOperations.LoginTypes[DdlRole.SelectedValue].First();
                 try
                 {
                     string userIpAdrs = HttpContext.Current.Request.UserHostAddress.ToUpper();
-
+                    int usrRoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
+                    if (usrRoleId != 4 && slctdRoleId == "4")
+                    {
+                        PopUp("You are not authorized to create a super admin user!");
+                        return;
+                    }
                     OleDbParameter[] paramCln =
                     {
                         new OleDbParameter("@User_Id", usrId ),
@@ -63,9 +72,9 @@ namespace Finance_Tracker.Account
                         new OleDbParameter("@User_Name", usrName),
                         new OleDbParameter("@Company_Id", "BBI"),
                         new OleDbParameter("@Sub_Company_Id", "BBI"),
-                        new OleDbParameter("@Role_Id", roleId),
+                        new OleDbParameter("@Role_Id", slctdRoleId),
                         new OleDbParameter("@EMail", email),
-                        new OleDbParameter("@Login_Type", 'C'),
+                        new OleDbParameter("@Login_Type", loginType),
                         new OleDbParameter("@Active", 1),
                         new OleDbParameter("@Flag", 1),
                         new OleDbParameter("@Change_Password_Date", null),
@@ -131,15 +140,29 @@ namespace Finance_Tracker.Account
                 TxtPassword.Focus();
                 return false;
             }
+            try
+            {
+                MailAddress mail = new MailAddress(TBEmail.Text);
+            }
+            catch (FormatException e)
+            {
+                PopUp("Either email address is not in a recognized format or it contains non-ASCII characters.\n Please enter a valid email address!");
+                return false;
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
+                return false;
+            }
             if (DdlRole.SelectedValue == "0")
             {
                 PopUp("Role is required");
                 DdlRole.Focus();
                 return false;
             }
-            if (DdlLocn.SelectedValue == "0")
+            if (DdlLocn.SelectedValue == "" && DdlRole.SelectedValue != "4")
             {
-                PopUp("Location is required for user other than Admin!");
+                PopUp("Location is required for user other than Super Admin!");
                 DdlLocn.Focus();
                 return false;
             }
@@ -167,11 +190,29 @@ namespace Finance_Tracker.Account
         protected void DdlLocn_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlLocn, "SP_Get_Locations", "");
+            string usrLocn = (string)Session["Location_Id"];
+            if (string.IsNullOrWhiteSpace(usrLocn)) Response.Redirect("~/Account/Login");
+            if (RoleId == 1)
+            {
+                DdlLocn.Enabled = false;
+                //DdlLocn.Items.Cast<ListItem>().ToList().ForEach(locn => locn.Enabled = (locn.Value.ToUpper() == usrLocn));
+                DdlLocn.SelectedIndex = DdlLocn.Items.IndexOf(DdlLocn.Items.FindByValue(usrLocn));
+            }
+            else
+            {
+                DdlLocn.Enabled = true;
+                DdlLocn.SelectedIndex = 0;
+            }
         }
 
         protected void DdlRole_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlRole, "SP_Get_Roles", "0");
+
+            //int roleId = Convert.ToInt32(Session["Role_Id"]);
+
+            DdlRole.Items.FindByValue("4").Enabled = RoleId > 4;
+            DdlRole.Items.FindByValue("1").Enabled = RoleId >= 4;
         }
 
         private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)

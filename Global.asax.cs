@@ -19,5 +19,15 @@ namespace Finance_Tracker
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        void Application_Close(object sender, EventArgs e)
+        {
+            //// Code that runs on application startup
+            //GlobalConfiguration.Configure(WebApiConfig.Register);
+            //RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+
     }
 }
