@@ -352,6 +352,7 @@ namespace Finance_Tracker
                 if (cb.Checked)
                 {
                     string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                    string cmnts = ((TextBox)gvRow.Cells[7].Controls[1]).Text.Trim();
                     Dictionary<string, string> paramVals = new Dictionary<string, string>()
                         {
                             {
@@ -364,7 +365,7 @@ namespace Finance_Tracker
                             },
                             {
                                 "COMMENTS",
-                                string.Empty
+                                cmnts
                             },
                             {
                                 "MODIFIED_BY",
