@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Review.aspx.cs" Inherits="Finance_Tracker.Review" EnableEventValidation="false" Title="Review" %>
+﻿<%@ Page Title="Review"  Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Review.aspx.cs" Inherits="Finance_Tracker.Review" EnableEventValidation="true" MaintainScrollPositionOnPostback="True" Async="True" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="form-horizontal">

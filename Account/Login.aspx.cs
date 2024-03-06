@@ -92,12 +92,12 @@ namespace Finance_Tracker.Account
                         // Register the ChngPswd() function as a client script block
                         //string script = "<script type='text/javascript'>ChngPswd();</script>";
                         //ScriptManager.RegisterStartupScript(this, this.GetType(), "confirmScript", script, false);
-                        Response.Redirect("~/Account/ResetPassword.aspx");
+                        Response.Redirect("~/Account/ResetPassword");
                         return;
                     }
                     else
                     {
-                        Response.Redirect("~/Default.aspx");
+                        Response.Redirect("~/Default");
                         return;
                     }
                 }

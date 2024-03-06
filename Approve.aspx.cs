@@ -5,11 +5,12 @@ using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Web;
+using System.Web.DynamicData;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static System.DateTime;
 
-namespace Finance_Tracker
+namespace Finance_Tracker   
 {
     public partial class Approve : System.Web.UI.Page
     {
@@ -86,7 +87,7 @@ namespace Finance_Tracker
                      new OleDbParameter("@From_Date", fromDt)
                     ,new OleDbParameter("@To_Date",  toDt)
                     ,new OleDbParameter("@Type",  DdlType.SelectedValue)
-                    ,new OleDbParameter("@Approver_Id", Session["User_Id"].ToString())
+                    ,new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
                     ,new OleDbParameter("@IsApproved", IsApproved)
                     ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
                 };
@@ -126,6 +127,7 @@ namespace Finance_Tracker
                 }
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
                 TxtMnth.Attributes.Add("autocomplete", "off");
+                //TxtCmnts.Attributes.Add("autocomplete", "off");
 
                 chKCountA = 0;
                 chKCountR = 0;
@@ -148,6 +150,7 @@ namespace Finance_Tracker
             //TxtMnth.Text = Now.ToString(MonthFormat);
             DdlUsr_DataBinding(DdlUsr, new EventArgs());
             DdlType.SelectedIndex = 0;
+            SetTooltip(DdlType);
 
             if (Menu1.SelectedValue == "0")
                 ResetGVReports();
@@ -174,10 +177,11 @@ namespace Finance_Tracker
             FillDdl(DdlUsr, "SP_Get_SubOrdinates", "", null,
                 new OleDbParameter[]
                 {
-                    new OleDbParameter("@Approver_Id", Session["User_Id"].ToString())
+                    new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
                 }
             );
             DdlUsr.SelectedIndex = 0;
+            SetTooltip(DdlUsr);
         }
 
         protected void DdlUsr_SelectedIndexChanged(object sender, EventArgs e)
@@ -286,6 +290,7 @@ namespace Finance_Tracker
                 chKCountA = 0;
 
             BtnApprove.Enabled = chKCountA > 0;
+            BtnReject1.Enabled = chKCountA > 0;
         }
 
         protected void CBApprov_CheckedChanged(object sender, EventArgs e)
@@ -297,6 +302,7 @@ namespace Finance_Tracker
             else if (chKCountA < 0)
                 chKCountA = 0;
             BtnApprove.Enabled = chKCountA > 0;
+            BtnReject1.Enabled = chKCountA > 0;
             GridViewRow row = GVReports.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
             cbH.Checked = (GVReports.Rows.Count == chKCountA);
@@ -355,6 +361,10 @@ namespace Finance_Tracker
                             {
                                 "APPROVE_DATE",
                                 Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                            },
+                            {
+                                "COMMENTS",
+                                string.Empty
                             },
                             {
                                 "MODIFIED_BY",
@@ -469,10 +479,10 @@ namespace Finance_Tracker
         }
 
         protected void BtnReject_Click(object sender, EventArgs e)
-        {
+        {           
             try
             {
-                string jsonParam = ConstructJSONReject();
+                string jsonParam = ConstructJSONReject(GVApproved, chKCountR, 8);
 
                 if (!string.IsNullOrWhiteSpace(jsonParam))
                 {
@@ -500,21 +510,59 @@ namespace Finance_Tracker
             }
         }
 
-        private string ConstructJSONReject()
+        protected void BtnReject1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string jsonParam = ConstructJSONReject(GVReports, chKCountA, 7);
+
+                if (!string.IsNullOrWhiteSpace(jsonParam))
+                {
+                    var output = DBOprn.ExecScalarProc("SP_Reject_Tasks", DBOprn.ConnPrimary,
+                        new OleDbParameter[]
+                        {
+                            new OleDbParameter("@Collection", jsonParam)
+                        }
+                    );
+
+                    if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
+                    {
+                        PopUp(output.ToString());
+                        return;
+                    }
+                    PopUp("Tasks rejected successfully!"); 
+                    ResetGVReports();
+                    GVReports.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
+            }
+        }
+
+        private string ConstructJSONReject(GridView gv, int chkCnt, int cmntIndex)
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
-            foreach (GridViewRow gvRow in GVApproved.Rows)
+            foreach (GridViewRow gvRow in gv.Rows)
             {
+                if (chkCnt < 1) break;
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 if (cb.Checked)
                 {
+                    //string cmnts = ((TextBox)gv.FindFieldTemplate("Comments"))?.Text.Trim(); ;
                     string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                    string cmnts = ((TextBox)gvRow.Cells[cmntIndex].Controls[1]).Text.Trim();
                     Dictionary<string, string> paramVals = new Dictionary<string, string>()
                         {
                             {
                                 "REC_ID",
                                 id
+                            },
+                            {
+                                "COMMENTS",
+                                cmnts
                             },
                             {
                                 "MODIFIED_BY",
@@ -527,7 +575,7 @@ namespace Finance_Tracker
                         };
                     dtls.Add(paramVals);
                     cb.Checked = false;
-                    chKCountR--;
+                    chkCnt--;
                 }
                 continue;
             }
@@ -535,9 +583,9 @@ namespace Finance_Tracker
             return jsonString;
         }
 
-        protected void TxtMnth_TextChanged1(object sender, EventArgs e)
+        private void SetTooltip(DropDownList ddl)
         {
-
+            ddl.ToolTip = ddl.SelectedItem.Text;
         }
     }
 }

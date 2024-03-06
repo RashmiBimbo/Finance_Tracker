@@ -55,7 +55,7 @@ namespace Finance_Tracker
                 string usrId = Session["User_Id"]?.ToString();
                 if ( usrId == null || usrId == "" )
                 {
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
                     return;
                 }
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));

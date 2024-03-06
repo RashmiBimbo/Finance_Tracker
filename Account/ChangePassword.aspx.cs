@@ -13,7 +13,7 @@ namespace Finance_Tracker.Account
                 string usrId = Session["User_Id"]?.ToString();
                 if (usrId == null || usrId == "")
                 {
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
                     return;
                 }
             }
@@ -27,7 +27,7 @@ namespace Finance_Tracker.Account
                 var output = dbO.ExecScalarProc("SP_Change_Password", dbO.ConnPrimary,
                     new OleDbParameter[]
                     {
-                        new OleDbParameter("@User_Id", Session["User_Id"].ToString()),
+                        new OleDbParameter("@User_Id", Session["User_Id"]?.ToString().Trim().ToUpper()),
                         new OleDbParameter("@OldPswd", TxtOldPswd.Text),
                         new OleDbParameter("@Password", TxtNewPswd.Text),
                         new OleDbParameter("@ChangePswdDate", DateTime.Today),
@@ -44,7 +44,7 @@ namespace Finance_Tracker.Account
                 Session["Changed_Password"] = true;
                 Session.Abandon();
                 Session.RemoveAll();
-                Response.Redirect("~/Account/Login.aspx");
+                Response.Redirect("~/Account/Login");
             }
         }
 

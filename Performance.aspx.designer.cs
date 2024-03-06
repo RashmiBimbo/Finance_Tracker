@@ -258,6 +258,33 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekS;
 
         /// <summary>
+        /// DivCmnts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivCmnts;
+
+        /// <summary>
+        /// LblCmnts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblCmnts;
+
+        /// <summary>
+        /// TxtCmnts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtCmnts;
+
+        /// <summary>
         /// FUReport control.
         /// </summary>
         /// <remarks>

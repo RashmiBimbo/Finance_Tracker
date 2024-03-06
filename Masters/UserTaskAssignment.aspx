@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Task Assignment" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserTaskAssignment.aspx.cs" Inherits="Finance_Tracker.Masters.UserTaskAssignment" %>
+﻿<%@ Page Title="Task Assignment" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="UserTaskAssignment.aspx.cs" Inherits="Finance_Tracker.Masters.UserTaskAssignment" EnableEventValidation="true" MaintainScrollPositionOnPostback="True" Async="True" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="form-horizontal">
@@ -23,7 +23,7 @@
                     <StaticSelectedStyle BackColor="#5D7B9D" />
                 </asp:Menu>
             </div>
-            <br />
+<br />
             <div class="row">
                 <asp:Label runat="server" AssociatedControlID="DdlCatType" CssClass="col-md-2 control-label">Category Type</asp:Label>
                 <div class="col-sm-2">

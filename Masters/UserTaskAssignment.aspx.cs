@@ -30,7 +30,9 @@ namespace Finance_Tracker.Masters
                 DataTable dt = (DataTable)Session["UserTaskAssignment_GVAddDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
-                    dt = GetData("SP_Get_Unassigned_Tasks");
+                    string approverId = IsAdmin ? null : UsrId;
+                    string locnId = IsAdmin ? LocId : null;
+                    dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
                     Session["UserTaskAssignment_GVAddDS"] = dt;
@@ -52,7 +54,8 @@ namespace Finance_Tracker.Masters
                 DataTable dt = (DataTable)Session["UserTaskAssignment_GVViewDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
-                    dt = GetData("SP_Get_Assigned_Tasks");
+                    //string approverId = IsAdmin ? null : UsrId;
+                    dt = GetData("SP_Get_Assigned_Tasks", UsrId, null);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
                     Session["UserTaskAssignment_GVViewDS"] = dt;
@@ -96,14 +99,14 @@ namespace Finance_Tracker.Masters
             UsrName = Session["User_Name"]?.ToString();
 
             IsAdmin = LoginTypes[roleId] == Admin;
-
-            if (!IsPostBack)
-            {
                 if (!(IsAdmin || IsApprover))
                 {
                     Response.Redirect("~/Default");
                     return;
                 }
+
+            if (!IsPostBack)
+            {
                 GVAddDS = null;
                 GVViewDS = null;
 
@@ -381,13 +384,11 @@ namespace Finance_Tracker.Masters
             }
         }
 
-        private DataTable GetData(string proc)
+        private DataTable GetData(string proc, string approverId, string locnId)
         {
             DataTable dt = null;
             try
             {
-                string approverId = IsAdmin ? null : UsrId;
-                string locnId = IsAdmin ? LocId : null;
                 dt = DBOprn.GetDataProc
                     (proc, DBOprn.ConnPrimary
                         , new OleDbParameter[]

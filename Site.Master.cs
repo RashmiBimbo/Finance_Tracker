@@ -49,7 +49,7 @@ namespace Finance_Tracker
         {
             object usrId = Session["User_Id"];
             if (usrId == null || usrId.ToString() == "")
-                Response.Redirect("~/Account/Login.aspx");
+                Response.Redirect("~/Account/Login");
             if (!IsPostBack)
             {
                 SetAccess();
@@ -98,7 +98,7 @@ namespace Finance_Tracker
         {
             Session.Abandon();
             Session.RemoveAll();
-            Response.Redirect("~/Account/Login.aspx");
+            Response.Redirect("~/Account/Login");
         }
     }
 }

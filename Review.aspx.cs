@@ -94,12 +94,12 @@ namespace Finance_Tracker
             {
                 string usrId = Session["User_Id"]?.ToString();
                 if (usrId == null || usrId == "")
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
 
                 int RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
                 if (!(RoleId == 1 || RoleId == 4))
                 {
-                    Response.Redirect("~/Default.aspx");
+                    Response.Redirect("~/Default");
                     return;
                 }
                 TxtMnth.Attributes.Add("autocomplete", "off");

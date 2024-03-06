@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace Finance_Tracker.ADMIN
 {
-    public partial class Reports1 : Page
+    public partial class Category : System.Web.UI.Page
     {
         private DBOperations connect = new DBOperations();
 
@@ -17,13 +17,13 @@ namespace Finance_Tracker.ADMIN
         {
             if (!Page.IsPostBack)
             {
-                string RoleId = Session["roleId"]?.ToString();
-                if (RoleId != "1")
-                {
-                    Response.Redirect("~/Default.aspx");
-                    return;
-                }
-                else
+                //string RoleId = Session["roleId"]?.ToString();
+                //if (RoleId != "1")
+                //{
+                //    Response.Redirect("~/Default.aspx");
+                //    return;
+                //}
+                //else
                 {
                     MultiView1.ActiveViewIndex = 0;
                     Menu1_MenuItemClick(null, null);
@@ -36,19 +36,19 @@ namespace Finance_Tracker.ADMIN
             MultiView1.ActiveViewIndex = e is null ? 0 : int.Parse(e.Item.Value);
             if (Menu1.SelectedValue == "0")
             {
-                DdlCat.DataBind();
+                //DdlType.DataBind();
             }
         }
 
-        protected void DdlCat_DataBinding(object sender, EventArgs e)
+        protected void DdlType_DataBinding(object sender, EventArgs e)
         {
-            DdlCat.Items.Clear();
-            DataTable dt = connect.GetDataProc("SP_Get_Categories", connect.ConnPrimary);
+            DdlType.Items.Clear();
+            DataTable dt = connect.GetDataProc("SP_Get_CategoryTypes", connect.ConnPrimary);
             if (dt != null && dt.Rows.Count > 0)
             {
-                DdlCat.DataSource = dt;
-                DdlCat.DataTextField = "Type_Name";
-                DdlCat.DataValueField = "Type_Id";
+                DdlType.DataSource = dt;
+                DdlType.DataTextField = "Type_Name";
+                DdlType.DataValueField = "Type_Id";
             }
         }
 
@@ -56,32 +56,25 @@ namespace Finance_Tracker.ADMIN
         {
             if (IsValid)
             {
-                string Name = TxtReportName.Text.ToUpper();
-                string cat = DdlCat.SelectedValue;
-                string priority = TxtPriority.Text;
-                string weight = TxtWeight.Text;
+                string Name = TxtCatName.Text.ToUpper();
                 string typeId = DdlType.SelectedValue;
                 try
                 {
                     OleDbParameter[] paramCln =
                     {
                         new OleDbParameter("@Name", Name),
-                        new OleDbParameter("@Category_Id", cat),
-                        new OleDbParameter("@Priority", priority),
-                        new OleDbParameter("@Weight", weight),
                         new OleDbParameter("@Type_Id", typeId),
-                        new OleDbParameter("@Due_Date", typeId),
                         new OleDbParameter("@Created_By", Session["User_Name"])
                     };
 
-                    var output = connect.ExecScalarProc("SP_Create_Report", connect.ConnPrimary, paramCln);
+                    var output = connect.ExecScalarProc("SP_Create_Category", connect.ConnPrimary, paramCln);
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
                         PopUp(output.ToString());
                         return;
                     }
-                    PopUp("Report added successfully!");
+                    PopUp("Category added successfully!");
                     ResetCtrls();
                 }
                 catch (Exception ex)
@@ -93,20 +86,27 @@ namespace Finance_Tracker.ADMIN
 
         private void ResetCtrls()
         {
-            TxtReportName.Text = "";
-            DdlCat.SelectedIndex = 0;
-            GVReport.DataBind();
+            TxtCatName.Text = "";
+            DdlType.SelectedIndex = 0;
+            SetTooltip(DdlType);
+            GVCategory.DataBind();
         }
 
-        protected void GVReport_DataBinding(object sender, EventArgs e)
+        protected void GVCategory_DataBinding(object sender, EventArgs e)
         {
             DataTable dt = connect.GetDataProc("SP_Get_Categories", connect.ConnPrimary);
-            GVReport.DataSource = dt;
+            GVCategory.DataSource = dt;
         }
 
         private void PopUp(string msg)
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
+
+        private void SetTooltip(DropDownList ddl)
+        {
+            ddl.ToolTip = ddl.SelectedItem.Text;
+        }
+
     }
 }
