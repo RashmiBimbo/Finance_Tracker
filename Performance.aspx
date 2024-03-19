@@ -38,7 +38,7 @@
                             </div>
                             <asp:Label runat="server" AssociatedControlID="DdlTypeM" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-sm-2 col-md-2">
-                                <asp:DropDownList runat="server" ID="DdlTypeM" CssClass="form-control" Enabled="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
+                                <asp:DropDownList runat="server" ID="DdlTypeM" CssClass="form-control" Enabled="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" AutoPostBack="True">
                                     <asp:ListItem Value="" Selected="True">Select</asp:ListItem>
                                     <asp:ListItem Value="M">Monthly</asp:ListItem>
                                     <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -48,7 +48,7 @@
                             <div id="DivWeekM" runat="server" visible="true">
                                 <asp:Label runat="server" AssociatedControlID="DdlWeekM" CssClass="col-md-2 control-label" ID="LblWeek">Week no.<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlWeekM" CssClass="form-control" OnSelectedIndexChanged="DdlWeek_SelectedIndexChanged" AutoPostBack="true" onchange="UpdateToolTip(this);">
+                                    <asp:DropDownList runat="server" ID="DdlWeekM" CssClass="form-control" OnSelectedIndexChanged="DdlWeek_SelectedIndexChanged" AutoPostBack="true">
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                         <asp:ListItem Value="1">1</asp:ListItem>
                                         <asp:ListItem Value="2">2</asp:ListItem>
@@ -259,7 +259,7 @@
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlReport2" CssClass="col-md-2 control-label">Report</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlReport2" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlReport2" CssClass="form-control" OnDataBinding="DdlReport_DataBinding">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
@@ -273,16 +273,9 @@
                             <ajaxToolkit:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="TxtMnth2" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
                             <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnth2" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidator3" />--%>
                         </div>
-                        <%--<asp:Label runat="server" AssociatedControlID="TxtED" CssClass="col-md-2 control-label">End Date<span style="color:red">&nbsp*</span></asp:Label>
-                        <div class="col-sm-2">
-                            <asp:TextBox ID="TxtED" runat="server" Width="160px" CssClass="form-control" BackColor="White" CausesValidation="True"></asp:TextBox>
-                            <ajaxToolkit:CalendarExtender ID="CalendarExtender3" runat="server" TargetControlID="TxtED" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="dd-MMM-yyyy" Format="dd-MMM-yyyy"
-                                SelectedDate='<%# Eval(DateTime.Now.ToString("dd-MMM-yyyy")) %>' />
-                            <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtED" CssClass="text-danger" ErrorMessage="Please select end date." ID="RequiredFieldValidator4" />
-                        </div>--%>
                         <asp:Label runat="server" AssociatedControlID="DdlType2" CssClass="col-md-2 control-label">Type</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control" AutoPostBack="True" onchange="UpdateToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control">
                                 <asp:ListItem Value="">All</asp:ListItem>
                                 <asp:ListItem Value="M">Monthly</asp:ListItem>
                                 <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -413,7 +406,7 @@
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlReport3" CssClass="col-md-2 control-label">Report</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlReport3" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlReport3" CssClass="form-control" OnDataBinding="DdlReport_DataBinding">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
@@ -429,7 +422,7 @@
                         </div>
                         <label class="col-lg-2 control-label">Type</label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True" onchange="UpdateToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control">
                                 <asp:ListItem Value="">All</asp:ListItem>
                                 <asp:ListItem Value="M">Monthly</asp:ListItem>
                                 <asp:ListItem Value="W">Weekly</asp:ListItem>

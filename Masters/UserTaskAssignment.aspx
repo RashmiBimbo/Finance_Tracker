@@ -174,12 +174,5 @@
                 ctrl2.className = "";
             }
         }
-        function UpdateToolTip (ddl)
-        {
-            if (ddl.selectedIndex !== -1)
-            {
-                ddl.title = ddl.options[ddl.selectedIndex].text;
-            }
-        }
     </script>
 </asp:Content>

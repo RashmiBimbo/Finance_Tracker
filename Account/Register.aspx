@@ -70,7 +70,7 @@
                 <div class="form-group">
                     <asp:Label runat="server" AssociatedControlID="DdlRole" CssClass="col-md-2 control-label">Role<span style="color:red">&nbsp*</span></asp:Label>
                     <div class="col-md-10">
-                        <asp:DropDownList runat="server" ID="DdlRole" CssClass="form-control" OnDataBinding="DdlRole_DataBinding" Width="40%" />
+                        <asp:DropDownList runat="server" ID="DdlRole" CssClass="form-control" OnDataBinding="DdlRole_DataBinding" Width="40%" onchange="UpdateToolTip(this);" />
                         <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlRole"
                             CssClass="text-danger" Display="Dynamic" ErrorMessage="Role Name is required." />--%>
                     </div>
@@ -78,7 +78,7 @@
                 <div class="form-group">
                     <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location<span style="color:red">&nbsp*</span></asp:Label>
                     <div class="col-md-10">
-                        <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="40%" />
+                        <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="40%" onchange="UpdateToolTip(this);" />
                     </div>
                 </div>
                 <div class="form-group">

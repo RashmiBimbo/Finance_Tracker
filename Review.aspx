@@ -36,13 +36,13 @@
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlCat" CssClass="col-md-2 control-label">Category</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlCat" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlCat" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                         <asp:ListItem Value="0">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlReport" CssClass="col-md-2 control-label">Report</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlReport" CssClass="form-control" OnDataBinding="DdlReport_DataBinding">
+                                    <asp:DropDownList runat="server" ID="DdlReport" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" onchange="UpdateToolTip(this);">
                                         <asp:ListItem Value="0">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>

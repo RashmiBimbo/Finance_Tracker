@@ -2,16 +2,10 @@
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Owin;
-using Finance_Tracker.Models;
 using System.Data;
 using System.Data.OleDb;
 using System.Web.UI.WebControls;
-using System.Collections.Generic;
 using System.Net.Mail;
-using Microsoft.Ajax.Utilities;
 
 namespace Finance_Tracker.Account
 {
@@ -20,6 +14,7 @@ namespace Finance_Tracker.Account
     {
         private DBOperations DBOprn = new DBOperations();
         int RoleId;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
@@ -171,7 +166,6 @@ namespace Finance_Tracker.Account
 
         public void PopUp(string msg)
         {
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
@@ -190,12 +184,11 @@ namespace Finance_Tracker.Account
         protected void DdlLocn_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlLocn, "SP_Get_Locations", "");
-            string usrLocn = (string)Session["Location_Id"];
+            string usrLocn = ((string)Session["Location_Id"]).ToUpper();
             if (string.IsNullOrWhiteSpace(usrLocn)) Response.Redirect("~/Account/Login");
             if (RoleId == 1)
             {
                 DdlLocn.Enabled = false;
-                //DdlLocn.Items.Cast<ListItem>().ToList().ForEach(locn => locn.Enabled = (locn.Value.ToUpper() == usrLocn));
                 DdlLocn.SelectedIndex = DdlLocn.Items.IndexOf(DdlLocn.Items.FindByValue(usrLocn));
             }
             else
@@ -208,8 +201,6 @@ namespace Finance_Tracker.Account
         protected void DdlRole_DataBinding(object sender, EventArgs e)
         {
             FillDdl(DdlRole, "SP_Get_Roles", "0");
-
-            //int roleId = Convert.ToInt32(Session["Role_Id"]);
 
             DdlRole.Items.FindByValue("4").Enabled = RoleId > 4;
             DdlRole.Items.FindByValue("1").Enabled = RoleId >= 4;

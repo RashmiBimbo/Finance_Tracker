@@ -9,6 +9,7 @@
 //        console.log("reach success");
 //    });
 //});
+//import $ from 'jquery';
 
 $(document).ready(function ()
 {
@@ -18,16 +19,16 @@ $(document).ready(function ()
         console.log("reached");
         // Call the UpdateToolTip function when any dropdown changes
         UpdateToolTip(this);
-        console.log("reach success");   
+        console.log("reach success");
     });
 });
 
 function UpdateToolTip (ddl)
 {
-    console.log("reached");
+    //console.log("reached");
     if (ddl.selectedIndex !== -1)
     {
         ddl.title = ddl.options[ddl.selectedIndex].text;
     }
-    console.log("reach success");
+    //console.log("reach success");
 }

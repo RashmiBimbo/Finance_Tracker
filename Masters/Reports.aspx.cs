@@ -147,7 +147,7 @@ namespace Finance_Tracker.Masters
         {
             int slctItem = int.Parse(e.Item.Value);
             MultiView1.ActiveViewIndex = slctItem;
-            Menu.Items[0].Text= "Add Report";
+            Menu.Items[0].Text= "Add Report |";
             switch (slctItem)
             {
                 case 0:

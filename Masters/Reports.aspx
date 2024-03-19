@@ -270,14 +270,5 @@
             return true; // Allow form submission
         }
 
-        function UpdateToolTip (ddl)
-        {
-            console.log("reached");
-            if (ddl.selectedIndex !== -1)
-            {
-                ddl.title = ddl.options[ddl.selectedIndex].text;
-            }
-            console.log("reach success");
-        }
     </script>
 </asp:Content>

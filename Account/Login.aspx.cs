@@ -112,18 +112,18 @@ namespace Finance_Tracker.Account
 
         private void FillSession(DataTable dt)
         {
-            Session["User_Id"] = dt.Rows[0]["User_Id"];
-            Session["User_Name"] = dt.Rows[0]["User_Name"];
-            Session["Company_Id"] = dt.Rows[0]["Company_Id"];
-            Session["Sub_Company_Id"] = dt.Rows[0]["Sub_Company_Id"];
+            Session["User_Id"] = dt.Rows[0]["User_Id"]?.ToString().Trim().ToUpper();
+            Session["User_Name"] = dt.Rows[0]["User_Name"]?.ToString().Trim();
+            Session["Company_Id"] = dt.Rows[0]["Company_Id"]?.ToString().Trim().ToUpper();
+            Session["Sub_Company_Id"] = dt.Rows[0]["Sub_Company_Id"]?.ToString().Trim().ToUpper();
             Session["Role_Id"] = dt.Rows[0]["Role_Id"];
-            Session["Login_Type"] = dt.Rows[0]["Login_Type"];
+            Session["Login_Type"] = dt.Rows[0]["Login_Type"]?.ToString().Trim().ToUpper();
             Session["Active"] = (bool)dt.Rows[0]["Active"];
             Session["Flag"] = (bool)dt.Rows[0]["Flag"];
             Session["Change_Password_Date"] = dt.Rows[0]["Change_Password_Date"];
             Session["Address"] = dt.Rows[0]["Address"];
             Session["IP_Address"] = dt.Rows[0]["IP_Address"];
-            Session["Location_Id"] = dt.Rows[0]["Location_Id"];
+            Session["Location_Id"] = dt.Rows[0]["Location_Id"].ToString().ToUpper().Trim();
             Session["Created_Date"] = dt.Rows[0]["Created_Date"];
             Session["Created_By"] = dt.Rows[0]["Created_By"];
             Session["Modified_Date"] = dt.Rows[0]["Modified_Date"];

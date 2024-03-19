@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="../Content/bootstrap-theme.css" />
     <link href="~/logo-text.ico" rel="shortcut icon" type="image/x-icon" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../assets/libs/Common.js" type="text/javascript" ></script>
 
 </head>
 <body>
@@ -33,7 +32,7 @@
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%" onchange="UpdateToolTip(this);" />
+                                <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%" />
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
                                     CssClass="text-danger" ErrorMessage="Location is required." Enabled="false" />
                             </div>
@@ -80,14 +79,6 @@
             </div>
         </div>
     </form>
-    <script>
-        //function UpdateToolTip (ddl)
-        //{
-        //    if (ddl.selectedIndex !== -1)
-        //    {
-        //        ddl.title = ddl.options[ddl.selectedIndex].text;
-        //    }
-        //}
-    </script>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
 </body>
 </html>
