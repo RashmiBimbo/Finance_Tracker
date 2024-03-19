@@ -8,6 +8,7 @@ using System.IO;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Linq;
 using static System.DateTime;
 using static System.Convert;
 
@@ -37,7 +38,7 @@ namespace Finance_Tracker
                 DataTable dt = (DataTable)Session["Performance_DdlReport1DS"];
                 if (!(dt?.Rows.Count > 0))
                 {
-                    dt = DBOprn.GetDataProc("SP_Get_Reports", DBOprn.ConnPrimary,
+                    dt = DBOprn.GetDataProc("SP_Report_Get", DBOprn.ConnPrimary,
                         new OleDbParameter[]
                         {
                             new OleDbParameter("@Category_Id", DdlCatS.SelectedValue)
@@ -174,12 +175,12 @@ namespace Finance_Tracker
 
         protected void Page_Load(object sender, EventArgs e)
         {
-                string usrId = Session["User_Id"]?.ToString().Trim().ToUpper();
-                if (usrId == null || usrId == emp)
-                {
-                    Response.Redirect("~/Account/Login");
-                    return;
-                }
+            string usrId = Session["User_Id"]?.ToString().Trim().ToUpper();
+            if (usrId == null || usrId == emp)
+            {
+                Response.Redirect("~/Account/Login");
+                return;
+            }
             if (!Page.IsPostBack)
             {
                 TxtMnthM.Attributes.Add("autocomplete", "off");
@@ -218,7 +219,7 @@ namespace Finance_Tracker
             if (sender != null)
             {
                 BtnSubmit.Visible = false;
-                ResetTab1();
+                //ResetTab1();
                 Menu1.Items[0].Text = "Add Tasks |";
                 switch (Menu1.SelectedValue)
                 {
@@ -347,13 +348,13 @@ namespace Finance_Tracker
 
             string dueDt = dRo["Due_Date"].ToString();
             DateTime dt;
-            int mnthNo = crntMnth, year = crntYr;
+            int year = crntYr;
             if (int.TryParse(dueDt, out int day))
             {
                 try
                 {
                     dt = ParseExact(TxtMnthM.Text, MonthFormat, CultureInfo.InvariantCulture);
-                    mnthNo = dt.Month;
+                    int mnthNo = dt.Month;
                     year = dt.Year;
                 }
                 catch (Exception ex)
@@ -563,8 +564,8 @@ namespace Finance_Tracker
             TxtMnth2.Text = TextBoxWatermarkExtender2.WatermarkText;
             DdlType2.SelectedIndex = 0;
             SetTooltip(DdlType2);
-            CalendarExtender2.StartDate = lstMnth;
-            CalendarExtender2.EndDate = crntMnthLastDay;
+            //CalendarExtender2.StartDate = lstMnth;
+            //CalendarExtender2.EndDate = crntMnthLastDay;
 
         }
 
@@ -638,7 +639,7 @@ namespace Finance_Tracker
             {
                 prntddl = DdlCatType3;
             }
-            FillDdl(ddl, "SP_Get_Categories", "0", prntddl,
+            FillDdl(ddl, "SP_Get_Categories", "0", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Type_Id", prntddl.SelectedValue)
@@ -648,26 +649,30 @@ namespace Finance_Tracker
 
         protected void DdlReport_DataBinding(object sender, EventArgs e)
         {
-            DropDownList ddl = (DropDownList)sender, prntddl = null;
+            DropDownList ddl = (DropDownList)sender, prntddl = null, grndprntDdl = null;
 
             if (ddl.Equals(DdlReportS))
             {
                 prntddl = DdlCatS;
+                grndprntDdl = DdlCatTypeS;
             }
             else if (ddl.Equals(DdlReport2))
             {
                 prntddl = DdlCat2;
+                grndprntDdl = DdlCatType2;
             }
             else if (ddl.Equals(DdlReport3))
             {
                 prntddl = DdlCat3;
+                grndprntDdl = DdlCatType3;
             }
 
-            FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
+            FillDdl(ddl, "SP_Report_Get", "0", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Category_Id", prntddl.SelectedValue)
-                }
+                   ,new OleDbParameter("@Category_Type_Id", grndprntDdl.SelectedValue)
+                }, "Report_Name", "Report_Id"
             );
         }
 
@@ -677,23 +682,24 @@ namespace Finance_Tracker
             DropDownList grndchild = null;
             DropDownList ddl = (DropDownList)sender;
             ddl.ToolTip = ddl.SelectedItem.Text;
-            if (sender.Equals(DdlCatTypeS))
+            if (ddl.Equals(DdlCatTypeS))
             {
                 child = DdlCatS;
                 grndchild = DdlReportS;
             }
-            else if (sender.Equals(DdlCatType2))
+            else if (ddl.Equals(DdlCatType2))
             {
                 child = DdlCat2;
                 grndchild = DdlReport2;
             }
-            else if (sender.Equals(DdlCatType3))
+            else if (ddl.Equals(DdlCatType3))
             {
                 child = DdlCat3;
                 grndchild = DdlReport3;
             }
             child.DataBind();
             grndchild.DataBind();
+            ddl.ToolTip = ddl.SelectedItem.Text;
         }
 
         protected void DdlCat_SelectedIndexChanged(object sender, EventArgs e)
@@ -740,15 +746,15 @@ namespace Finance_Tracker
             }
         }
 
-        private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        private void FillDdl(DropDownList ddl, string proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = "", string ValField = "")
         {
             ddl.Items.Clear();
             ddl.Items.Add(new ListItem("All", selectVal));
             ddl.SelectedIndex = 0;
             ddl.ToolTip = "All";
 
-            if (prntDdl != null && prntDdl.SelectedIndex == 0)
-                return;
+            //if (prntDdl != null && prntDdl.SelectedIndex == 0)
+            //    return;
 
             try
             {
@@ -756,9 +762,19 @@ namespace Finance_Tracker
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    if ((TxtField != emp) && ValField != emp)
                     {
-                        ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][TxtField].ToString(), dt.Rows[i][ValField].ToString()));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        }
                     }
                 }
             }
@@ -767,6 +783,34 @@ namespace Finance_Tracker
                 PopUp(ex.Message);
             }
         }
+
+        //private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        //{
+        //    ddl.Items.Clear();
+        //    ddl.Items.Add(new ListItem("All", selectVal));
+        //    ddl.SelectedIndex = 0;
+        //    ddl.ToolTip = "All";
+
+        //    if (prntDdl != null && prntDdl.SelectedIndex == 0)
+        //        return;
+
+        //    try
+        //    {
+        //        DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
+
+        //        if (dt != null && dt.Rows.Count > 0)
+        //        {
+        //            for (int i = 0; i < dt.Rows.Count; i++)
+        //            {
+        //                ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));                        
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        PopUp(ex.Message);
+        //    }
+        //}
 
         #endregion MenuClick
 
@@ -867,7 +911,7 @@ namespace Finance_Tracker
                         LblError.Text = "Task added successfully!";
                     }
                     LblError.CssClass = "col-12 control-label text-success ";
-                    ResetTab1();
+                    //ResetTab1();
                     Menu1.Items[0].Text = "Add Tasks |";
                 }
                 catch (Exception ex)
@@ -908,12 +952,23 @@ namespace Finance_Tracker
 
                 string saveFolder = appFoldr + $@"Upload\{year}\{month}";
 
+                // Get invalid characters in paths
+                char[] invalidPathChars = Path.GetInvalidPathChars();
+                saveFolder = new string(saveFolder.Select(chr => invalidPathChars.Contains(chr) ? '_' : chr).ToArray());
+
                 if (!Directory.Exists(saveFolder))
                     Directory.CreateDirectory(saveFolder);
 
-                string dueDt = fileType == "W" ? "_Week_" + weekNo : emp;
-                fullPath = $@"{saveFolder}\{Session["User_Name"]}_{rprtName}{dueDt}_{today.ToString(DateFormat)}{Path.GetExtension(file.FileName)}";
+                // Get invalid characters in file names
+                char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
 
+                string dueDt = fileType == "W" ? "_Week_" + weekNo : emp;
+                string fileName = $"{Session["User_Name"]}_{rprtName}{dueDt}_{today.ToString(DateFormat)}{Path.GetExtension(file.FileName)}";
+
+                fileName = new string(fileName.Select(chr => invalidFileNameChars.Contains(chr) ? '_' : chr).ToArray());
+
+                // Combine base path and sanitized file name
+                fullPath = $@"{saveFolder}\{fileName}";
 
                 if (string.IsNullOrWhiteSpace(fullPath))
                 {
@@ -980,7 +1035,7 @@ namespace Finance_Tracker
                 new OleDbParameter("@Report_Id", DdlReportS.SelectedValue),
                 new OleDbParameter("@Add_Date", Now.Date.ToString(SqlDateFormat)),
                 new OleDbParameter("@Submit_From_Date", dt.ToString(SqlDateFormat)),
-                new OleDbParameter("@Submit_To_Date", 
+                new OleDbParameter("@Submit_To_Date",
                                     new DateTime(dt.Year, dt.Month, DaysInMonth(dt.Year, dt.Month)).ToString(SqlDateFormat)),
                 new OleDbParameter("@Submit_Week_No", DdlWeekS.SelectedValue),
                 new OleDbParameter("@Location", fullPath),
@@ -1055,10 +1110,6 @@ namespace Finance_Tracker
         }
 
         #region View Sbmt Task
-
-        protected void TxtSD_TextChanged(object sender, EventArgs e)
-        {
-        }
 
         protected void GVReports2_DataBinding(object sender, EventArgs e)
         {
@@ -1238,6 +1289,7 @@ namespace Finance_Tracker
                 DateTime toDate = Parse(dRo["To_Date"].ToString());
                 TxtMnthS.Text = toDate.ToString(MonthFormat);
 
+                DvUpload.Attributes["class"] = "col-sm-3";
                 if (type.ToUpper() == "WEEKLY")
                 {
                     DdlWeekS.SelectedValue = dRo["Week_No"].ToString();
@@ -1254,10 +1306,11 @@ namespace Finance_Tracker
 
                 LblTaskID.Text = dRo["Task_Id"]?.ToString();
 
-                string cmnts =  dRo["Comments"]?.ToString();
+                string cmnts = dRo["Comments"]?.ToString();
                 DivCmnts.Visible = !string.IsNullOrWhiteSpace(cmnts);
                 TxtCmnts.Text = cmnts;
                 TxtCmnts.ToolTip = cmnts;
+                if (DivCmnts.Visible && DivWeek1.Visible) DvUpload.Attributes["class"] = "col-sm-2";
 
                 DdlCatTypeS.Enabled = false;
                 DdlCatS.Enabled = false;
@@ -1287,7 +1340,7 @@ namespace Finance_Tracker
         }
         protected void BtnCncl_Click(object sender, EventArgs e)
         {
-            ResetTab1();
+            //ResetTab1();
             Menu1.Items[0].Text = "Add Tasks |";
             Menu1.Items[1].Selected = true;
             Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));

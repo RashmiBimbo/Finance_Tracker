@@ -62,6 +62,6 @@
             </div>
         </div>
     </form>
-
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
 </body>
 </html>

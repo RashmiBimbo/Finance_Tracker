@@ -27,7 +27,7 @@ namespace Finance_Tracker
                 DataTable dt = (DataTable)Session["Performance_DdlReport1DS"];
                 if ( !(dt?.Rows.Count > 0) )
                 {
-                    dt = DBOprn.GetDataProc("SP_Get_Reports", DBOprn.ConnPrimary,
+                    dt = DBOprn.GetDataProc("SP_Report_Get", DBOprn.ConnPrimary,
                         new OleDbParameter[]
                         {
                             new OleDbParameter("@Category_Id", DdlCat1.SelectedValue)
@@ -205,7 +205,7 @@ namespace Finance_Tracker
                 prntddl = DdlCat3;
             }
 
-            FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
+            FillDdl(ddl, "SP_Report_Get", "0", prntddl,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Category_Id", prntddl.SelectedValue)

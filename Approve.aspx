@@ -36,7 +36,7 @@
                 </div>
                 <label class="col-lg-2 control-label">Type</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" onchange="SetToolTip(this);">
+                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" onchange="UpdateToolTip(this);">
                         <asp:ListItem Value="">All</asp:ListItem>
                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                         <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -44,7 +44,7 @@
                 </div>
                 <label class="col-lg-2 control-label">User</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" onchange="SetToolTip(this);"
+                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" onchange="UpdateToolTip(this);"
                         OnDataBinding="DdlUsr_DataBinding">
                         <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
@@ -95,7 +95,7 @@
                                     <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                     <asp:TemplateField HeaderText="Comments" Visible="true">
                                         <ItemTemplate>
-                                            <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="SetToolTip(this);" Height="40px" />
+                                            <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="UpdateToolTip(this);" Height="40px" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="File" Visible="true" >
@@ -158,7 +158,7 @@
                                     <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
                                     <asp:TemplateField HeaderText="Comments" Visible="true" SortExpression="Comments">
                                         <ItemTemplate >
-                                            <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="SetToolTip(this);" Height="40px" />
+                                            <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="UpdateToolTip(this);" Height="40px" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="File" Visible="true">
@@ -195,6 +195,7 @@
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
     <script type="text/javascript">
         function SetToolTip (ddl)
         {
@@ -235,7 +236,7 @@
         }
         function ConsoleLog (this)
         {
-            console.log("hi");
+            //console.log("hi");
         }
         function submitData ()
         {

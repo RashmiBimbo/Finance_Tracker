@@ -86,4 +86,5 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
 </asp:Content>

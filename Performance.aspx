@@ -38,7 +38,7 @@
                             </div>
                             <asp:Label runat="server" AssociatedControlID="DdlTypeM" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-sm-2 col-md-2">
-                                <asp:DropDownList runat="server" ID="DdlTypeM" CssClass="form-control" Enabled="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                                <asp:DropDownList runat="server" ID="DdlTypeM" CssClass="form-control" Enabled="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                     <asp:ListItem Value="" Selected="True">Select</asp:ListItem>
                                     <asp:ListItem Value="M">Monthly</asp:ListItem>
                                     <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -48,7 +48,7 @@
                             <div id="DivWeekM" runat="server" visible="true">
                                 <asp:Label runat="server" AssociatedControlID="DdlWeekM" CssClass="col-md-2 control-label" ID="LblWeek">Week no.<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlWeekM" CssClass="form-control" OnSelectedIndexChanged="DdlWeek_SelectedIndexChanged" AutoPostBack="true" onchange="SetToolTip(this);">
+                                    <asp:DropDownList runat="server" ID="DdlWeekM" CssClass="form-control" OnSelectedIndexChanged="DdlWeek_SelectedIndexChanged" AutoPostBack="true" onchange="UpdateToolTip(this);">
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                         <asp:ListItem Value="1">1</asp:ListItem>
                                         <asp:ListItem Value="2">2</asp:ListItem>
@@ -72,10 +72,7 @@
                         <div runat="server" id="DivGVBtn" visible="false">
                             <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto;" runat="server" visible="true" id="DivGVAdd">
                                 <asp:GridView ID="GVAdd"
-                                    runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
-                                    Font-Size="Medium" ForeColor="#333333" GridLines="Both"
-                                    RowStyle-HorizontalAlign="LEFT" TabIndex="10"
-                                    OnDataBinding="GVAdd_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True">
+                                    runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover border" Font-Size="Medium" ForeColor="#333333" GridLines="Both" RowStyle-HorizontalAlign="LEFT" TabIndex="10" OnDataBinding="GVAdd_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True">
                                     <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" Width="0em" />
                                     <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
                                     <PagerSettings NextPageText="&gt;" PreviousPageText="&lt;" />
@@ -135,7 +132,7 @@
                         <div class="row">
                             <asp:Label runat="server" AssociatedControlID="DdlCatTypeS" CssClass="col-md-2 control-label">Category Type</asp:Label>
                             <div class="col-sm-2">
-                                <asp:DropDownList runat="server" ID="DdlCatTypeS" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                                <asp:DropDownList runat="server" ID="DdlCatTypeS" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                     <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
                                 </asp:DropDownList>
                                 <%--<asp:RequiredFieldValidator runat="server" ControlToValidate="DdlCatType1"
@@ -144,7 +141,7 @@
                             <asp:Label runat="server" AssociatedControlID="DdlCatS" CssClass="col-md-2 control-label">Category</asp:Label>
                             <div class="col-sm-2">
                                 <%-- <div class="form-group">--%>
-                                <asp:DropDownList runat="server" ID="DdlCatS" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                                <asp:DropDownList runat="server" ID="DdlCatS" CssClass="form-control text-capitalize" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                     <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
                                 </asp:DropDownList>
                                 <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlCat1"
@@ -153,7 +150,7 @@
                             <asp:Label runat="server" AssociatedControlID="DdlReportS" CssClass="col-md-2 control-label">Report</asp:Label>
                             <div class="col-sm-2">
                                 <asp:DropDownList runat="server" ID="DdlReportS" CssClass="form-control" OnDataBinding="DdlReport_DataBinding"
-                                    OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                                    OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                     <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
                                 </asp:DropDownList>
                                 <%--   <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlReport1"
@@ -164,7 +161,7 @@
                         <div class="row">
                             <asp:Label runat="server" AssociatedControlID="DdlTypeS" CssClass="col-md-2 control-label">Type</asp:Label>
                             <div class="col-sm-2">
-                                <asp:DropDownList runat="server" ID="DdlTypeS" CssClass="form-control" Enabled="False" onchange="SetToolTip(this);">
+                                <asp:DropDownList runat="server" ID="DdlTypeS" CssClass="form-control" Enabled="False" onchange="UpdateToolTip(this);">
                                     <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                                     <asp:ListItem Value="M">Monthly</asp:ListItem>
                                     <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -187,7 +184,7 @@
                             <div id="DivWeek1" runat="server" visible="false">
                                 <asp:Label runat="server" AssociatedControlID="DdlWeekS" CssClass="col-md-2 control-label" ID="LblWeekS">Week no.</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlWeekS" CssClass="form-control" onchange="SetToolTip(this);">
+                                    <asp:DropDownList runat="server" ID="DdlWeekS" CssClass="form-control" onchange="UpdateToolTip(this);">
                                         <asp:ListItem Value="0">Select</asp:ListItem>
                                         <asp:ListItem Value="1">1</asp:ListItem>
                                         <asp:ListItem Value="2">2</asp:ListItem>
@@ -200,11 +197,11 @@
                             <div id="DivCmnts" runat="server" visible="false">
                                 <asp:Label runat="server" AssociatedControlID="TxtCmnts" ID="LblCmnts" CssClass="col-md-2 control-label">Comments</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:TextBox ID="TxtCmnts" runat="server" Width="160px" CssClass="form-control" BackColor="White" TextMode="MultiLine" Enabled="false" Height="40px" onchange="SetToolTip(this);"></asp:TextBox>
+                                    <asp:TextBox ID="TxtCmnts" runat="server" Width="160px" CssClass="form-control" BackColor="White" TextMode="MultiLine" Enabled="false" Height="40px" onchange="UpdateToolTip(this);"></asp:TextBox>
                                 </div>
                             </div>
                             <asp:Label runat="server" AssociatedControlID="FUReport" CssClass="col-md-2 control-label">Upload<span style="color:red">&nbsp*</span></asp:Label>
-                            <div class="col-sm-2">
+                            <div class="col-sm-2" id="DvUpload" runat="server">
                                 <asp:FileUpload ID="FUReport" runat="server" CssClass="form-control" />
                             </div>
                         </div>
@@ -213,7 +210,7 @@
                             <asp:UpdatePanel runat="server">
                                 <ContentTemplate>
                                     <div class="col-12">
-                                        <asp:LinkButton CssClass="control-label" ID="LnkReport" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" />
+                                        <asp:LinkButton CssClass="control-label " ID="LnkReport" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" />
                                     </div>
                                 </ContentTemplate>
                                 <Triggers>
@@ -250,19 +247,19 @@
                     <div class="row">
                         <asp:Label runat="server" AssociatedControlID="DdlCatType2" CssClass="col-md-2 control-label">Category Type</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlCatType2" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlCatType2" CssClass="form-control text-capitalize" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlCat2" CssClass="col-md-2 control-label">Category</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlCat2" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlCat2" CssClass="form-control text-capitalize" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlReport2" CssClass="col-md-2 control-label">Report</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlReport2" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlReport2" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
@@ -285,7 +282,7 @@
                         </div>--%>
                         <asp:Label runat="server" AssociatedControlID="DdlType2" CssClass="col-md-2 control-label">Type</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="">All</asp:ListItem>
                                 <asp:ListItem Value="M">Monthly</asp:ListItem>
                                 <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -295,7 +292,7 @@
                     <%-- </ContentTemplate>
                     </asp:UpdatePanel>--%>
                     <div class="row" style="margin-left: 2px;">
-                        <asp:Button runat="server" ID="BtnView2" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" UseSubmitBehavior="true" />
+                        <asp:Button runat="server" ID="BtnView2" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" UseSubmitBehavior="true" />
                     </div>
                     <br />
                     <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px;" runat="server" id="GVReportsDiv2">
@@ -404,19 +401,19 @@
                     <div class="row">
                         <asp:Label runat="server" AssociatedControlID="DdlCatType3" CssClass="col-md-2 control-label">Category Type</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlCatType3" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlCatType3" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlCat3" CssClass="col-md-2 control-label">Category</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlCat3" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlCat3" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlReport3" CssClass="col-md-2 control-label">Report</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlReport3" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlReport3" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="0">All</asp:ListItem>
                             </asp:DropDownList>
                         </div>
@@ -432,7 +429,7 @@
                         </div>
                         <label class="col-lg-2 control-label">Type</label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True" onchange="SetToolTip(this);">
+                            <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" AutoPostBack="True" onchange="UpdateToolTip(this);">
                                 <asp:ListItem Value="">All</asp:ListItem>
                                 <asp:ListItem Value="M">Monthly</asp:ListItem>
                                 <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -440,7 +437,7 @@
                         </div>
                     </div>
                     <div class="row" style="margin-left: 2px;">
-                        <asp:Button runat="server" ID="BtnView3" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" Width="83px" />
+                        <asp:Button runat="server" ID="BtnView3" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" />
                     </div>
                     <br />
                     <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv3">
@@ -489,6 +486,7 @@
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="assets/libs/Common.js" type="text/javascript"></script>
     <script>
         //$(document).ready(function ()
         //{

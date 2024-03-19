@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Finance_Tracker.ADMIN
+namespace Finance_Tracker.Masters
 {
 
 
@@ -15,22 +15,13 @@ namespace Finance_Tracker.ADMIN
     {
 
         /// <summary>
-        /// UpdatePanel1 control.
+        /// Menu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-
-        /// <summary>
-        /// Menu1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Menu Menu1;
+        protected global::System.Web.UI.WebControls.Menu Menu;
 
         /// <summary>
         /// MultiView1 control.
@@ -42,22 +33,40 @@ namespace Finance_Tracker.ADMIN
         protected global::System.Web.UI.WebControls.MultiView MultiView1;
 
         /// <summary>
-        /// tabAdd control.
+        /// TabAdd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.View tabAdd;
+        protected global::System.Web.UI.WebControls.View TabAdd;
 
         /// <summary>
-        /// DdlCat control.
+        /// DdlCatTypeA control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlCat;
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatTypeA;
+
+        /// <summary>
+        /// DdlCatA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatA;
+
+        /// <summary>
+        /// DvRprtNm control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvRprtNm;
 
         /// <summary>
         /// TxtReportName control.
@@ -87,13 +96,49 @@ namespace Finance_Tracker.ADMIN
         protected global::System.Web.UI.WebControls.TextBox TxtWeight;
 
         /// <summary>
-        /// DdlType control.
+        /// DdlTypeA control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlType;
+        protected global::System.Web.UI.WebControls.DropDownList DdlTypeA;
+
+        /// <summary>
+        /// DvDuDt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvDuDt;
+
+        /// <summary>
+        /// DvTxtDuDt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvTxtDuDt;
+
+        /// <summary>
+        /// TxtDuDt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtDuDt;
+
+        /// <summary>
+        /// DvWkDay control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvWkDay;
 
         /// <summary>
         /// DdlWeekDay control.
@@ -105,22 +150,31 @@ namespace Finance_Tracker.ADMIN
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekDay;
 
         /// <summary>
-        /// NumericUpDownExtender1 control.
+        /// DvHY control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.NumericUpDownExtender NumericUpDownExtender1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvHY;
 
         /// <summary>
-        /// DdlDay control.
+        /// DdlHY control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DdlDay;
+        protected global::System.Web.UI.WebControls.DropDownList DdlHY;
+
+        /// <summary>
+        /// BtnCncl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnCncl;
 
         /// <summary>
         /// BtnAdd control.
@@ -132,21 +186,75 @@ namespace Finance_Tracker.ADMIN
         protected global::System.Web.UI.WebControls.Button BtnAdd;
 
         /// <summary>
-        /// Grid1div control.
+        /// LblRprtId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Grid1div;
+        protected global::System.Web.UI.WebControls.Label LblRprtId;
 
         /// <summary>
-        /// GVReport control.
+        /// TabEdit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVReport;
+        protected global::System.Web.UI.WebControls.View TabEdit;
+
+        /// <summary>
+        /// DdlCatTypeV control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatTypeV;
+
+        /// <summary>
+        /// DdlCatV control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlCatV;
+
+        /// <summary>
+        /// DdlTypeV control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlTypeV;
+
+        /// <summary>
+        /// BtnView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnView;
+
+        /// <summary>
+        /// GVReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GVReports;
+
+        /// <summary>
+        /// BtnDlt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnDlt;
     }
 }

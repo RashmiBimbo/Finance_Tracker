@@ -23,34 +23,40 @@
                     <StaticSelectedStyle BackColor="#5D7B9D" />
                 </asp:Menu>
             </div>
-<br />
+            <br />
             <div class="row">
                 <asp:Label runat="server" AssociatedControlID="DdlCatType" CssClass="col-md-2 control-label">Category Type</asp:Label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlCatType" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" onchange="updateTooltip(this);">
+                    <asp:DropDownList runat="server" ID="DdlCatType" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" >
                         <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <asp:Label runat="server" AssociatedControlID="DdlCat" CssClass="col-md-2 control-label">Category</asp:Label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlCat" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" onchange="updateTooltip(this);">
+                    <asp:DropDownList runat="server" ID="DdlCat" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True" >
                         <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <asp:Label runat="server" AssociatedControlID="DdlTasks" CssClass="col-md-2 control-label">Report</asp:Label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlTasks" CssClass="form-control" OnDataBinding="DdlTasks_DataBinding"
-                        onchange="updateTooltip(this);">
+                    <asp:DropDownList runat="server" ID="DdlTasks" CssClass="form-control" OnDataBinding="DdlTasks_DataBinding">
                         <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
                 </div>
             </div>
             <br />
             <div class="row">
+                <asp:Label runat="server" AssociatedControlID="DdlUsrType" CssClass="col-md-2 control-label">User Type</asp:Label>
+                <%--<label class="col-lg-2 control-label">User Type</label>--%>
+                <div class="col-sm-2">
+                    <asp:DropDownList runat="server" ID="DdlUsrType" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsrType_DataBinding" OnSelectedIndexChanged="DdlUsrType_SelectedIndexChanged">
+                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
+                    </asp:DropDownList>
+                </div>
                 <asp:Label runat="server" AssociatedControlID="DdlUsers" CssClass="col-md-2 control-label">User</asp:Label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsers" CssClass="form-control" OnDataBinding="DdlUsers_DataBinding" onchange="updateTooltip(this);">
-                        <asp:ListItem Value="0" Selected="True" onchange="updateTooltip(this);">All</asp:ListItem>
+                    <asp:DropDownList runat="server" ID="DdlUsers" CssClass="form-control" OnDataBinding="DdlUsers_DataBinding" >
+                        <asp:ListItem Value="0" Selected="True" >All</asp:ListItem>
                     </asp:DropDownList>
                 </div>
             </div>
@@ -77,10 +83,10 @@
                                     <%--0 --%>
                                     <asp:TemplateField Visible="true">
                                         <HeaderTemplate>
-                                            <asp:CheckBox ID="CBAddH" runat="server" AutoPostBack="true" OnCheckedChanged="CBAddH_CheckedChanged" TextAlign="Right" ToolTip="Add" />
+                                            <asp:CheckBox ID="CBAddH" runat="server" AutoPostBack="true" OnCheckedChanged="CBAddH_CheckedChanged" TextAlign="Right" ToolTip="Assign" />
                                         </HeaderTemplate>
                                         <ItemTemplate>
-                                            <asp:CheckBox ID="CBAdd" runat="server" ToolTip="Add" AutoPostBack="true" OnCheckedChanged="CBAdd_CheckedChanged" />
+                                            <asp:CheckBox ID="CBAdd" runat="server" ToolTip="Assign" AutoPostBack="true" OnCheckedChanged="CBAdd_CheckedChanged" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <%--1 --%>
@@ -147,13 +153,14 @@
                         </div>
                         <br />
                         <div class="row" style="margin-left: 2px;">
-                            <asp:Button runat="server" ID="BtnDlt" OnClick="BtnDlt_Click" Text="Unassign" CssClass="btn btn-primary" ForeColor="White" Enabled="false" />
+                            <asp:Button runat="server" ID="BtnUnAssign" OnClick="BtnUnAssign_Click" Text="Unassign" CssClass="btn btn-primary" ForeColor="White" Enabled="false" />
                         </div>
                     </div>
                 </asp:View>
             </asp:MultiView>
         </div>
     </div>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
     <script>
         function ToggleClass (ctrl1, ctrl2)
         {
@@ -167,7 +174,7 @@
                 ctrl2.className = "";
             }
         }
-        function updateTooltip (ddl)
+        function UpdateToolTip (ddl)
         {
             if (ddl.selectedIndex !== -1)
             {

@@ -3,13 +3,14 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajx" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <h2><%: Title %>.</h2>
     <p class="text-danger">
         <asp:Literal runat="server" ID="ErrorMessage" />
     </p>
     <div class="form-horizontal">
         <br />
-        <h3>Create a new account</h3>
+        <br />
+        <br />
+        <h3>Register</h3>
         <hr />
         <asp:UpdatePanel runat="server" ID="UpdatePanel1">
             <ContentTemplate>
@@ -94,4 +95,5 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
 </asp:Content>

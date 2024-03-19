@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Review"  Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Review.aspx.cs" Inherits="Finance_Tracker.Review" EnableEventValidation="true" MaintainScrollPositionOnPostback="True" Async="True" %>
+﻿<%@ Page Title="Review" Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Review.aspx.cs" Inherits="Finance_Tracker.Review" EnableEventValidation="true" MaintainScrollPositionOnPostback="True" Async="True" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="form-horizontal">
@@ -15,7 +15,7 @@
                     <DynamicMenuStyle BackColor="#F7F6F3" />
                     <DynamicSelectedStyle BackColor="#5D7B9D" />
                     <Items>
-                        <asp:MenuItem Text="View Submitted Tasks |" Value="0" Selected="true"></asp:MenuItem>
+                        <asp:MenuItem Text="Approved Tasks" Value="0"></asp:MenuItem>
                     </Items>
                     <StaticHoverStyle BackColor="#7C6F57" ForeColor="White" />
                     <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
@@ -31,19 +31,19 @@
                                 <asp:Label runat="server" AssociatedControlID="DdlCatType" CssClass="col-md-2 control-label">Category Type</asp:Label>
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlCatType" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True">
-                                        <asp:ListItem Value="0">Select</asp:ListItem>
+                                        <asp:ListItem Value="0">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlCat" CssClass="col-md-2 control-label">Category</asp:Label>
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlCat" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCat_SelectedIndexChanged" AutoPostBack="True">
-                                        <asp:ListItem Value="0">Select</asp:ListItem>
+                                        <asp:ListItem Value="0">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlReport" CssClass="col-md-2 control-label">Report</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlReport" CssClass="form-control" OnDataBinding="DdlReport_DataBinding" OnSelectedIndexChanged="DdlReport_SelectedIndexChanged" AutoPostBack="True">
-                                        <asp:ListItem Value="0">Select</asp:ListItem>
+                                    <asp:DropDownList runat="server" ID="DdlReport" CssClass="form-control" OnDataBinding="DdlReport_DataBinding">
+                                        <asp:ListItem Value="0">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <br />
@@ -52,18 +52,18 @@
                                 <label class="col-lg-2 control-label">User Type</label>
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlUsrType" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsrType_DataBinding" OnSelectedIndexChanged="DdlUsrType_SelectedIndexChanged">
-                                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
+                                        <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <label class="col-lg-2 control-label">User</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsr_DataBinding" OnSelectedIndexChanged="DdlUsr_SelectedIndexChanged">
-                                        <asp:ListItem Value="" Selected="True">Select</asp:ListItem>
+                                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" OnDataBinding="DdlUsr_DataBinding">
+                                        <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <label class="col-lg-2 control-label">Type</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" AutoPostBack="True">
+                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control">
                                         <asp:ListItem Value="">All</asp:ListItem>
                                         <asp:ListItem Value="M">Monthly</asp:ListItem>
                                         <asp:ListItem Value="W">Weekly</asp:ListItem>
@@ -138,7 +138,7 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="" Visible="false">
                                     <ItemTemplate>
-                                        <asp:HiddenField runat="server" ID="HFTaskId" Value='<%# Bind("Task_Id")%>' Visible="false"/>
+                                        <asp:HiddenField runat="server" ID="HFTaskId" Value='<%# Bind("Task_Id")%>' Visible="false" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -153,6 +153,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="assets/libs/Common.js" type="text/javascript"></script>
 
     <script type="text/javascript">
 

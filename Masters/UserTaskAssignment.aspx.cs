@@ -9,7 +9,7 @@ using static Finance_Tracker.DBOperations;
 
 namespace Finance_Tracker.Masters
 {
-    public partial class UserTaskAssignment : System.Web.UI.Page
+    public partial class UserTaskAssignment : Page
     {
         #region Fields
 
@@ -32,7 +32,8 @@ namespace Finance_Tracker.Masters
                 {
                     string approverId = IsAdmin ? null : UsrId;
                     string locnId = IsAdmin ? LocId : null;
-                    dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
+                    //dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
+                    dt = GetData("SP_Get_Unassigned_Tasks", UsrId, LocId);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
                     Session["UserTaskAssignment_GVAddDS"] = dt;
@@ -99,11 +100,11 @@ namespace Finance_Tracker.Masters
             UsrName = Session["User_Name"]?.ToString();
 
             IsAdmin = LoginTypes[roleId] == Admin;
-                if (!(IsAdmin || IsApprover))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+            if (!(IsAdmin || IsApprover))
+            {
+                Response.Redirect("~/Default");
+                return;
+            }
 
             if (!IsPostBack)
             {
@@ -112,8 +113,9 @@ namespace Finance_Tracker.Masters
 
                 DdlCatType.DataBind();
                 DdlCat.DataBind();
-                DdlUsers.DataBind();
                 DdlTasks.DataBind();
+                DdlUsrType.DataBind();
+                DdlUsers.DataBind();
 
                 chKGVViewCount = 0;
                 chKCountGVAdd = 0;
@@ -139,12 +141,12 @@ namespace Finance_Tracker.Masters
 
         protected void DdlTasks_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlTasks, "SP_Get_Reports", "0", DdlCat,
+            FillDdl(DdlTasks, "SP_Report_Get", "0", DdlCat,
                 new OleDbParameter[]
                 {
                      new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
                     ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
-                }
+                }, "Report_Name", "Report_Id"
             );
         }
 
@@ -152,10 +154,11 @@ namespace Finance_Tracker.Masters
         {
             if (IsAdmin)
             {
-                FillDdl(DdlUsers, "SP_Get_Users", "", null,
+                FillDdl(DdlUsers, "SP_Get_Users", emp, null,
                     new OleDbParameter[]
                     {
-                         new OleDbParameter("@Role_Id", "0")
+                         new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
+                         //new OleDbParameter("@Role_Id", "0")
                         ,new OleDbParameter("@Location_Id", LocId)
                     }
                 );
@@ -165,10 +168,20 @@ namespace Finance_Tracker.Masters
                 FillDdl(DdlUsers, "SP_Get_SubOrdinates", emp, null,
                     new OleDbParameter[]
                     {
-                        new OleDbParameter("@Approver_Id", UsrId)
+                         new OleDbParameter("@Approver_Id", UsrId)
+                        ,new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
                     }
                 );
             }
+        }
+
+        protected void DdlUsrType_DataBinding(object sender, EventArgs e)
+        {
+            FillDdl(DdlUsrType, "SP_Get_Roles", "0");
+            int roleId = Convert.ToInt32(Session["Role_Id"]);
+
+            DdlUsrType.Items.FindByValue("4").Enabled = roleId > 4;
+            DdlUsrType.Items.FindByValue("1").Enabled = roleId >= 4;
         }
 
         protected void Menu_MenuItemClick(object sender, MenuEventArgs e)
@@ -177,6 +190,11 @@ namespace Finance_Tracker.Masters
             MultiView1.ActiveViewIndex = slctItem;
             DivAdd.Visible = false;
             DivView.Visible = false;
+            DdlCatType.SelectedIndex = 0;
+            DdlCat.SelectedIndex = 0;
+            DdlTasks.SelectedIndex = 0;
+            DdlUsrType.SelectedIndex = 0;
+            DdlUsers.SelectedIndex = 0;
         }
 
         protected void DdlCatType_SelectedIndexChanged(object sender, EventArgs e)
@@ -190,6 +208,12 @@ namespace Finance_Tracker.Masters
         {
             DdlCat.ToolTip = DdlCat.SelectedItem.Text;
             DdlTasks.DataBind();
+        }
+
+        protected void DdlUsrType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DdlUsrType.ToolTip = DdlUsrType.SelectedItem.Text;
+            DdlUsers.DataBind();
         }
 
         protected void BtnView_Click(object sender, EventArgs e)
@@ -277,7 +301,8 @@ namespace Finance_Tracker.Masters
                 PopUp("Tasks assigned successfully!");
                 ResetGVAdd();
                 chKCountGVAdd = 0;
-            };
+                BtnAssign.Enabled = false;
+            }
         }
 
         #endregion TabAssign
@@ -323,7 +348,7 @@ namespace Finance_Tracker.Masters
                 chKGVViewCount = GVView.Rows.Count;
             else if (chKGVViewCount < 0)
                 chKGVViewCount = 0;
-            BtnDlt.Enabled = chKGVViewCount > 0;
+            BtnUnAssign.Enabled = chKGVViewCount > 0;
         }
 
         protected void CBEdit_CheckedChanged(object sender, EventArgs e)
@@ -335,13 +360,13 @@ namespace Finance_Tracker.Masters
                 chKGVViewCount = GVView.Rows.Count;
             else if (chKGVViewCount < 0)
                 chKGVViewCount = 0;
-            BtnDlt.Enabled = chKGVViewCount > 0;
+            BtnUnAssign.Enabled = chKGVViewCount > 0;
             GridViewRow row = GVView.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
             cbH.Checked = (GVView.Rows.Count == chKGVViewCount);
         }
 
-        protected void BtnDlt_Click(object sender, EventArgs e)
+        protected void BtnUnAssign_Click(object sender, EventArgs e)
         {
             string jsonParam = ConstructJSON("0", GVView, GVViewDS, chKGVViewCount);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
@@ -349,6 +374,7 @@ namespace Finance_Tracker.Masters
                 PopUp("Tasks unassigned successfully!");
                 ResetGVView();
                 chKGVViewCount = 0;
+                BtnUnAssign.Enabled = false;
             };
         }
 
@@ -356,7 +382,7 @@ namespace Finance_Tracker.Masters
 
         #region CommonCode
 
-        private void FillDdl(DropDownList ddl, string proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        private void FillDdl(DropDownList ddl, string proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = emp, string ValField = emp)
         {
             ddl.Items.Clear();
             ddl.Items.Add(new ListItem("All", selectVal));
@@ -372,9 +398,19 @@ namespace Finance_Tracker.Masters
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    if ((TxtField != emp) && ValField != emp)
                     {
-                        ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][TxtField].ToString(), dt.Rows[i][ValField].ToString()));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        }
                     }
                 }
             }
@@ -399,6 +435,7 @@ namespace Finance_Tracker.Masters
                              ,new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
                              ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
                              ,new OleDbParameter("@LocationId", locnId)
+                             ,new OleDbParameter("@RoleId", DdlUsrType.SelectedValue)
                          }
                     );
             }

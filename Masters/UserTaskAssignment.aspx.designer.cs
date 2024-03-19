@@ -24,24 +24,6 @@ namespace Finance_Tracker.Masters
         protected global::System.Web.UI.WebControls.Menu Menu;
 
         /// <summary>
-        /// CatalogZone1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.WebParts.CatalogZone CatalogZone1;
-
-        /// <summary>
-        /// PageCatalogPart1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.WebParts.PageCatalogPart PageCatalogPart1;
-
-        /// <summary>
         /// DdlCatType control.
         /// </summary>
         /// <remarks>
@@ -67,6 +49,15 @@ namespace Finance_Tracker.Masters
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlTasks;
+
+        /// <summary>
+        /// DdlUsrType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlUsrType;
 
         /// <summary>
         /// DdlUsers control.
@@ -159,12 +150,12 @@ namespace Finance_Tracker.Masters
         protected global::System.Web.UI.WebControls.GridView GVView;
 
         /// <summary>
-        /// BtnDlt control.
+        /// BtnUnAssign control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnDlt;
+        protected global::System.Web.UI.WebControls.Button BtnUnAssign;
     }
 }

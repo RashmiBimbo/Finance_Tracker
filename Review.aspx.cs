@@ -1,9 +1,7 @@
-﻿using AjaxControlToolkit;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Web;
@@ -15,15 +13,9 @@ namespace Finance_Tracker
 {
     public partial class Review : System.Web.UI.Page
     {
-        const string DateFormat = "dd-MMM-yyyy";
         const string MonthFormat = "MMM-yyyy";
         const string SqlDateFormat = "yyyy-MM-dd";
-        private readonly DateTime today = Today;
-        private readonly int crntYr = Today.Year;
-        private readonly int crntMnth = Today.Month;
-        private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
-        private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
-        private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
+        const string emp = "";
         private readonly DBOperations DBOprn = new DBOperations();
         private static int chKCount = 0;
 
@@ -104,8 +96,11 @@ namespace Finance_Tracker
                 }
                 TxtMnth.Attributes.Add("autocomplete", "off");
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
-                DdlCatType_DataBinding(DdlCatType, new EventArgs());
+                //DdlCatType_DataBinding(DdlCatType, new EventArgs());
+                //DdlCat.DataBind();
+                //DdlReport.DataBind();
                 DdlUsrType_DataBinding(DdlUsrType, new EventArgs());
+                DdlUsr.DataBind();
                 chKCount = 0;
             }
         }
@@ -146,7 +141,7 @@ namespace Finance_Tracker
             {
                 prntddl = DdlCatType;
             }
-            FillDdl(ddl, "SP_Get_Categories", "0", prntddl,
+            FillDdl(ddl, "SP_Get_Categories", "0", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Type_Id", prntddl.SelectedValue)
@@ -161,12 +156,12 @@ namespace Finance_Tracker
             {
                 prntddl = DdlCat;
             }
-
-            FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
+            FillDdl(DdlReport, "SP_Report_Get", "0", DdlCat,
                 new OleDbParameter[]
                 {
-                    new OleDbParameter("@Category_Id", prntddl.SelectedValue)
-                }
+                     new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
+                    ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
+                }, "Report_Name", "Report_Id"
             );
         }
 
@@ -181,7 +176,7 @@ namespace Finance_Tracker
 
         protected void DdlUsr_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlUsr, "SP_Get_Users", "", DdlUsrType,
+            FillDdl(DdlUsr, "SP_Get_Users", "", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
@@ -233,24 +228,36 @@ namespace Finance_Tracker
             DdlUsr.ToolTip = DdlUsr.SelectedItem.Text;
         }
 
-        private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+
+        private void FillDdl(DropDownList ddl, string proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = emp, string ValField = emp)
         {
             ddl.Items.Clear();
             ddl.Items.Add(new ListItem("All", selectVal));
             ddl.SelectedIndex = 0;
             ddl.ToolTip = "All";
 
-            if (prntDdl != null && prntDdl.SelectedIndex == 0)
-                return;
+            //if (prntDdl != null && prntDdl.SelectedIndex == 0)
+            //    return;
+
             try
             {
                 DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    if ((TxtField != emp) && ValField != emp)
                     {
-                        ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][TxtField].ToString(), dt.Rows[i][ValField].ToString()));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        }
                     }
                 }
             }

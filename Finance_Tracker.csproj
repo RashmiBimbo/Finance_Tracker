@@ -183,6 +183,8 @@
     <Content Include="Account\ResetPasswordConfirmation.aspx" />
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
     <Content Include="Account\VerifyPhoneNumber.aspx" />
+    <Content Include="assets\libs\Common.css" />
+    <Content Include="assets\libs\Common.js" />
     <Content Include="Masters\Category.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-datepicker.css" />
@@ -257,6 +259,7 @@
     <Content Include="Review.aspx" />
     <Content Include="Performance_old.aspx" />
     <Content Include="Masters\Reports.aspx" />
+    <Content Include="libman.json" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />

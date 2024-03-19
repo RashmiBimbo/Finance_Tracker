@@ -80,7 +80,7 @@ namespace Finance_Tracker
             LnkRegister.Visible = isAdmin || isSuprAdmin;
             LnkApprove.Visible = isApprover;
             LnkMasters.Visible = isAdmin || isApprover;
-            LnkReports.Visible = false;
+            LnkReports.Visible = isAdmin || isApprover;
             LnkUTA.Visible = isAdmin || isApprover;
         }
 
