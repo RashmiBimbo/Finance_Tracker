@@ -27,7 +27,7 @@ namespace Finance_Tracker
                 DataTable dt = (DataTable)Session["Performance_DdlReport1DS"];
                 if ( !(dt?.Rows.Count > 0) )
                 {
-                    dt = DBOprn.GetDataProc("SP_Get_Reports", DBOprn.ConnPrimary,
+                    dt = DBOprn.GetDataProc("SP_Report_Get", DBOprn.ConnPrimary,
                         new OleDbParameter[]
                         {
                             new OleDbParameter("@Category_Id", DdlCat1.SelectedValue)
@@ -55,7 +55,7 @@ namespace Finance_Tracker
                 string usrId = Session["User_Id"]?.ToString();
                 if ( usrId == null || usrId == "" )
                 {
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
                     return;
                 }
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
@@ -205,7 +205,7 @@ namespace Finance_Tracker
                 prntddl = DdlCat3;
             }
 
-            FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
+            FillDdl(ddl, "SP_Report_Get", "0", prntddl,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Category_Id", prntddl.SelectedValue)
@@ -264,7 +264,7 @@ namespace Finance_Tracker
                 string type = row[2].ToString().Trim();
                 DdlType1.SelectedValue = type;
 
-                bool isWeekly = type.Equals("W");
+                bool isWeekly = type.Equals("Weekly");
                 DivWeek1.Visible = isWeekly;
                 DdlWeek1.Enabled = isWeekly;
 
@@ -284,7 +284,7 @@ namespace Finance_Tracker
         {
             ddl.Items.Clear();
             ddl.Items.Add(new ListItem("Select", selectVal));
-            ddl.SelectedIndex = 0;
+            ddl.SelectedValue=selectVal;
             ddl.ToolTip = "Select";
 
             if ( prntDdl != null && prntDdl.SelectedIndex == 0 )
@@ -374,7 +374,7 @@ namespace Finance_Tracker
                     {
                         Directory.CreateDirectory(saveFolder);
                     }
-                    string dueDt = DdlType1.SelectedValue == "M" ? TxtDueDt.Text : "Week_" + DdlWeek1.SelectedValue + "_" + TxtMnth1.Text;
+                    string dueDt = DdlType1.SelectedValue == "Monthly" ? TxtDueDt.Text : "Week_" + DdlWeek1.SelectedValue + "_" + TxtMnth1.Text;
                     string fullPath = $@"{saveFolder}\[{Session["User_Name"]}]_[{DdlReport1.SelectedItem.Text}]_Due Date[{dueDt}]_Add Date[{DateTime.Now.Date.ToString(DateFormat)}]{Path.GetExtension(file.FileName)}";
 
                     string Report_Id = DdlReport1.SelectedValue;
@@ -431,7 +431,7 @@ namespace Finance_Tracker
                 PopUp("Please select a month!");
                 return false;
             }
-            if ( DdlType1.SelectedValue == "W" && DdlWeek1.SelectedValue == "0" )
+            if ( DdlType1.SelectedValue == "Weekly" && DdlWeek1.SelectedValue == "0" )
             {
                 PopUp("Please select a week!");
                 return false;

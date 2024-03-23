@@ -3,13 +3,14 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajx" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <h2><%: Title %>.</h2>
     <p class="text-danger">
         <asp:Literal runat="server" ID="ErrorMessage" />
     </p>
     <div class="form-horizontal">
         <br />
-        <h3>Create a new account</h3>
+        <br />
+        <br />
+        <h3>Register</h3>
         <hr />
         <asp:UpdatePanel runat="server" ID="UpdatePanel1">
             <ContentTemplate>
@@ -69,7 +70,7 @@
                 <div class="form-group">
                     <asp:Label runat="server" AssociatedControlID="DdlRole" CssClass="col-md-2 control-label">Role<span style="color:red">&nbsp*</span></asp:Label>
                     <div class="col-md-10">
-                        <asp:DropDownList runat="server" ID="DdlRole" CssClass="form-control" OnDataBinding="DdlRole_DataBinding" Width="40%" />
+                        <asp:DropDownList runat="server" ID="DdlRole" CssClass="form-control" OnDataBinding="DdlRole_DataBinding" Width="40%" onchange="UpdateToolTip(this);" />
                         <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlRole"
                             CssClass="text-danger" Display="Dynamic" ErrorMessage="Role Name is required." />--%>
                     </div>
@@ -77,7 +78,7 @@
                 <div class="form-group">
                     <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location<span style="color:red">&nbsp*</span></asp:Label>
                     <div class="col-md-10">
-                        <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="40%" />
+                        <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="40%" onchange="UpdateToolTip(this);" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -94,4 +95,5 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
 </asp:Content>

@@ -1,0 +1,19 @@
+﻿hr {
+    padding: 1px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: inherit;
+    line-height: 2px
+}
+th {
+    background-color: #01255a !important;
+    background: #01255a !important;
+    color: white !important;
+    position: sticky !important;
+    top: 0;
+    box-shadow: 0 2px 2px -1px #01255a;
+}
+
+th, td {
+    padding: 0.25rem;
+}

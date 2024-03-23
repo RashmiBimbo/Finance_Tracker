@@ -1,9 +1,7 @@
-﻿using AjaxControlToolkit;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Web;
@@ -15,15 +13,9 @@ namespace Finance_Tracker
 {
     public partial class Review : System.Web.UI.Page
     {
-        const string DateFormat = "dd-MMM-yyyy";
         const string MonthFormat = "MMM-yyyy";
         const string SqlDateFormat = "yyyy-MM-dd";
-        private readonly DateTime today = Today;
-        private readonly int crntYr = Today.Year;
-        private readonly int crntMnth = Today.Month;
-        private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
-        private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
-        private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
+        const string Emp = "";
         private readonly DBOperations DBOprn = new DBOperations();
         private static int chKCount = 0;
 
@@ -94,18 +86,19 @@ namespace Finance_Tracker
             {
                 string usrId = Session["User_Id"]?.ToString();
                 if (usrId == null || usrId == "")
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
 
                 int RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
                 if (!(RoleId == 1 || RoleId == 4))
                 {
-                    Response.Redirect("~/Default.aspx");
+                    Response.Redirect("~/Default");
                     return;
                 }
                 TxtMnth.Attributes.Add("autocomplete", "off");
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
-                DdlCatType_DataBinding(DdlCatType, new EventArgs());
+                DdlType.DataBind();
                 DdlUsrType_DataBinding(DdlUsrType, new EventArgs());
+                DdlUsr.DataBind();
                 chKCount = 0;
             }
         }
@@ -128,7 +121,6 @@ namespace Finance_Tracker
             {
                 GVReports.DataSource = null;
                 GVReports.Visible = false;
-                //TxtMnth.Text = DateTime.Now.ToString(MonthFormat);
                 TxtMnth.Text = TextBoxWatermarkExtender1.WatermarkText;
             }
         }
@@ -146,10 +138,10 @@ namespace Finance_Tracker
             {
                 prntddl = DdlCatType;
             }
-            FillDdl(ddl, "SP_Get_Categories", "0", prntddl,
+            FillDdl(ddl, "SP_Get_Categories", "0", "All", null,
                 new OleDbParameter[]
                 {
-                    new OleDbParameter("@Type_Id", prntddl.SelectedValue)
+                    new OleDbParameter("@Category_Type_Id", prntddl.SelectedValue)
                 }
             );
         }
@@ -161,12 +153,12 @@ namespace Finance_Tracker
             {
                 prntddl = DdlCat;
             }
-
-            FillDdl(ddl, "SP_Get_Reports", "0", prntddl,
+            FillDdl(DdlReport, "SP_Report_Get", "0", "All", null,
                 new OleDbParameter[]
                 {
-                    new OleDbParameter("@Category_Id", prntddl.SelectedValue)
-                }
+                     new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
+                    ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
+                }, "Report_Name", "Report_Id"
             );
         }
 
@@ -176,16 +168,16 @@ namespace Finance_Tracker
             int roleId = Convert.ToInt32(Session["Role_Id"]);
 
             DdlUsrType.Items.FindByValue("4").Enabled = roleId > 4;
-            DdlUsrType.Items.FindByValue("1").Enabled = roleId == 4;
+            DdlUsrType.Items.FindByValue("1").Enabled = roleId >= 4;
         }
 
         protected void DdlUsr_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlUsr, "SP_Get_Users", "", DdlUsrType,
+            FillDdl(DdlUsr, "SP_Get_Users", Emp, "All", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
-                   ,new OleDbParameter("@Location_Id", Session["Location_Id"].ToString())                   
+                   ,new OleDbParameter("@Location_Id", Session["Location_Id"].ToString())
                 }
             );
         }
@@ -233,24 +225,41 @@ namespace Finance_Tracker
             DdlUsr.ToolTip = DdlUsr.SelectedItem.Text;
         }
 
-        private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        protected void DdlType_DataBinding(object sender, EventArgs e)
+        {
+            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+        }
+
+
+        private void FillDdl(DropDownList ddl, string proc, string selectVal, string selectTxt = "All", DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = "", string ValField = "")
         {
             ddl.Items.Clear();
-            ddl.Items.Add(new ListItem("All", selectVal));
-            ddl.SelectedIndex = 0;
-            ddl.ToolTip = "All";
+            ddl.Items.Add(new ListItem(selectTxt, selectVal));
+            ddl.SelectedValue = selectVal;
+            ddl.ToolTip = selectTxt;
 
             if (prntDdl != null && prntDdl.SelectedIndex == 0)
                 return;
+
             try
             {
                 DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    if ((TxtField != Emp) && ValField != Emp)
                     {
-                        ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][TxtField].ToString(), dt.Rows[i][ValField].ToString()));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        }
                     }
                 }
             }
@@ -259,6 +268,7 @@ namespace Finance_Tracker
                 PopUp(ex.Message);
             }
         }
+
 
         protected void BtnView_Click(object sender, EventArgs e)
         {

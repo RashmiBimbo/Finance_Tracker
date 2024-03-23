@@ -51,6 +51,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivAddMultiple;
 
         /// <summary>
+        /// DvMnth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvMnth;
+
+        /// <summary>
         /// TxtMnthM control.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,15 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.CalendarExtender CETxtMnthM;
+
+        /// <summary>
+        /// LblTypM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblTypM;
 
         /// <summary>
         /// DdlTypeM control.
@@ -114,6 +132,33 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekM;
 
         /// <summary>
+        /// DvHY control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvHY;
+
+        /// <summary>
+        /// LblHy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblHy;
+
+        /// <summary>
+        /// DdlHY control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlHY;
+
+        /// <summary>
         /// BtnViewAssTask control.
         /// </summary>
         /// <remarks>
@@ -123,13 +168,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.Button BtnViewAssTask;
 
         /// <summary>
-        /// DivGVBtn control.
+        /// DivGVBtnM control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivGVBtn;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivGVBtnM;
 
         /// <summary>
         /// DivGVAdd control.
@@ -195,6 +240,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlReportS;
 
         /// <summary>
+        /// LblTypS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblTypS;
+
+        /// <summary>
         /// DdlTypeS control.
         /// </summary>
         /// <remarks>
@@ -256,6 +310,60 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekS;
+
+        /// <summary>
+        /// DvHyS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvHyS;
+
+        /// <summary>
+        /// DdlHyS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlHyS;
+
+        /// <summary>
+        /// DivCmnts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivCmnts;
+
+        /// <summary>
+        /// LblCmnts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblCmnts;
+
+        /// <summary>
+        /// TxtCmnts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtCmnts;
+
+        /// <summary>
+        /// DvUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvUpload;
 
         /// <summary>
         /// FUReport control.

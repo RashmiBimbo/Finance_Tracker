@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Approve.aspx.cs" Inherits="Finance_Tracker.Approve" EnableEventValidation="false" Title="Approve Submitted Tasks" %>
+﻿<%@ Page Title="Approve Submitted Tasks" Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="Approve.aspx.cs" Inherits="Finance_Tracker.Approve" EnableEventValidation="true" MaintainScrollPositionOnPostback="True" Async="True" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="form-horizontal">
@@ -36,15 +36,15 @@
                 </div>
                 <label class="col-lg-2 control-label">Type</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" onchange="updateTooltip(this);">
+                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" OnDataBinding="DdlType_DataBinding" onchange="UpdateToolTip(this);">
                         <asp:ListItem Value="">All</asp:ListItem>
-                        <asp:ListItem Value="M">Monthly</asp:ListItem>
-                        <asp:ListItem Value="W">Weekly</asp:ListItem>
+                        <asp:ListItem Value="Monthly">Monthly</asp:ListItem>
+                        <asp:ListItem Value="Weekly">Weekly</asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <label class="col-lg-2 control-label">User</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" onchange="updateTooltip(this);"
+                    <asp:DropDownList runat="server" ID="DdlUsr" CssClass="form-control" onchange="UpdateToolTip(this);"
                         OnDataBinding="DdlUsr_DataBinding">
                         <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
@@ -78,7 +78,7 @@
                                 <Columns>
                                     <asp:TemplateField HeaderText="Approve" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                         <HeaderTemplate>
-                                            <asp:CheckBox ID="CBApprovH" runat="server" OnCheckedChanged="CBApprovH_CheckedChanged" AutoPostBack="true" ToolTip="Approve" Text=""></asp:CheckBox>
+                                            <asp:CheckBox ID="CBApprovH" runat="server" OnCheckedChanged="CBApprovH_CheckedChanged" AutoPostBack="true" Text=""></asp:CheckBox>
                                         </HeaderTemplate>
                                         <ItemTemplate>
                                             <asp:CheckBox ID="CBApprov" OnCheckedChanged="CBApprov_CheckedChanged" AutoPostBack="true" runat="server"></asp:CheckBox>
@@ -93,7 +93,12 @@
                                     <asp:BoundField DataField="Type" HeaderText="Type" />
                                     <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                     <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
-                                    <asp:TemplateField HeaderText="File" Visible="true">
+                                    <asp:TemplateField HeaderText="Comments" Visible="true">
+                                        <ItemTemplate>
+                                            <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="UpdateToolTip(this);" Height="40px" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="File" Visible="true" >
                                         <ItemTemplate>
                                             <asp:LinkButton ID="LBLocn" runat="server" ForeColor="#3366FF" OnClientClick=""
                                                 Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'
@@ -111,6 +116,7 @@
                             </asp:GridView>
                         </div>
                         <div class="row" style="margin-left: 2px;">
+                            <asp:Button runat="server" ID="BtnReject1" OnClick="BtnReject1_Click" Text="Reject" CssClass="col-2 btn btn-default" ForeColor="White" Enabled="False" />
                             <asp:Button runat="server" ID="BtnApprove" OnClick="BtnApprove_Click" Text="Approve" CssClass="btn btn-primary" ForeColor="White" Enabled="False" />
                         </div>
                     </div>
@@ -132,7 +138,7 @@
                                 <EditRowStyle BackColor="#7C6F57" />
                                 <AlternatingRowStyle BackColor="#7ad0ed" />
                                 <Columns>
-                                    <asp:TemplateField HeaderText="Approve" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
+                                    <asp:TemplateField Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                         <HeaderTemplate>
                                             <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Approve" Text=""></asp:CheckBox>
                                         </HeaderTemplate>
@@ -150,6 +156,11 @@
                                     <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                     <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                     <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
+                                    <asp:TemplateField HeaderText="Comments" Visible="true" SortExpression="Comments">
+                                        <ItemTemplate >
+                                            <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="UpdateToolTip(this);" Height="40px" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:TemplateField HeaderText="File" Visible="true">
                                         <ItemTemplate>
                                             <asp:LinkButton ID="LBLocn" runat="server" ForeColor="#3366FF" ToolTip='<%# Bind("Location")%>'
@@ -184,8 +195,9 @@
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
     <script type="text/javascript">
-        function updateTooltip (ddl)
+        function SetToolTip (ddl)
         {
             if (ddl.selectedIndex !== -1)
             {
@@ -224,7 +236,7 @@
         }
         function ConsoleLog (this)
         {
-            console.log( "hi");
+            //console.log("hi");
         }
         function submitData ()
         {

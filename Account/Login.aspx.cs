@@ -65,7 +65,7 @@ namespace Finance_Tracker.Account
                         PopUp("User exists but it is not active!");
                         return;
                     }
-                    if (roleID != 4 && DdlLocn.SelectedIndex == 0)
+                    if (roleID != 4 && DdlLocn.SelectedValue == "0")
                     {
                         PopUp("Please select a Location!");
                         return;
@@ -92,12 +92,12 @@ namespace Finance_Tracker.Account
                         // Register the ChngPswd() function as a client script block
                         //string script = "<script type='text/javascript'>ChngPswd();</script>";
                         //ScriptManager.RegisterStartupScript(this, this.GetType(), "confirmScript", script, false);
-                        Response.Redirect("~/Account/ResetPassword.aspx");
+                        Response.Redirect("~/Account/ResetPassword");
                         return;
                     }
                     else
                     {
-                        Response.Redirect("~/Default.aspx");
+                        Response.Redirect("~/Default");
                         return;
                     }
                 }
@@ -112,18 +112,18 @@ namespace Finance_Tracker.Account
 
         private void FillSession(DataTable dt)
         {
-            Session["User_Id"] = dt.Rows[0]["User_Id"];
-            Session["User_Name"] = dt.Rows[0]["User_Name"];
-            Session["Company_Id"] = dt.Rows[0]["Company_Id"];
-            Session["Sub_Company_Id"] = dt.Rows[0]["Sub_Company_Id"];
+            Session["User_Id"] = dt.Rows[0]["User_Id"]?.ToString().Trim().ToUpper();
+            Session["User_Name"] = dt.Rows[0]["User_Name"]?.ToString().Trim();
+            Session["Company_Id"] = dt.Rows[0]["Company_Id"]?.ToString().Trim().ToUpper();
+            Session["Sub_Company_Id"] = dt.Rows[0]["Sub_Company_Id"]?.ToString().Trim().ToUpper();
             Session["Role_Id"] = dt.Rows[0]["Role_Id"];
-            Session["Login_Type"] = dt.Rows[0]["Login_Type"];
+            Session["Login_Type"] = dt.Rows[0]["Login_Type"]?.ToString().Trim().ToUpper();
             Session["Active"] = (bool)dt.Rows[0]["Active"];
             Session["Flag"] = (bool)dt.Rows[0]["Flag"];
             Session["Change_Password_Date"] = dt.Rows[0]["Change_Password_Date"];
             Session["Address"] = dt.Rows[0]["Address"];
             Session["IP_Address"] = dt.Rows[0]["IP_Address"];
-            Session["Location_Id"] = dt.Rows[0]["Location_Id"];
+            Session["Location_Id"] = dt.Rows[0]["Location_Id"].ToString().ToUpper().Trim();
             Session["Created_Date"] = dt.Rows[0]["Created_Date"];
             Session["Created_By"] = dt.Rows[0]["Created_By"];
             Session["Modified_Date"] = dt.Rows[0]["Modified_Date"];

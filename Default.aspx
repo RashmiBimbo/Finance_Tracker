@@ -40,6 +40,7 @@
             </div>
         </div>--%>
     </div>
+    <script src="assets/libs/Common.js" type="text/javascript"></script>
     <script type="text/javascript">
 
         function ChngPswd ()

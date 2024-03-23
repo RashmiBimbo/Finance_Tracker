@@ -17,12 +17,12 @@ namespace Finance_Tracker
                 string usrId = Session["User_Id"]?.ToString();
                 if (usrId == null || usrId == "")
                 {
-                    Response.Redirect("~/Account/Login.aspx");
+                    Response.Redirect("~/Account/Login");
                     return;
                 }
                 if (!(bool)Session["Changed_Password"])
                 {
-                    Response.Redirect("~/Account/ResetPassword.aspx");
+                    Response.Redirect("~/Account/ResetPassword");
                     return;
                 }
             }

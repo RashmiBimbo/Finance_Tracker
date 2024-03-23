@@ -10,6 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> - Finance Tracker</title>
     <link rel="stylesheet" href="../Content/bootstrap-theme.css" />
+    <link href="~/logo-text.ico" rel="shortcut icon" type="image/x-icon" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 <body>
     <form runat="server" class="form-horizontal">
@@ -23,13 +26,13 @@
                         <hr />
                         <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
                             <p class="text-danger">
-                            <%--<asp:Literal runat="server" ID="FailureText" />--%>
+                                <%--<asp:Literal runat="server" ID="FailureText" />--%>
                             </p>
                         </asp:PlaceHolder>
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%"  onchange="updateTooltip(this);"/>
+                                <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%" />
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
                                     CssClass="text-danger" ErrorMessage="Location is required." Enabled="false" />
                             </div>
@@ -37,14 +40,14 @@
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtUserId" CssClass="col-md-2 control-label">User Id<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" AutoCompleteType="None"/>
+                                <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" AutoCompleteType="None" />
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId" CssClass="text-danger" ErrorMessage="User Id is required." />
                             </div>
                         </div>
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtPassword" CssClass="col-md-2 control-label">Password<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password" CssClass="form-control" Width="30%" AutoCompleteType="None"/>
+                                <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password" CssClass="form-control" Width="30%" AutoCompleteType="None" />
                                 <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtPassword" CssClass="text-danger" ErrorMessage="Password is required." />
                             </div>
                         </div>
@@ -76,14 +79,6 @@
             </div>
         </div>
     </form>
-    <script>
-        function updateTooltip (ddl)
-        {
-            if (ddl.selectedIndex !== -1)
-            {
-                ddl.title = ddl.options[ddl.selectedIndex].text;
-            }
-        }
-    </script>
+    <script src="../assets/libs/Common.js" type="text/javascript"></script>
 </body>
 </html>
