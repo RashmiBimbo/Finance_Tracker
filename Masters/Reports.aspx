@@ -34,21 +34,17 @@
                                     <asp:DropDownList runat="server" ID="DdlCatTypeA" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True" required="required">
                                         <asp:ListItem Text="Select" Selected="True" Value="0" />
                                     </asp:DropDownList>
-                                    <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlCatTypeA" CssClass="text-danger" ErrorMessage="Category Type is required." />--%>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlCatA" CssClass="col-md-2 control-label">Category<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlCatA" CssClass="form-control" OnDataBinding="DdlCat_DataBinding" required="required">
                                         <asp:ListItem Text="Select" Selected="True" Value="0" />
                                     </asp:DropDownList>
-                                    <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlCatA" CssClass="text-danger" ErrorMessage="Category is required." />--%>
                                 </div>
                                 <div runat="server" id="DvRprtNm">
                                     <asp:Label runat="server" AssociatedControlID="TxtReportName" CssClass="col-md-2 control-label">Report Name<span style="color:red">&nbsp*</span></asp:Label>
                                     <div class="col-sm-2">
                                         <asp:TextBox runat="server" ID="TxtReportName" TextMode="MultiLine" CssClass="form-control" MaxLength="150" Height="40px" required="required"></asp:TextBox>
-                                        <%--<asp:RequiredFieldValidator runat="server" ControlToValidate="TxtReportName"
-                                            CssClass="text-danger" ErrorMessage="Report Name is required." />--%>
                                     </div>
                                 </div>
                             </div>
@@ -57,22 +53,19 @@
                                 <asp:Label runat="server" AssociatedControlID="TxtPriority" CssClass="col-md-2 control-label">Priority<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
                                     <asp:TextBox runat="server" ID="TxtPriority" CssClass="form-control" required="required" TextMode="Number" MaxLength="2" min="1" max="99" />
-                                    <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtPriority"
-                                        CssClass="text-danger" ErrorMessage="Priority is required." />--%>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="TxtWeight" CssClass="col-md-2 control-label">Weight<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
                                     <asp:TextBox runat="server" ID="TxtWeight" CssClass="form-control" required="required" TextMode="Number" MaxLength="2" min="1" max="99" />
-                                    <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtWeight"
-                                        CssClass="text-danger" ErrorMessage="Weight is required." />--%>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlTypeA" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlTypeA" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" required="required" OnDataBinding="DdlType_DataBinding">
+                                    <asp:DropDownList runat="server" ID="DdlTypeA" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" required="required">
                                         <asp:ListItem Text="Select" Value="" Selected="True" />
+                                        <asp:ListItem Text="Half Yearly" Value="Half Yearly" />
+                                        <asp:ListItem Text="Monthly" Value="Monthly" />
+                                        <asp:ListItem Text="Weekly" Value="Weekly" />
                                     </asp:DropDownList>
-                                    <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlTypeA"
-                                        CssClass="text-danger" ErrorMessage="Please select a type." />--%>
                                 </div>
                             </div>
                             <div class="row" runat="server" id="DvDuDt" visible="false">
@@ -92,8 +85,6 @@
                                         <asp:ListItem Text="Friday" Value="FRIDAY" />
                                         <asp:ListItem Text="Saturday" Value="SATURDAY" />
                                     </asp:DropDownList>
-                                    <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlWeekDay"
-                                        CssClass="text-danger" ErrorMessage="Due Date is required!" />--%>
                                 </div>
                                 <div class="col-sm-2" id="DvHY" runat="server" visible="false">
                                     <asp:DropDownList runat="server" ID="DdlHY" CssClass="form-control" required="required">
@@ -184,7 +175,6 @@
                             <div class="row" style="margin-left: 1px;">
                                 <asp:Button runat="server" ID="BtnDlt" OnClick="BtnDlt_Click" Text="Delete" CssClass="btn btn-primary font-weight-bold" Enabled="false" Visible="false" />
                             </div>
-                            <%--                            </div>--%>
                         </asp:View>
                     </asp:MultiView>
                 </contenttemplate>
@@ -193,8 +183,6 @@
     </div>
     <script src="../assets/libs/Common.js" type="text/javascript"></script>
     <script>                    
-        
-        
         function validateDropDown ()
         {
             var dropdown = document.getElementById("<%= DdlCatTypeA.ClientID %>");

@@ -1098,6 +1098,7 @@ namespace Finance_Tracker
                 new OleDbParameter("@Submit_To_Date",
                                     new DateTime(dt.Year, dt.Month, DaysInMonth(dt.Year, dt.Month)).ToString(SqlDateFormat)),
                 new OleDbParameter("@Submit_Week_No", DdlWeekS.SelectedValue),
+                new OleDbParameter("@Submit_Half_No", DdlHyS.SelectedValue),
                 new OleDbParameter("@Location", fullPath),
                 new OleDbParameter("@Created_By", UsrName)
             };
@@ -1124,6 +1125,7 @@ namespace Finance_Tracker
                 new OleDbParameter("@Submit_From_Date", Parse(TxtMnthS.Text)),
                 new OleDbParameter("@Submit_To_Date", Parse(TxtMnthS.Text)),
                 new OleDbParameter("@Submit_Week_No", DdlWeekS.SelectedValue),
+                new OleDbParameter("@Submit_Half_No", DdlHyS.SelectedValue),
                 new OleDbParameter("@Location", fullPath),
                 new OleDbParameter("@Created_By", UsrName),
                 new OleDbParameter("@Rec_Id", rec_Id)
@@ -1320,7 +1322,7 @@ namespace Finance_Tracker
                 DataRow dRo = GVReports2DS.Select($"Sno = {rowIndex + 1}")[0];
                 GridViewRow row = GVReports2.Rows[rowIndex];
 
-               string catTypID = dRo["CatTypeId"].ToString();
+                string catTypID = dRo["CatTypeId"].ToString();
                 DdlCatTypeS.Items?.Clear();
                 DdlCatTypeS.Items.Add(new ListItem(dRo["Category_Type"].ToString(), catTypID));
                 DdlCatTypeS.SelectedValue = catTypID;
@@ -1424,7 +1426,7 @@ namespace Finance_Tracker
                     case "LnkReportSbmt":
                     {
                         GridViewRow row = (GridViewRow)lnkBtn.NamingContainer;
-                        fullPath = ((HiddenField)row.Cells[9].Controls[1]).Value.ToString();
+                        fullPath = GVReports3DS.Select("Sno=" + row.RowIndex + 1)?[0]?["Location"].ToString();
                         break;
                     }
                     case "LnkReport":

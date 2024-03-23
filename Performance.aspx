@@ -449,23 +449,17 @@
                             <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="false" />
                             <Columns>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
-                                <%--<asp:BoundField DataField="User_Name" HeaderText="User Name" ReadOnly="True" />--%>
-                                <%--<asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />--%>
                                 <asp:BoundField DataField="Category_Name" HeaderText="Category Name" ReadOnly="True" />
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report name" ReadOnly="True" />
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                 <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                 <asp:BoundField DataField="Add_Date" HeaderText="Add Date" />
                                 <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
-                                <%--<asp:BoundField DataField="Is_Approved" HeaderText="Approved"/>--%>
                                 <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="HFLocn" Value='<%# Bind("Location") %>' />
                                         <asp:LinkButton CssClass="control-label" ID="LnkReportSbmt" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' />
-                                        <%--<asp:Label ID="LblLocn" runat="server" on
-                                            Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'>
-                                        </asp:Label>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -473,8 +467,6 @@
                             <AlternatingRowStyle BackColor="#7ad0ed" />
                         </asp:GridView>
                     </div>
-                    <%-- </ContentTemplate>
-                    </asp:UpdatePanel>--%>
                 </asp:View>
             </asp:MultiView>
         </div>

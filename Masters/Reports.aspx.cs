@@ -89,7 +89,7 @@ namespace Finance_Tracker.Masters
                 DdlCatTypeV.DataBind();
                 DdlCatV.DataBind();
                 DdlTypeA.DataBind();
-                DdlTypeV.DataBind();
+                //DdlTypeV.DataBind();
                 Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
             }
         }
