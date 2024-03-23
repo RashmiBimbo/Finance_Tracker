@@ -68,11 +68,8 @@
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlTypeA" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlTypeA" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" required="required">
+                                    <asp:DropDownList runat="server" ID="DdlTypeA" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" required="required" OnDataBinding="DdlType_DataBinding">
                                         <asp:ListItem Text="Select" Value="" Selected="True" />
-                                        <asp:ListItem Text="Monthly" Value="M" />
-                                        <asp:ListItem Text="Weekly" Value="W" />
-                                        <asp:ListItem Text="Half Yearly" Value="HY" />
                                     </asp:DropDownList>
                                     <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlTypeA"
                                         CssClass="text-danger" ErrorMessage="Please select a type." />--%>
@@ -130,11 +127,8 @@
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlTypeV" CssClass="col-md-2 control-label">Type</asp:Label>
                                 <div class="col-sm-2 col-md-2">
-                                    <asp:DropDownList runat="server" ID="DdlTypeV" CssClass="form-control">
+                                    <asp:DropDownList runat="server" ID="DdlTypeV" CssClass="form-control" OnDataBinding="DdlType_DataBinding">
                                         <asp:ListItem Value="" Selected="True">All</asp:ListItem>
-                                        <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                        <asp:ListItem Value="W">Weekly</asp:ListItem>
-                                        <asp:ListItem Value="HY">Half Yearly</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -199,66 +193,8 @@
     </div>
     <script src="../assets/libs/Common.js" type="text/javascript"></script>
     <script>                    
-        function ChngDueDtType (type, DvDuDt, TxtDuDt, DvWkDay)
-        {
-            //// Ensure all elements are properly defined
-            //if (typeof DvDuDt === 'undefined' || typeof TxtDuDt === 'undefined' || typeof DvWkDay === 'undefined') {
-            //    console.error('One or more elements are not defined.');
-            //    return;
-            //}
-            //// Handle different cases based on the type
-            //if (type === "") {
-            //    console.log("Select");
-            //    divDuDt.style.display = "block";
-            //    divWkDay.style.display = "none";
-            //    txtDuDt.style.display = "none";
-            //} else if (type === "M") {
-            //    console.log("Monthly");
-            //    divDuDt.style.display = "none";
-            //    divWkDay.style.display = "none";
-            //    txtDuDt.style.display = "block";
-            //} else if (type === "W") {
-            //    console.log("Weekly");
-            //    divDuDt.style.display = "none";
-            //    divWkDay.style.display = "block";
-            //    txtDuDt.style.display = "none";
-            //} else {
-            //    console.error("Invalid type");
-            //}
-        }
-
-<%--        function ChngDueDtType (type) {
-            console.log("ChngDueDtType called with " + type);
-
-            // Select the DivWkDay element             
-            console.log("<%= DvWkDay.ClientID %>");
-            const divWkDay = document.getElementById("#<%= DvWkDay.ClientID %>");
-            const dvWkDay = document.getElementById("DvWkDay");
-            if (divWkDay === null) {
-                console.log("DvWkDay is null");
-            }
-            if (dvWkDay === null) {
-                console.log("divWkDay is null");
-            }
-
-            // Select the TxtDuDt element               
-            console.log("<%= TxtDuDt.ClientID %>");
-            var txtDuDt = document.getElementById("#<%= TxtDuDt.ClientID %>");
-            if (txtDuDt === null) {
-                console.log("txtDuDt is null");
-            }
-
-            // Check the type and perform actions accordingly
-            if (type === "M") {
-                console.log("M");
-                divWkDay.style.display = "none";
-                txtDuDt.style.display = "block";
-            } else if (type === "W") {
-                console.log("W");
-                divWkDay.style.display = "block";
-                txtDuDt.style.display = "none";
-            }
-        }--%>
+        
+        
         function validateDropDown ()
         {
             var dropdown = document.getElementById("<%= DdlCatTypeA.ClientID %>");

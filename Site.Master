@@ -78,7 +78,7 @@
                                 <li><a runat="server" href="~/Account/ChangePassword">Change Password</a></li>
                                 <%-- <li class="divider"></li>--%>
                                 <li>
-                                    <asp:LinkButton Text="Log Out" runat="server" ID="BtnLogOut" OnClick="BtnLogOut_Click" OnClientClick="BtnLogOut_OnClientClick();" />
+                                    <asp:LinkButton Text="Log Out" runat="server" ID="BtnLogOut" OnClick="BtnLogOut_Click" />
                                 </li>
                                 <%--<li class="divider"></li>--%>
                             </ul>
@@ -107,9 +107,6 @@
         </div>
     </form>
     <script>
-        function BtnLogOut_OnClientClick () {
-            console.log("BtnLogOut_OnClientClick() called");
-        }
         function ToggleClass (ctrl) {
             if (ctrl.className === "dropdown open") {
                 ctrl.className = "dropdown";

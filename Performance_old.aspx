@@ -64,10 +64,10 @@
                             <asp:Label runat="server" AssociatedControlID="DdlType1" CssClass="col-md-2 control-label">Type</asp:Label>
                             <div class="col-sm-2">
                                 <%--<div class="form-group">--%>
-                                <asp:DropDownList runat="server" ID="DdlType1" CssClass="form-control" Enabled="False">
+                                <asp:DropDownList runat="server" ID="DdlType1" CssClass="form-control" Enabled="False" OnDataBinding="DdlType_DataBinding">
                                     <asp:ListItem Value="" Selected="True">All</asp:ListItem>
-                                    <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                    <asp:ListItem Value="W">Weekly</asp:ListItem>
+                                    <asp:ListItem Value="Monthly">Monthly</asp:ListItem>
+                                    <asp:ListItem Value="Weekly">Weekly</asp:ListItem>
                                 </asp:DropDownList>
                             </div>
                             <asp:Label runat="server" AssociatedControlID="TxtDueDt" CssClass="col-md-2 control-label">Due Date</asp:Label>
@@ -183,8 +183,8 @@
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control">
                                         <asp:ListItem Value="">All</asp:ListItem>
-                                        <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                        <asp:ListItem Value="W">Weekly</asp:ListItem>
+                                        <asp:ListItem Value="Monthly">Monthly</asp:ListItem>
+                                        <asp:ListItem Value="Weekly">Weekly</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -311,8 +311,8 @@
                                 <div class="col-sm-2">
                                     <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control">
                                         <asp:ListItem Value="">All</asp:ListItem>
-                                        <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                        <asp:ListItem Value="W">Weekly</asp:ListItem>
+                                        <asp:ListItem Value="Monthly">Monthly</asp:ListItem>
+                                        <asp:ListItem Value="Weekly">Weekly</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="TxtMnth3" CssClass="col-md-2 control-label">Month</asp:Label>

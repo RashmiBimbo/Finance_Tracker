@@ -63,10 +63,7 @@
                                 </div>
                                 <label class="col-lg-2 control-label">Type</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control">
-                                        <asp:ListItem Value="">All</asp:ListItem>
-                                        <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                        <asp:ListItem Value="W">Weekly</asp:ListItem>
+                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" OnDataBinding="DdlType_DataBinding">
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -95,7 +92,7 @@
                     <br />
                     <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv">
                         <asp:GridView ID="GVReports"
-                            runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
+                            runat="server" Font-Bold="False" CssClass="table table-bordered table-responsive table-hover"
                             Font-Size="Medium" ForeColor="#333333" GridLines="Both"
                             RowStyle-HorizontalAlign="LEFT" TabIndex="10"
                             OnDataBinding="GVReports_DataBinding" Visible="False" BorderStyle="Solid" AutoGenerateColumns="False">
@@ -108,23 +105,11 @@
                             <EditRowStyle BackColor="#7C6F57" />
                             <AlternatingRowStyle BackColor="#7ad0ed" />
                             <Columns>
-                                <%-- <asp:TemplateField HeaderText="Reject" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
-                                    <HeaderTemplate>
-                                        <asp:CheckBox ID="CBRejectH" runat="server" OnCheckedChanged="CBRejectH_CheckedChanged" AutoPostBack="true" ToolTip="Reject" Text=""></asp:CheckBox>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <asp:CheckBox ID="CBReject" OnCheckedChanged="CBReject_CheckedChanged" AutoPostBack="true" runat="server"></asp:CheckBox>
-                                    </ItemTemplate>
-                                    <AlternatingItemTemplate>
-                                        <asp:CheckBox ID="CBReject" runat="server" BackColor="#7ad0ed"></asp:CheckBox>
-                                    </AlternatingItemTemplate>
-                                </asp:TemplateField>--%>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Type_Name" HeaderText="Category Type" ReadOnly="True" />
                                 <asp:BoundField DataField="Category_Name" HeaderText="Category" ReadOnly="True" />
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report" ReadOnly="True" />
-                                <%--<asp:BoundField DataField="Submit_Date" HeaderText="Add Date" />--%>
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                 <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                 <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
@@ -144,9 +129,6 @@
                             </Columns>
                         </asp:GridView>
                     </div>
-                    <%--  <div class="row" style="margin-left: 2px;">
-                        <asp:Button runat="server" ID="BtnReject" OnClick="BtnReject_Click" Text="Reject" CssClass="btn btn-primary" ForeColor="White" Visible="False" Enabled="False" />
-                    </div>--%>
                 </asp:View>
             </asp:MultiView>
         </div>

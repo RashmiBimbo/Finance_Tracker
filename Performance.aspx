@@ -29,27 +29,25 @@
                 <asp:View ID="TabAdd" runat="server">
                     <div id="DivAddMultiple" runat="server">
                         <div class="row">
-                            <asp:Label runat="server" AssociatedControlID="TxtMnthM" CssClass="col-md-2 control-label">Month<span style="color:red">&nbsp*</span></asp:Label>
-                            <div class="col-sm-2">
-                                <asp:TextBox ID="TxtMnthM" runat="server" Width="160px" CssClass="form-control" BackColor="White" autocomplete="off" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True"></asp:TextBox>
-                                <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnthM" />
-                                <ajaxToolkit:CalendarExtender ID="CETxtMnthM" runat="server" TargetControlID="TxtMnthM" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
-                                <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnthM" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidatorM" />--%>
+                            <div id="DvMnth" runat="server">
+                                <asp:Label runat="server" AssociatedControlID="TxtMnthM" CssClass="col-md-2 control-label">Month<span style="color:red">&nbsp*</span></asp:Label>
+                                <div class="col-sm-2">
+                                    <asp:TextBox ID="TxtMnthM" runat="server" Width="160px" CssClass="form-control" BackColor="White" autocomplete="off" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True" required="required"></asp:TextBox>
+                                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnthM" />
+                                    <ajaxToolkit:CalendarExtender ID="CETxtMnthM" runat="server" TargetControlID="TxtMnthM" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                                </div>
                             </div>
-                            <asp:Label runat="server" AssociatedControlID="DdlTypeM" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
+                            <asp:Label runat="server" ID="LblTypM" AssociatedControlID="DdlTypeM" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-sm-2 col-md-2">
-                                <asp:DropDownList runat="server" ID="DdlTypeM" CssClass="form-control" Enabled="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" AutoPostBack="True">
-                                    <asp:ListItem Value="" Selected="True">Select</asp:ListItem>
-                                    <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                    <asp:ListItem Value="W">Weekly</asp:ListItem>
+                                <asp:DropDownList runat="server" ID="DdlTypeM" CssClass="form-control" Enabled="true" AutoPostBack="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" OnDataBinding="DdlType_DataBinding" required="required">
+                                    <asp:ListItem Text="Select" Value="" Selected="True"></asp:ListItem>
                                 </asp:DropDownList>
-                                <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlTypeM" CssClass="text-danger" ErrorMessage="Please select a type." ID="RequiredFieldValidator2" />--%>
                             </div>
-                            <div id="DivWeekM" runat="server" visible="true">
+                            <div id="DivWeekM" runat="server" visible="false">
                                 <asp:Label runat="server" AssociatedControlID="DdlWeekM" CssClass="col-md-2 control-label" ID="LblWeek">Week no.<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlWeekM" CssClass="form-control" OnSelectedIndexChanged="DdlWeek_SelectedIndexChanged" AutoPostBack="true">
-                                        <asp:ListItem Value="0">Select</asp:ListItem>
+                                    <asp:DropDownList runat="server" ID="DdlWeekM" CssClass="form-control" onchange="HideDivGVBtnM()" required="required">
+                                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
                                         <asp:ListItem Value="1">1</asp:ListItem>
                                         <asp:ListItem Value="2">2</asp:ListItem>
                                         <asp:ListItem Value="3">3</asp:ListItem>
@@ -57,7 +55,16 @@
                                         <asp:ListItem Value="5">5</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <br />
+                            </div>
+                            <div id="DvHY" runat="server" visible="false">
+                                <asp:Label runat="server" AssociatedControlID="DdlHY" CssClass="col-md-2 control-label" ID="LblHy">Half no.<span style="color:red">&nbsp*</span></asp:Label>
+                                <div class="col-sm-2">
+                                    <asp:DropDownList runat="server" ID="DdlHY" CssClass="form-control" onchange="HideDivGVBtnM()" required="required">
+                                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
+                                        <asp:ListItem Value="1">1</asp:ListItem>
+                                        <asp:ListItem Value="2">2</asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
                             </div>
                             <br />
                         </div>
@@ -67,9 +74,7 @@
                             </div>
                         </div>
                         <br />
-                        <%--<asp:UpdatePanel runat="server" UpdateMode="Conditional">
-                            <ContentTemplate>--%>
-                        <div runat="server" id="DivGVBtn" visible="false">
+                        <div runat="server" id="DivGVBtnM" visible="true">
                             <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto;" runat="server" visible="true" id="DivGVAdd">
                                 <asp:GridView ID="GVAdd"
                                     runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover border" Font-Size="Medium" ForeColor="#333333" GridLines="Both" RowStyle-HorizontalAlign="LEFT" TabIndex="10" OnDataBinding="GVAdd_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True">
@@ -84,9 +89,6 @@
                                     <Columns>
                                         <%--0 --%>
                                         <asp:TemplateField Visible="true">
-                                            <%-- <HeaderTemplate>
-                                                <asp:CheckBox ID="CBSubmitH" runat="server" BorderStyle="None" OnCheckedChanged="CBSubmitH_CheckedChanged1" Text="" TextAlign="Right" ToolTip="Add" AutoPostBack="false" onchange="handleCheckBoxChange1()" />
-                                            </HeaderTemplate>--%>
                                             <ItemTemplate>
                                                 <asp:CheckBox ID="CBSubmit" runat="server" ToolTip="Add" AutoPostBack="false" />
                                             </ItemTemplate>
@@ -102,11 +104,9 @@
                                         <%--5--%>
                                         <asp:BoundField DataField="Weight" HeaderText="Weight" ReadOnly="True" />
                                         <%--6--%>
-                                        <%--<asp:BoundField DataField="Type" HeaderText="Type" ReadOnly="True" />--%>
-                                        <%--6--%>
                                         <asp:TemplateField HeaderText="Upload File" Visible="true" ControlStyle-Width="230px">
                                             <ItemTemplate>
-                                                <asp:FileUpload runat="server" ID="FUAdd" CssClass="form-control" AllowMultiple="false" Height="40px" onchange="saveFileName(this);" />
+                                                <asp:FileUpload runat="server" ID="FUAdd" CssClass="form-control" AllowMultiple="false" Height="40px" />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--7--%>
@@ -159,12 +159,9 @@
                         </div>
                         <br />
                         <div class="row">
-                            <asp:Label runat="server" AssociatedControlID="DdlTypeS" CssClass="col-md-2 control-label">Type</asp:Label>
+                            <asp:Label runat="server" ID="LblTypS" AssociatedControlID="DdlTypeS" CssClass="col-md-2 control-label">Type</asp:Label>
                             <div class="col-sm-2">
-                                <asp:DropDownList runat="server" ID="DdlTypeS" CssClass="form-control" Enabled="False" onchange="UpdateToolTip(this);">
-                                    <asp:ListItem Value="" Selected="True">All</asp:ListItem>
-                                    <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                    <asp:ListItem Value="W">Weekly</asp:ListItem>
+                                <asp:DropDownList runat="server" ID="DdlTypeS" CssClass="form-control" Enabled="False" OnDataBinding="DdlType_DataBinding" onchange="UpdateToolTip(this);">
                                 </asp:DropDownList>
                             </div>
                             <asp:Label runat="server" AssociatedControlID="TxtDueDtS" CssClass="col-md-2 control-label">Due Date</asp:Label>
@@ -191,6 +188,16 @@
                                         <asp:ListItem Value="3">3</asp:ListItem>
                                         <asp:ListItem Value="4">4</asp:ListItem>
                                         <asp:ListItem Value="5">5</asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div id="DvHyS" runat="server" visible="false">
+                                <asp:Label runat="server" AssociatedControlID="DdlHyS" CssClass="col-md-2 control-label">Half no.</asp:Label>
+                                <div class="col-sm-2">
+                                    <asp:DropDownList runat="server" ID="DdlHyS" CssClass="form-control" onchange="HideDivGVBtnM()" required="required">
+                                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
+                                        <asp:ListItem Value="1">1</asp:ListItem>
+                                        <asp:ListItem Value="2">2</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -275,10 +282,7 @@
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlType2" CssClass="col-md-2 control-label">Type</asp:Label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control">
-                                <asp:ListItem Value="">All</asp:ListItem>
-                                <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                <asp:ListItem Value="W">Weekly</asp:ListItem>
+                            <asp:DropDownList runat="server" ID="DdlType2" CssClass="form-control" OnDataBinding="DdlType_DataBinding">
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -422,10 +426,7 @@
                         </div>
                         <label class="col-lg-2 control-label">Type</label>
                         <div class="col-sm-2">
-                            <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control">
-                                <asp:ListItem Value="">All</asp:ListItem>
-                                <asp:ListItem Value="M">Monthly</asp:ListItem>
-                                <asp:ListItem Value="W">Weekly</asp:ListItem>
+                            <asp:DropDownList runat="server" ID="DdlType3" CssClass="form-control" OnDataBinding="DdlType_DataBinding">
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -480,34 +481,45 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="assets/libs/Common.js" type="text/javascript"></script>
-    <script>
-        //$(document).ready(function ()
-        //{
-        //    $("#TxtDueDt").text = "";
-        //});
-    </script>
-    <script type="text/javascript">
-        var previousRow = null;
-        function SelectRow (row)
-        {
-            // Enable FileUpload control of the current row
-            //var currentFileUpload = row.cells[1].getElementsByTagName("input")[0];
-            //currentFileUpload.disabled = false;
-
-            //// Disable FileUpload control of the previously selected row
-            //if (previousRow !== null && previousRow !== row) {
-            //    var previousFileUpload = previousRow.cells[1].getElementsByTagName("input")[0];
-            //    previousFileUpload.disabled = true;
-            //}
-
-            //// Update the previousRow variable
-            //previousRow = row;
-        }
-    </script>
     <script type="text/javascript">
 
         var countChecked = 0;
 
+        function DdlType_SelectedIndexChanged ()
+        {
+            console.log("DdlType_SelectedIndexChanged s");
+            let DivGVBtnMId = "#<%=DivGVBtnM.ClientID%>";
+            let DivWeekMId = "#<%=DivWeekM.ClientID%>";
+            let DvHYId = "#<%=DvHY.ClientID%>";
+            let ddlTypeValue = $("#<%=DdlTypeM.ClientID%>").val().toUpperCase().trim();
+
+            $(DivGVBtnMId).hide();
+            $(DivWeekMId).hide();
+            $(DvHYId).hide();
+
+            switch (ddlTypeValue)
+            {
+                case "WEEKLY":
+                    console.log(ddlTypeValue);
+                    var DivWeekM = document.getElementById('<%=DivWeekM.ClientID%>');
+                    DivWeekM.style.display = 'block'; // Show the div
+                    var DdlWeekM = document.getElementById('<%=DdlWeekM.ClientID%>');
+                    DdlWeekM.value = "0";
+                    break;
+                case "HALF YEARLY":
+                    console.log(ddlTypeValue);
+                    var DvHY = document.getElementById('<%=DvHY.ClientID%>');
+                    DvHY.style.display = 'block'; // Show the div
+                    var DdlHY = document.getElementById('<%=DdlHY.ClientID%>');
+                    DdlHY.value = "0";
+                    break;
+            }
+            console.log("DdlType_SelectedIndexChanged e");
+        }
+        function HideDivGVBtnM ()
+        {
+            $('#<%= DivGVBtnM.ClientID%>').hide();
+        }
         function handleCheckBoxChange1 ()
         {
            <%-- debugger;
@@ -532,11 +544,11 @@
         function handleCheckBoxChange (cb)
         {
         //debugger;
-            //var gv = document.getElementById('<%= GVAdd.ClientID %>');
+        //var gv = document.getElementById('<%--<%= GVAdd.ClientID %>--%>');
             //debugger;
             //var checkboxes = gv.getElementsByTagName('input');
             //debugger;
-            //var headerCheckbox = gv.getElementById('<%--<%= CBSubmitH.ClientID %.--%>);
+        //var headerCheckbox = gv.getElementById('<%--<%= CBSubmitH.ClientID %.--%>);
             //debugger;
             //for (var i = 0; i < checkboxes.length; i++)
             //{
@@ -558,40 +570,5 @@
             btnAddM.disabled = (count === 0);--%>
         }
 
-        function SetToolTip (ddl)
-        {
-            if (ddl.selectedIndex !== -1)
-            {
-                ddl.title = ddl.options[ddl.selectedIndex].text;
-            }
-        }
-        //function saveFileName (fileUpload)
-        //{
-        //    debugger;
-
-        //    var fileName = fileUpload.value.split('\\').pop(); // Get the file name
-        //    var hiddenField = fileUpload.nextElementSibling; // Get the next hidden input element
-        //    hiddenField.value = fileName; // Store the file name in the hidden field
-        //}
-
-        //window.onload = function ()
-        //{
-        //    debugger;
-        //    var fileUploads = document.querySelectorAll('.fileNames');
-        //    for (var i = 0; i < fileUploads.length; i++) {
-        //        var fileName = fileUploads[i].value;
-        //        var fileUpload = fileUploads[i].previousElementSibling;
-        //        if (fileName && fileUpload) {
-        //            fileUpload.value = fileName; // Restore file name in FileUpload control
-        //        }
-        //    }
-        //};
-        function SetToolTip (ddl)
-        {
-            if (ddl.selectedIndex !== -1)
-            {
-                ddl.title = ddl.options[ddl.selectedIndex].text;
-            }
-        }
     </script>
 </asp:Content>

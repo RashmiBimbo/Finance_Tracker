@@ -36,10 +36,10 @@
                 </div>
                 <label class="col-lg-2 control-label">Type</label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" onchange="UpdateToolTip(this);">
+                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" OnDataBinding="DdlType_DataBinding" onchange="UpdateToolTip(this);">
                         <asp:ListItem Value="">All</asp:ListItem>
-                        <asp:ListItem Value="M">Monthly</asp:ListItem>
-                        <asp:ListItem Value="W">Weekly</asp:ListItem>
+                        <asp:ListItem Value="Monthly">Monthly</asp:ListItem>
+                        <asp:ListItem Value="Weekly">Weekly</asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <label class="col-lg-2 control-label">User</label>

@@ -14,6 +14,7 @@ namespace Finance_Tracker.Account
     {
         private DBOperations DBOprn = new DBOperations();
         int RoleId;
+        private readonly string Emp = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -48,7 +49,7 @@ namespace Finance_Tracker.Account
                 string pswd = TxtPassword.Text;
                 string slctdRoleId = DdlRole.SelectedValue;
                 string email = TBEmail.Text;
-                string locId = DdlLocn.SelectedIndex == 0 ? null : DdlLocn.SelectedValue.ToUpper();
+                string locId = DdlLocn.SelectedValue == Emp ? null : DdlLocn.SelectedValue.ToUpper();
                 string adrs = TxtAddress.Text;
                 char loginType = DBOperations.LoginTypes[DdlRole.SelectedValue].First();
                 try
@@ -183,13 +184,13 @@ namespace Finance_Tracker.Account
 
         protected void DdlLocn_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlLocn, "SP_Get_Locations", "");
+            FillDdl(DdlLocn, "SP_Get_Locations", Emp);
             string usrLocn = ((string)Session["Location_Id"]).ToUpper();
             if (string.IsNullOrWhiteSpace(usrLocn)) Response.Redirect("~/Account/Login");
             if (RoleId == 1)
             {
                 DdlLocn.Enabled = false;
-                DdlLocn.SelectedIndex = DdlLocn.Items.IndexOf(DdlLocn.Items.FindByValue(usrLocn));
+                DdlLocn.SelectedValue = usrLocn;
             }
             else
             {
@@ -210,7 +211,7 @@ namespace Finance_Tracker.Account
         {
             ddl.Items.Clear();
             ddl.Items.Add(new ListItem("Select", selectVal));
-            ddl.SelectedIndex = 0;
+            ddl.SelectedValue = selectVal;
             ddl.ToolTip = "Select";
 
             if (prntDdl != null && prntDdl.SelectedIndex == 0)

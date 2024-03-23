@@ -10,23 +10,19 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using static System.DateTime;
 
-namespace Finance_Tracker   
+namespace Finance_Tracker
 {
     public partial class Approve : System.Web.UI.Page
     {
-        const string DateFormat = "dd-MMM-yyyy";
         const string MonthFormat = "MMM-yyyy";
         const string SqlDateFormat = "yyyy-MM-dd";
-        private readonly DateTime today = Today;
-        private readonly int crntYr = Today.Year;
-        private readonly int crntMnth = Today.Month;
+        const string Emp = "";
         private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
         private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
-        private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
-
-        private readonly DBOperations DBOprn = new DBOperations();
         private static int chKCountA = 0;
         private static int chKCountR = 0;
+
+        private readonly DBOperations DBOprn = new DBOperations();
 
         private DataTable GVReportsDS
         {
@@ -36,8 +32,15 @@ namespace Finance_Tracker
 
                 if (!(dt?.Rows.Count > 0))
                 {
-                    dt = GetData(false);
-                    Session["Approve_GVReportsDS"] = dt;
+                    try
+                    {
+                        dt = GetData(false);
+                        Session["Approve_GVReportsDS"] = dt;
+                    }
+                    catch (Exception ex)
+                    {
+                        PopUp(ex.Message);
+                    }
                 }
                 return dt;
             }
@@ -58,8 +61,15 @@ namespace Finance_Tracker
 
                 if (!(dt?.Rows.Count > 0))
                 {
-                    dt = GetData(true);
-                    Session["Approve_GVApprovedDS"] = dt;
+                    try
+                    {
+                        dt = GetData(true);
+                        Session["Approve_GVApprovedDS"] = dt;
+                    }
+                    catch (Exception ex)
+                    {
+                        PopUp(ex.Message);
+                    }
                 }
                 return dt;
             }
@@ -77,8 +87,6 @@ namespace Finance_Tracker
             DataTable dt = null;
             try
             {
-                //string fromDt = new DateTime(year, mnthNo, 01).ToString(SqlDateFormat);
-                //string toDt = new DateTime(year, mnthNo, DaysInMonth(year, mnthNo)).ToString(SqlDateFormat);
                 string fromDt = TxtMnth.ToolTip.Split(',')[0];
                 string toDt = TxtMnth.ToolTip.Split(',')[1];
 
@@ -86,7 +94,7 @@ namespace Finance_Tracker
                 {
                      new OleDbParameter("@From_Date", fromDt)
                     ,new OleDbParameter("@To_Date",  toDt)
-                    ,new OleDbParameter("@Type",  DdlType.SelectedValue)
+                    ,new OleDbParameter("@Type", DdlType.SelectedValue)
                     ,new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
                     ,new OleDbParameter("@IsApproved", IsApproved)
                     ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
@@ -107,6 +115,12 @@ namespace Finance_Tracker
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            string usrId = Session["User_Id"]?.ToString();
+            if (usrId == null || usrId == "")
+            {
+                Response.Redirect("~/Account/Login");
+                return;
+            }
             if (!Page.IsPostBack)
             {
                 if (!DBOprn.AuthenticatConns())
@@ -114,17 +128,12 @@ namespace Finance_Tracker
                     PopUp("Database connection could not be established");
                     return;
                 }
-                string usrId = Session["User_Id"]?.ToString();
-                if (usrId == null || usrId == "")
-                {
-                    Response.Redirect("~/Account/Login");
-                    return;
-                }
                 if (Session["Is_Approver"].ToString() == "0")
                 {
                     Response.Redirect("~/Default");
                     return;
                 }
+                DdlType.DataBind();
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
                 TxtMnth.Attributes.Add("autocomplete", "off");
                 //TxtCmnts.Attributes.Add("autocomplete", "off");
@@ -174,7 +183,7 @@ namespace Finance_Tracker
 
         protected void DdlUsr_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlUsr, "SP_Get_SubOrdinates", "", null,
+            FillDdl(DdlUsr, "SP_Get_SubOrdinates", "", "All", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
@@ -189,24 +198,34 @@ namespace Finance_Tracker
             DdlUsr.ToolTip = DdlUsr.SelectedItem.Text;
         }
 
-        private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        private void FillDdl(DropDownList ddl, string proc, string selectVal, string selectTxt = "", DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = "", string ValField = "")
         {
             ddl.Items.Clear();
-            ddl.Items.Add(new ListItem("All", selectVal));
-            ddl.SelectedIndex = 0;
-            ddl.ToolTip = "All";
-
+            ddl.Items.Add(new ListItem(selectTxt, selectVal));
+            ddl.SelectedValue = selectVal;
+            ddl.ToolTip = selectTxt;
             if (prntDdl != null && prntDdl.SelectedIndex == 0)
                 return;
+
             try
             {
                 DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    if ((TxtField != Emp) && ValField != Emp)
                     {
-                        ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][TxtField].ToString(), dt.Rows[i][ValField].ToString()));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));
+                        }
                     }
                 }
             }
@@ -480,7 +499,7 @@ namespace Finance_Tracker
         }
 
         protected void BtnReject_Click(object sender, EventArgs e)
-        {           
+        {
             try
             {
                 string jsonParam = ConstructJSONReject(GVApproved, chKCountR, 8);
@@ -531,7 +550,7 @@ namespace Finance_Tracker
                         PopUp(output.ToString());
                         return;
                     }
-                    PopUp("Tasks rejected successfully!"); 
+                    PopUp("Tasks rejected successfully!");
                     ResetGVReports();
                     GVReports.DataBind();
                 }
@@ -582,6 +601,11 @@ namespace Finance_Tracker
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;
+        }
+
+        protected void DdlType_DataBinding(object sender, EventArgs e)
+        {
+            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
         }
 
         private void SetTooltip(DropDownList ddl)

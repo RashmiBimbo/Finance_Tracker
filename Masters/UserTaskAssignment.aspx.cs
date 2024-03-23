@@ -15,7 +15,7 @@ namespace Finance_Tracker.Masters
 
         private string roleId, LocId, UsrId, UsrName;
         private readonly DBOperations DBOprn;
-        private const string emp = "";
+        private const string Emp = "";
         private static int chKGVViewCount = 0, chKCountGVAdd = 0;
         bool IsApprover, IsAdmin;
 
@@ -87,40 +87,43 @@ namespace Finance_Tracker.Masters
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            UsrId = Session["User_Id"]?.ToString();
-
-            if (string.IsNullOrWhiteSpace(UsrId))
+            try
             {
-                Response.Redirect("~/Account/Login");
-                return;
+                UsrId = Session["User_Id"]?.ToString();
+
+                if (string.IsNullOrWhiteSpace(UsrId))
+                {
+                    Response.Redirect("~/Account/Login");
+                    return;
+                }
+                roleId = Session["Role_Id"]?.ToString();
+                IsApprover = Convert.ToBoolean(Session["Is_Approver"]);
+                LocId = Session["Location_Id"]?.ToString();
+                UsrName = Session["User_Name"]?.ToString();
+
+                IsAdmin = LoginTypes[roleId] == Admin;
+                if (!(IsAdmin || IsApprover))
+                {
+                    Response.Redirect("~/Default");
+                    return;
+                }
+
+                if (!IsPostBack)
+                {
+                    GVAddDS = null;
+                    GVViewDS = null;
+
+                    foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers })
+                        ddl.DataBind();
+                    chKGVViewCount = 0;
+                    chKCountGVAdd = 0;
+
+                    Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
+                }
             }
-            roleId = Session["Role_Id"]?.ToString();
-            IsApprover = Convert.ToBoolean(Session["Is_Approver"]);
-            LocId = Session["Location_Id"]?.ToString();
-            UsrName = Session["User_Name"]?.ToString();
-
-            IsAdmin = LoginTypes[roleId] == Admin;
-            if (!(IsAdmin || IsApprover))
+            catch (Exception ex)
             {
-                Response.Redirect("~/Default");
-                return;
-            }
-
-            if (!IsPostBack)
-            {
-                GVAddDS = null;
-                GVViewDS = null;
-
-                DdlCatType.DataBind();
-                DdlCat.DataBind();
-                DdlTasks.DataBind();
-                DdlUsrType.DataBind();
-                DdlUsers.DataBind();
-
-                chKGVViewCount = 0;
-                chKCountGVAdd = 0;
-
-                Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
+                PopUp(ex.Message);
             }
         }
 
@@ -131,7 +134,7 @@ namespace Finance_Tracker.Masters
 
         protected void DdlCat_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlCat, "SP_Get_Categories", "0", DdlCatType,
+            FillDdl(DdlCat, "SP_Get_Categories", "0", "All", null,
                 new OleDbParameter[]
                 {
                     new OleDbParameter("@Type_Id", DdlCatType.SelectedValue)
@@ -141,7 +144,7 @@ namespace Finance_Tracker.Masters
 
         protected void DdlTasks_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlTasks, "SP_Report_Get", "0", DdlCat,
+            FillDdl(DdlTasks, "SP_Report_Get", "0", "All", null,
                 new OleDbParameter[]
                 {
                      new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
@@ -154,7 +157,7 @@ namespace Finance_Tracker.Masters
         {
             if (IsAdmin)
             {
-                FillDdl(DdlUsers, "SP_Get_Users", emp, null,
+                FillDdl(DdlUsers, "SP_Get_Users", Emp, "All", null,
                     new OleDbParameter[]
                     {
                          new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
@@ -165,7 +168,7 @@ namespace Finance_Tracker.Masters
             }
             else if (IsApprover)
             {
-                FillDdl(DdlUsers, "SP_Get_SubOrdinates", emp, null,
+                FillDdl(DdlUsers, "SP_Get_SubOrdinates", Emp, "All", null,
                     new OleDbParameter[]
                     {
                          new OleDbParameter("@Approver_Id", UsrId)
@@ -378,19 +381,23 @@ namespace Finance_Tracker.Masters
             };
         }
 
+        protected void DdlType_DataBinding(object sender, EventArgs e)
+        {
+            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+        }
+
         #endregion TabUnAssign
 
         #region CommonCode
 
-        private void FillDdl(DropDownList ddl, string proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = emp, string ValField = emp)
+        private void FillDdl(DropDownList ddl, string proc, string selectVal, string selectTxt = "All", DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = "", string ValField = "")
         {
             ddl.Items.Clear();
-            ddl.Items.Add(new ListItem("All", selectVal));
-            ddl.SelectedIndex = 0;
-            ddl.ToolTip = "All";
-
-            //if (prntDdl != null && prntDdl.SelectedIndex == 0)
-            //    return;
+            ddl.Items.Add(new ListItem(selectTxt, selectVal));
+            ddl.SelectedValue = selectVal;
+            ddl.ToolTip = selectTxt;
+            if (prntDdl != null && prntDdl.SelectedIndex == 0)
+                return;
 
             try
             {
@@ -398,7 +405,7 @@ namespace Finance_Tracker.Masters
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    if ((TxtField != emp) && ValField != emp)
+                    if ((TxtField != Emp) && ValField != Emp)
                     {
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {

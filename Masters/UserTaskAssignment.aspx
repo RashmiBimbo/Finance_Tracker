@@ -71,7 +71,7 @@
                     <div id="DivAdd" runat="server" visible="false">
                         <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto;" runat="server">
                             <asp:GridView ID="GVAdd"
-                                runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
+                                runat="server" Font-Bold="False" CssClass="table table-bordered table-responsive table-hover"
                                 Font-Size="Medium" ForeColor="#333333" GridLines="Both" RowStyle-HorizontalAlign="LEFT" TabIndex="10" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True" OnDataBinding="GVAdd_DataBinding">
                                 <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" />
                                 <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
@@ -116,7 +116,7 @@
                     <div id="DivView" runat="server" visible="false">
                         <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto;" runat="server">
                             <asp:GridView ID="GVView"
-                                runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
+                                runat="server" Font-Bold="False" CssClass="table table-bordered table-responsive table-hover"
                                 Font-Size="Medium" ForeColor="#333333" GridLines="Both" RowStyle-HorizontalAlign="LEFT" TabIndex="10" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True" OnDataBinding="GVView_DataBinding">
                                 <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" />
                                 <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
