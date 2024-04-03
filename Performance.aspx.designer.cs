@@ -357,6 +357,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.TextBox TxtCmnts;
 
         /// <summary>
+        /// LblFU control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblFU;
+
+        /// <summary>
         /// DvUpload control.
         /// </summary>
         /// <remarks>
@@ -483,13 +492,13 @@ namespace Finance_Tracker
         protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender2;
 
         /// <summary>
-        /// CalendarExtender2 control.
+        /// CETxtMnth2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender2;
+        protected global::AjaxControlToolkit.CalendarExtender CETxtMnth2;
 
         /// <summary>
         /// DdlType2 control.

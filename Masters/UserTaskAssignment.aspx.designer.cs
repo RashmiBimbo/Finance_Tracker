@@ -105,13 +105,22 @@ namespace Finance_Tracker.Masters
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivAdd;
 
         /// <summary>
-        /// GVAdd control.
+        /// DvAssign control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVAdd;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvAssign;
+
+        /// <summary>
+        /// GVAssign control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GVAssign;
 
         /// <summary>
         /// BtnAssign control.

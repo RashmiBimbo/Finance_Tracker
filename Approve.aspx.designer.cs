@@ -96,31 +96,31 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.View TabUnApproved;
 
         /// <summary>
-        /// GVReportsDiv control.
+        /// GVPendingDiv control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GVReportsDiv;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl GVPendingDiv;
 
         /// <summary>
-        /// GVReports control.
+        /// GVPending control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVReports;
+        protected global::System.Web.UI.WebControls.GridView GVPending;
 
         /// <summary>
-        /// BtnReject1 control.
+        /// BtnReject control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnReject1;
+        protected global::System.Web.UI.WebControls.Button BtnReject;
 
         /// <summary>
         /// BtnApprove control.
@@ -159,12 +159,12 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.GridView GVApproved;
 
         /// <summary>
-        /// BtnReject control.
+        /// BtnRejectA control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnReject;
+        protected global::System.Web.UI.WebControls.Button BtnRejectA;
     }
 }

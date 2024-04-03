@@ -5,9 +5,9 @@ using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
 using System.Web;
-using System.Web.DynamicData;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Linq;
 using static System.DateTime;
 
 namespace Finance_Tracker
@@ -19,23 +19,23 @@ namespace Finance_Tracker
         const string Emp = "";
         private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
         private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
-        private static int chKCountA = 0;
+        private static int chkCountA = 0;
         private static int chKCountR = 0;
 
         private readonly DBOperations DBOprn = new DBOperations();
 
-        private DataTable GVReportsDS
+        private DataTable GVPendingDS
         {
             get
             {
-                DataTable dt = (DataTable)Session["Approve_GVReportsDS"];
+                DataTable dt = (DataTable)Session["Approve_GVPendingDS"];
 
                 if (!(dt?.Rows.Count > 0))
                 {
                     try
                     {
                         dt = GetData(false);
-                        Session["Approve_GVReportsDS"] = dt;
+                        Session["Approve_GVPendingDS"] = dt;
                     }
                     catch (Exception ex)
                     {
@@ -47,9 +47,9 @@ namespace Finance_Tracker
             set
             {
                 if (!(value?.Rows.Count > 0))
-                    Session["Approve_GVReportsDS"] = null;
+                    Session["Approve_GVPendingDS"] = null;
                 else
-                    Session["Approve_GVReportsDS"] = value;
+                    Session["Approve_GVPendingDS"] = value;
             }
         }
 
@@ -138,7 +138,7 @@ namespace Finance_Tracker
                 TxtMnth.Attributes.Add("autocomplete", "off");
                 //TxtCmnts.Attributes.Add("autocomplete", "off");
 
-                chKCountA = 0;
+                chkCountA = 0;
                 chKCountR = 0;
             }
         }
@@ -162,16 +162,16 @@ namespace Finance_Tracker
             SetTooltip(DdlType);
 
             if (Menu1.SelectedValue == "0")
-                ResetGVReports();
+                ResetGVPending();
             else if (Menu1.SelectedValue == "1")
                 ResetGVApprovd();
         }
 
-        private void ResetGVReports()
+        private void ResetGVPending()
         {
-            GVReportsDiv.Visible = false;
-            GVReports.DataSource = null;
-            GVReportsDS = null;
+            GVPendingDiv.Visible = false;
+            GVPending.DataSource = null;
+            GVPendingDS = null;
         }
 
         private void ResetGVApprovd()
@@ -257,8 +257,8 @@ namespace Finance_Tracker
             }
             if (MultiView1.ActiveViewIndex == 0)
             {
-                ResetGVReports();
-                GVReports.DataBind();
+                ResetGVPending();
+                GVPending.DataBind();
             }
             else if (MultiView1.ActiveViewIndex == 1)
             {
@@ -267,20 +267,20 @@ namespace Finance_Tracker
             }
         }
 
-        protected void GVReports_DataBinding(object sender, EventArgs e)
+        protected void GVPending_DataBinding(object sender, EventArgs e)
         {
-            if (GVReports.DataSource == null)
+            if (GVPending.DataSource == null)
             {
-                DataTable dt = GVReportsDS;
+                DataTable dt = GVPendingDS;
                 if (dt != null)
                 {
-                    GVReports.DataSource = dt;
-                    GVReportsDiv.Visible = true;
+                    GVPending.DataSource = dt;
+                    GVPendingDiv.Visible = true;
                     BtnApprove.Enabled = false;
                 }
                 else
                 {
-                    GVReportsDiv.Visible = false;
+                    GVPendingDiv.Visible = false;
                     PopUp("No data found!");
                 }
             }
@@ -293,38 +293,38 @@ namespace Finance_Tracker
 
         protected void CBApprovH_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (GridViewRow gvRow in GVReports.Rows)
+            foreach (GridViewRow gvRow in GVPending.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 bool chked = ((CheckBox)sender).Checked;
                 if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
-                    chKCountA += chked ? 1 : -1;
+                    chkCountA += chked ? 1 : -1;
                 }
             }
-            if (GVReports.Rows.Count < chKCountA)
-                chKCountA = GVReports.Rows.Count;
-            else if (chKCountA < 0)
-                chKCountA = 0;
+            if (GVPending.Rows.Count < chkCountA)
+                chkCountA = GVPending.Rows.Count;
+            else if (chkCountA < 0)
+                chkCountA = 0;
 
-            BtnApprove.Enabled = chKCountA > 0;
-            BtnReject1.Enabled = chKCountA > 0;
+            BtnApprove.Enabled = chkCountA > 0;
+            BtnReject.Enabled = chkCountA > 0;
         }
 
         protected void CBApprov_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cb = (CheckBox)sender;
-            chKCountA += cb.Checked ? 1 : -1;
-            if (GVReports.Rows.Count < chKCountA)
-                chKCountA = GVReports.Rows.Count;
-            else if (chKCountA < 0)
-                chKCountA = 0;
-            BtnApprove.Enabled = chKCountA > 0;
-            BtnReject1.Enabled = chKCountA > 0;
-            GridViewRow row = GVReports.HeaderRow;
+            chkCountA += cb.Checked ? 1 : -1;
+            if (GVPending.Rows.Count < chkCountA)
+                chkCountA = GVPending.Rows.Count;
+            else if (chkCountA < 0)
+                chkCountA = 0;
+            BtnApprove.Enabled = chkCountA > 0;
+            BtnReject.Enabled = chkCountA > 0;
+            GridViewRow row = GVPending.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
-            cbH.Checked = (GVReports.Rows.Count == chKCountA);
+            cbH.Checked = (GVPending.Rows.Count == chkCountA);
         }
 
         protected void BtnApprove_Click(object sender, EventArgs e)
@@ -350,9 +350,9 @@ namespace Finance_Tracker
                     PopUp("Tasks approved successfully!");
 
 
-                    GVReports.DataSource = null;
-                    GVReportsDS = null;
-                    GVReports.DataBind();
+                    GVPending.DataSource = null;
+                    GVPendingDS = null;
+                    GVPending.DataBind();
                 }
             }
             catch (Exception ex)
@@ -364,42 +364,44 @@ namespace Finance_Tracker
         private string ConstructJSON()
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+            int chkCnt = 0;
+            GVPending.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : -1);
 
-            foreach (GridViewRow gvRow in GVReports.Rows)
+            foreach (GridViewRow gvRow in GVPending.Rows)
             {
+                if (chkCnt < 1) break;
+
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if (cb.Checked)
+                if (!cb.Checked) continue;
+
+                string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                string cmnts = ((TextBox)gvRow.Cells[7].Controls[1]).Text.Trim();
+                Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
-                    string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
-                    string cmnts = ((TextBox)gvRow.Cells[7].Controls[1]).Text.Trim();
-                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
-                        {
-                            {
-                                "REC_ID",
-                                id
-                            },
-                            {
-                                "APPROVE_DATE",
-                                Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-                            },
-                            {
-                                "COMMENTS",
-                                cmnts
-                            },
-                            {
-                                "MODIFIED_BY",
-                                Session["User_Name"].ToString()
-                            },
-                            {
-                                "MODIFIED_DATE",
-                                Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-                            }
-                        };
-                    dtls.Add(paramVals);
-                    cb.Checked = false;
-                    chKCountA--;
-                }
-                continue;
+                    {
+                        "REC_ID",
+                        id
+                    },
+                    {
+                        "APPROVE_DATE",
+                        Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                    },
+                    {
+                        "COMMENTS",
+                        cmnts
+                    },
+                    {
+                        "MODIFIED_BY",
+                        Session["User_Name"].ToString()
+                    },
+                    {
+                        "MODIFIED_DATE",
+                        Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                    }
+                };
+                dtls.Add(paramVals);
+                cb.Checked = false;
+                chkCnt--;
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;
@@ -481,7 +483,7 @@ namespace Finance_Tracker
                 chKCountR = GVApproved.Rows.Count;
             else if (chKCountR < 0)
                 chKCountR = 0;
-            BtnReject.Enabled = chKCountR > 0;
+            BtnRejectA.Enabled = chKCountR > 0;
         }
 
         protected void CBReject_CheckedChanged(object sender, EventArgs e)
@@ -490,15 +492,15 @@ namespace Finance_Tracker
             chKCountR += cb.Checked ? 1 : -1;
             if (GVApproved.Rows.Count < chKCountR)
                 chKCountR = GVApproved.Rows.Count;
-            else if (chKCountA < 0)
+            else if (chkCountA < 0)
                 chKCountR = 0;
-            BtnReject.Enabled = chKCountR > 0;
+            BtnRejectA.Enabled = chKCountR > 0;
             GridViewRow row = GVApproved.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
             cbH.Checked = (GVApproved.Rows.Count == chKCountR);
         }
 
-        protected void BtnReject_Click(object sender, EventArgs e)
+        protected void BtnRejectA_Click(object sender, EventArgs e)
         {
             try
             {
@@ -530,11 +532,11 @@ namespace Finance_Tracker
             }
         }
 
-        protected void BtnReject1_Click(object sender, EventArgs e)
+        protected void BtnReject_Click(object sender, EventArgs e)
         {
             try
             {
-                string jsonParam = ConstructJSONReject(GVReports, chKCountA, 7);
+                string jsonParam = ConstructJSONReject(GVPending, chkCountA, 7);
 
                 if (!string.IsNullOrWhiteSpace(jsonParam))
                 {
@@ -551,8 +553,8 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    ResetGVReports();
-                    GVReports.DataBind();
+                    ResetGVPending();
+                    GVPending.DataBind();
                 }
             }
             catch (Exception ex)
@@ -565,39 +567,40 @@ namespace Finance_Tracker
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
+            chkCnt = 0;
+            GVPending.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+
             foreach (GridViewRow gvRow in gv.Rows)
             {
                 if (chkCnt < 1) break;
+
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if (cb.Checked)
+                if (!cb.Checked) continue;
+
+                string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
+                string cmnts = ((TextBox)gvRow.Cells[cmntIndex].Controls[1]).Text.Trim();
+                Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
-                    //string cmnts = ((TextBox)gv.FindFieldTemplate("Comments"))?.Text.Trim(); ;
-                    string id = ((Label)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Text;
-                    string cmnts = ((TextBox)gvRow.Cells[cmntIndex].Controls[1]).Text.Trim();
-                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
-                        {
-                            {
+                    {
                                 "REC_ID",
                                 id
                             },
-                            {
-                                "COMMENTS",
-                                cmnts
-                            },
-                            {
-                                "MODIFIED_BY",
-                                Session["User_Name"].ToString()
-                            },
-                            {
-                                "MODIFIED_DATE",
-                                Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-                            }
-                        };
-                    dtls.Add(paramVals);
-                    cb.Checked = false;
-                    chkCnt--;
-                }
-                continue;
+                    {
+                        "COMMENTS",
+                        cmnts
+                    },
+                    {
+                        "MODIFIED_BY",
+                        Session["User_Name"].ToString()
+                    },
+                    {
+                        "MODIFIED_DATE",
+                        Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                    }
+                };
+                dtls.Add(paramVals);
+                cb.Checked = false;
+                chkCnt--;
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;

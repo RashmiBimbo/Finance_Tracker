@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -405,32 +406,34 @@ namespace Finance_Tracker
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
+            int chkCnt = 0;
+            GVReports.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+
             foreach (GridViewRow gvRow in GVReports.Rows)
             {
+                if (chkCnt < 1) break;
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if (cb.Checked)
+                if (!cb.Checked) continue;
+
+                string id = ((HiddenField)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Value;
+                Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
-                    string id = ((HiddenField)gvRow.Cells[gvRow.Cells.Count - 1].Controls[1]).Value;
-                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
-                        {
-                            {
-                                "REC_ID",
-                                id
-                            },
-                            {
-                                "MODIFIED_BY",
-                                Session["User_Name"].ToString()
-                            },
-                            {
-                                "MODIFIED_DATE",
-                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-                            }
-                        };
-                    dtls.Add(paramVals);
-                    cb.Checked = false;
-                    chKCount--;
-                }
-                continue;
+                    {
+                        "REC_ID",
+                        id
+                    },
+                    {
+                        "MODIFIED_BY",
+                        Session["User_Name"].ToString()
+                    },
+                    {
+                        "MODIFIED_DATE",
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                    }
+                };
+                dtls.Add(paramVals);
+                cb.Checked = false;
+                chkCnt--;
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;

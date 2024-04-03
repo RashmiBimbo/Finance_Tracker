@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
@@ -16,18 +17,18 @@ namespace Finance_Tracker.Masters
         private string roleId, LocId, UsrId, UsrName;
         private readonly DBOperations DBOprn;
         private const string Emp = "";
-        private static int chKGVViewCount = 0, chKCountGVAdd = 0;
+        private static int chKCntGVView = 0, chKCntGVAssign = 0;
         bool IsApprover, IsAdmin;
 
         #endregion Fields
 
         #region Properties
 
-        private DataTable GVAddDS
+        private DataTable GVAssignDS
         {
             get
             {
-                DataTable dt = (DataTable)Session["UserTaskAssignment_GVAddDS"];
+                DataTable dt = (DataTable)Session["UserTaskAssignment_GVAssignDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
                     string approverId = IsAdmin ? null : UsrId;
@@ -36,7 +37,7 @@ namespace Finance_Tracker.Masters
                     dt = GetData("SP_Get_Unassigned_Tasks", UsrId, LocId);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
-                    Session["UserTaskAssignment_GVAddDS"] = dt;
+                    Session["UserTaskAssignment_GVAssignDS"] = dt;
                 }
                 return dt;
             }
@@ -44,7 +45,7 @@ namespace Finance_Tracker.Masters
             {
                 if (!(value?.Rows.Count > 0))
                     value = null;
-                Session["UserTaskAssignment_GVAddDS"] = value;
+                Session["UserTaskAssignment_GVAssignDS"] = value;
             }
         }
 
@@ -110,13 +111,13 @@ namespace Finance_Tracker.Masters
 
                 if (!IsPostBack)
                 {
-                    GVAddDS = null;
+                    GVAssignDS = null;
                     GVViewDS = null;
 
                     foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers })
                         ddl.DataBind();
-                    chKGVViewCount = 0;
-                    chKCountGVAdd = 0;
+                    chKCntGVView = 0;
+                    chKCntGVAssign = 0;
 
                     Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
                 }
@@ -225,7 +226,7 @@ namespace Finance_Tracker.Masters
             {
                 case "0":
                 {
-                    ResetGVAdd();
+                    ResetGVAssign();
                     break;
                 }
                 case "1":
@@ -240,19 +241,19 @@ namespace Finance_Tracker.Masters
 
         #region TabAssign
 
-        private void ResetGVAdd()
+        private void ResetGVAssign()
         {
-            GVAdd.DataSource = null;
-            GVAddDS = null;
-            GVAdd.DataBind();
+            GVAssign.DataSource = null;
+            GVAssignDS = null;
+            GVAssign.DataBind();
         }
 
-        protected void GVAdd_DataBinding(object sender, EventArgs e)
+        protected void GVAssign_DataBinding(object sender, EventArgs e)
         {
-            if (GVAdd.DataSource == null)
+            if (GVAssign.DataSource == null)
             {
-                DataTable dt = GVAddDS;
-                GVAdd.DataSource = dt;
+                DataTable dt = GVAssignDS;
+                GVAssign.DataSource = dt;
                 if (dt == null)
                 {
                     DivAdd.Visible = false;
@@ -266,44 +267,45 @@ namespace Finance_Tracker.Masters
         protected void CBAdd_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cb = (CheckBox)sender;
-            chKCountGVAdd += cb.Checked ? 1 : -1;
-            if (GVAdd.Rows.Count < chKCountGVAdd)
-                chKCountGVAdd = GVAdd.Rows.Count;
-            else if (chKCountGVAdd < 0)
-                chKCountGVAdd = 0;
-            BtnAssign.Enabled = chKCountGVAdd > 0;
-            GridViewRow row = GVAdd.HeaderRow;
+            chKCntGVAssign += cb.Checked ? 1 : -1;
+            if (GVAssign.Rows.Count < chKCntGVAssign)
+                chKCntGVAssign = GVAssign.Rows.Count;
+            else if (chKCntGVAssign < 0)
+                chKCntGVAssign = 0;
+            BtnAssign.Enabled = chKCntGVAssign > 0;
+            GridViewRow row = GVAssign.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
-            cbH.Checked = (GVAdd.Rows.Count == chKCountGVAdd);
+            cbH.Checked = (GVAssign.Rows.Count == chKCntGVAssign);
         }
 
         protected void CBAddH_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (GridViewRow gvRow in GVAdd.Rows)
+            foreach (GridViewRow gvRow in GVAssign.Rows)
             {
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 bool chked = ((CheckBox)sender).Checked;
                 if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
-                    chKCountGVAdd += chked ? 1 : -1;
+                    chKCntGVAssign += chked ? 1 : -1;
                 }
             }
-            if (GVAdd.Rows.Count < chKCountGVAdd)
-                chKCountGVAdd = GVAdd.Rows.Count;
-            else if (chKCountGVAdd < 0)
-                chKCountGVAdd = 0;
-            BtnAssign.Enabled = chKCountGVAdd > 0;
+            if (GVAssign.Rows.Count < chKCntGVAssign)
+                chKCntGVAssign = GVAssign.Rows.Count;
+            else if (chKCntGVAssign < 0)
+                chKCntGVAssign = 0;
+            BtnAssign.Enabled = chKCntGVAssign > 0;
         }
 
         protected void BtnAssign_Click(object sender, EventArgs e)
         {
-            string jsonParam = ConstructJSON("1", GVAdd, GVAddDS, chKCountGVAdd);
+            //int.TryParse(HFCntA.Value, out chKCntGVAssign);
+            string jsonParam = ConstructJSON("1", GVAssign, GVAssignDS);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
                 PopUp("Tasks assigned successfully!");
-                ResetGVAdd();
-                chKCountGVAdd = 0;
+                ResetGVAssign();
+                chKCntGVAssign = 0;
                 BtnAssign.Enabled = false;
             }
         }
@@ -344,39 +346,40 @@ namespace Finance_Tracker.Masters
                 if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
-                    chKGVViewCount += chked ? 1 : -1;
+                    chKCntGVView += chked ? 1 : -1;
                 }
             }
-            if (GVView.Rows.Count < chKGVViewCount)
-                chKGVViewCount = GVView.Rows.Count;
-            else if (chKGVViewCount < 0)
-                chKGVViewCount = 0;
-            BtnUnAssign.Enabled = chKGVViewCount > 0;
+            if (GVView.Rows.Count < chKCntGVView)
+                chKCntGVView = GVView.Rows.Count;
+            else if (chKCntGVView < 0)
+                chKCntGVView = 0;
+            BtnUnAssign.Enabled = chKCntGVView > 0;
         }
 
         protected void CBEdit_CheckedChanged(object sender, EventArgs e)
         {
 
             CheckBox cb = (CheckBox)sender;
-            chKGVViewCount += cb.Checked ? 1 : -1;
-            if (GVView.Rows.Count < chKGVViewCount)
-                chKGVViewCount = GVView.Rows.Count;
-            else if (chKGVViewCount < 0)
-                chKGVViewCount = 0;
-            BtnUnAssign.Enabled = chKGVViewCount > 0;
+            chKCntGVView += cb.Checked ? 1 : -1;
+            if (GVView.Rows.Count < chKCntGVView)
+                chKCntGVView = GVView.Rows.Count;
+            else if (chKCntGVView < 0)
+                chKCntGVView = 0;
+            BtnUnAssign.Enabled = chKCntGVView > 0;
             GridViewRow row = GVView.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
-            cbH.Checked = (GVView.Rows.Count == chKGVViewCount);
+            cbH.Checked = (GVView.Rows.Count == chKCntGVView);
         }
 
         protected void BtnUnAssign_Click(object sender, EventArgs e)
         {
-            string jsonParam = ConstructJSON("0", GVView, GVViewDS, chKGVViewCount);
+            //int.TryParse(HFCntU.Value, out chKCntGVAssign);
+            string jsonParam = ConstructJSON("0", GVView, GVViewDS);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
                 PopUp("Tasks unassigned successfully!");
                 ResetGVView();
-                chKGVViewCount = 0;
+                chKCntGVView = 0;
                 BtnUnAssign.Enabled = false;
             };
         }
@@ -458,53 +461,54 @@ namespace Finance_Tracker.Masters
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
-        private string ConstructJSON(string activ, GridView gv, DataTable gvDS, int chk)
+        private string ConstructJSON(string activ, GridView gv, DataTable gvDS)
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
+            int chkCnt = 0;
+            gv.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+
             foreach (GridViewRow gvRow in gv.Rows)
             {
-                if (chk < 1) break;
+                if (chkCnt < 1) break;
 
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if (cb.Checked)
+                if (!cb.Checked) continue;
+
+                DataRow dRow = gvDS.Select("Sno = " + gvRow.Cells[1].Text)[0];
+                string subordinateID = dRow["UserId"].ToString();
+                string reportId = dRow["ReportId"].ToString();
+                string reportName = dRow["Task_Name"].ToString();
+                Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
-                    DataRow dRow = gvDS.Select("Sno = " + gvRow.Cells[1].Text)[0];
-                    string subordinateID = dRow["UserId"].ToString();
-                    string reportId = dRow["ReportId"].ToString();
-                    string reportName = dRow["Task_Name"].ToString();
-                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
                     {
-                        {
-                            "USER_ID" ,
-                             subordinateID.ToUpper()
-                        },
-                        {
-                            "REPORT_ID",
-                            reportId
-                        },
-                        {
-                            "REPORT_NAME",
-                             reportName
-                        },
-                        {
-                            "CREATED_BY",
-                            UsrName
-                        },
-                        {
-                            "APPROVER",
-                            UsrId.ToUpper()
-                        },
-                        {
-                            "ACTIVE",
-                             activ
-                        }
-                    };
-                    dtls.Add(paramVals);
-                    cb.Checked = false;
-                    chk--;
-                }
-                continue;
+                        "USER_ID" ,
+                         subordinateID.ToUpper()
+                    },
+                    {
+                        "REPORT_ID",
+                        reportId
+                    },
+                    {
+                        "REPORT_NAME",
+                         reportName
+                    },
+                    {
+                        "CREATED_BY",
+                        UsrName
+                    },
+                    {
+                        "APPROVER",
+                        UsrId.ToUpper()
+                    },
+                    {
+                        "ACTIVE",
+                         activ
+                    }
+                };
+                dtls.Add(paramVals);
+                cb.Checked = false;
+                chkCnt--;
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;

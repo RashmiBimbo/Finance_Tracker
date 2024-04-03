@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using System.Linq;
 using static System.DateTime;
 using static System.Convert;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace Finance_Tracker
 {
@@ -27,7 +28,7 @@ namespace Finance_Tracker
         private readonly int crntMnth = Today.Month;
         private readonly DateTime crntMnthDay1 = new DateTime(Today.Year, Today.Month, 1);
         private readonly DateTime crntMnthLastDay = new DateTime(Today.Year, Today.Month, DaysInMonth(Today.Year, Today.Month));
-        private readonly DateTime lstMnth = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
+        private readonly DateTime lstMnthDay1 = new DateTime(Today.Year, Today.Month, 1).AddMonths(-1);
         private string UsrId, UsrName, RoleId;
 
         private readonly DBOperations DBOprn = new DBOperations();
@@ -227,16 +228,16 @@ namespace Finance_Tracker
                     Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
                     chKCount = 0;
                     chKCountGVAdd = 0;
-                    CETxtMnthM.StartDate = lstMnth;
+                    CETxtMnthM.StartDate = lstMnthDay1;
                     CETxtMnthM.EndDate = crntMnthLastDay;
                     //DdlTypeM.Items.FindByValue("Half Yearly").Enabled = false;
-                    //if (crntMnth == 1 || lstMnth.Month == 1)
+                    //if (crntMnth == 1 || lstMnthDay1.Month == 1)
                     //{
                     //    DdlTypeM.Items.FindByValue("Half Yearly").Enabled = true;
                     //    DdlHY.Items.FindByValue("2").Enabled=false;
                     //}
                     //else
-                    //if (crntMnth == 7 || lstMnth.Month == 8)
+                    //if (crntMnth == 7 || lstMnthDay1.Month == 8)
                     //{
                     //    DdlTypeM.Items.FindByValue("Half Yearly").Enabled = true;
                     //    DdlHY.Items.FindByValue("1").Enabled = false;
@@ -455,7 +456,6 @@ namespace Finance_Tracker
             }
         }
 
-
         protected void BtnAddM_Click(object sender, EventArgs e)
         {
             if (DdlTypeM.SelectedValue == "0")
@@ -476,8 +476,8 @@ namespace Finance_Tracker
                 DdlWeekM.Focus();
                 return;
             }
-            string jsonParam = ConstructJSON_M(out int chkCnt);
-            if (chkCnt == 0) PopUp("Please check any row to add!");
+            string jsonParam = ConstructJSON_M();
+            //if (chkCnt == 0) PopUp("Please check any row to add!");
 
             if (SubMission("SP_Add_Multiple_Tasks", jsonParam))
             {
@@ -489,20 +489,28 @@ namespace Finance_Tracker
             };
         }
 
-        private string ConstructJSON_M(out int chkCnt)
+        private string ConstructJSON_M()
         {
-            chkCnt = 0;
             string jsonString = Emp;
+            int chkCnt = 0;
+            GVAdd.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+            if (chkCnt == 0)
+            {
+                PopUp("Please check any row to add!");
+                return jsonString;
+            };
             DataTable dSrc = GVAddDS;
             if (dSrc == null || dSrc.Rows.Count == 0) return jsonString;
 
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
             foreach (GridViewRow gvRow in GVAdd.Rows)
             {
+                if (chkCnt < 1) break;
+
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if (!cb.Checked)
-                    continue;
-                chkCnt++;
+                if (!cb.Checked) continue;
+
+                //chkCount++;
                 int sno = ToInt32(gvRow.Cells[1].Text);
                 DataRow dRo = dSrc.Select($"sno = {sno}")?[0];
 
@@ -524,6 +532,7 @@ namespace Finance_Tracker
                     LblRoErr.Text = "Please upload a File!";
                     LblRoErr.CssClass = "control-label text-danger ";
                     cb.Checked = false;
+                    chkCnt--;
                     continue;
                 }
                 else
@@ -534,6 +543,7 @@ namespace Finance_Tracker
                     LblRoErr.Text = msg;
                     LblRoErr.CssClass = "control-label text-danger ";
                     cb.Checked = false;
+                    chkCnt--;
                     continue;
                 }
                 else
@@ -554,7 +564,7 @@ namespace Finance_Tracker
                 };
                 dtls.Add(paramVals);
                 cb.Checked = false;
-                chKCount--;
+                chkCnt--;
                 LblRoErr.Text = "Success";
                 LblRoErr.CssClass = "control-label text-success ";
             }
@@ -583,7 +593,7 @@ namespace Finance_Tracker
             TxtMnthS.Text = Now.ToString(MonthFormat);
             TxtMnthS.Enabled = true;
 
-            CalendarExtender1.StartDate = lstMnth;
+            CalendarExtender1.StartDate = lstMnthDay1;
             CalendarExtender1.EndDate = crntMnthLastDay;
 
             DdlWeekS.SelectedIndex = 0;
@@ -624,7 +634,7 @@ namespace Finance_Tracker
             TxtMnth2.Text = TextBoxWatermarkExtender2.WatermarkText;
             DdlType2.SelectedIndex = 0;
             SetTooltip(DdlType2);
-            //CalendarExtender2.StartDate = lstMnth;
+            //CalendarExtender2.StartDate = lstMnthDay1;
             //CalendarExtender2.EndDate = crntMnthLastDay;
 
         }
@@ -913,9 +923,9 @@ namespace Finance_Tracker
                 {
                     GVAdd.SelectedIndex = -1;
                     DivGVBtnM.Visible = false;
-                    if (dt < lstMnth)
+                    if (dt < lstMnthDay1)
                     {
-                        TxtMnthM.Text = lstMnth.ToString(MonthFormat);
+                        TxtMnthM.Text = lstMnthDay1.ToString(MonthFormat);
                     }
                     else if (dt > crntMnthLastDay)
                     {
@@ -1187,7 +1197,14 @@ namespace Finance_Tracker
                         PopUp("No data found!");
                     }
                     else
+                    {
                         GVReports2.Visible = true;
+
+                        int slctdMnth = ToInt16(TxtMnth2.ToolTip.Split(',')[0].Split('-')[1]);
+                        bool showSbmt = slctdMnth == crntMnth || slctdMnth == lstMnthDay1.Month;
+                        GVReports2.Columns[0].Visible = showSbmt;
+                        BtnSubmit.Visible = showSbmt;
+                    }
                 }
                 BtnSubmit.Visible = GVReports2.Visible;
             }
@@ -1242,6 +1259,7 @@ namespace Finance_Tracker
                     GVReports2DS = null;
                     GVReports2.DataBind();
                     chKCount = 0;
+                    BtnSubmit.Enabled = false;
                 };
             }
             catch (Exception ex)
@@ -1281,28 +1299,30 @@ namespace Finance_Tracker
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
 
+            int chkCnt = 0;
+            GVReports2.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+
             foreach (GridViewRow gvRow in GVReports2.Rows)
             {
-                if (chKCount == 0) break;
+                CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
+                if (!cb.Checked) continue;
+
+                if (chkCnt < 1) break;
                 DataRow dRo = GVReports2DS.Select("Sno = " + gvRow.Cells[1].Text)?[0];
                 if (dRo == null) continue;
-                CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
-                if (cb.Checked)
+
+                string id = dRo["Task_Id"].ToString();
+                string submitDt = Now.ToString(SqlDateFormat);
+                Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
-                    string id = dRo["Task_Id"].ToString();
-                    string submitDt = Now.ToString(SqlDateFormat);
-                    Dictionary<string, string> paramVals = new Dictionary<string, string>()
-                    {
-                        { "REC_ID", id },
-                        { "SUBMIT_DATE", submitDt },
-                        { "MODIFIED_BY", UsrName },
-                        { "MODIFIED_DATE", Now.ToString("yyyy-MM-dd HH:mm:ss.fff") }
-                    };
-                    dtls.Add(paramVals);
-                    cb.Checked = false;
-                    chKCount--;
-                }
-                continue;
+                    { "REC_ID", id },
+                    { "SUBMIT_DATE", submitDt },
+                    { "MODIFIED_BY", UsrName },
+                    { "MODIFIED_DATE", Now.ToString("yyyy-MM-dd HH:mm:ss.fff") }
+                };
+                dtls.Add(paramVals);
+                cb.Checked = false;
+                chkCnt--;
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;
@@ -1326,6 +1346,7 @@ namespace Finance_Tracker
                 DdlCatTypeS.Items?.Clear();
                 DdlCatTypeS.Items.Add(new ListItem(dRo["Category_Type"].ToString(), catTypID));
                 DdlCatTypeS.SelectedValue = catTypID;
+
                 string catId = dRo["CatId"].ToString();
                 DdlCatS.Items?.Clear();
                 DdlCatS.Items.Add(new ListItem(dRo["Category_Name"].ToString(), catId));
@@ -1389,6 +1410,7 @@ namespace Finance_Tracker
                     FUReport.Enabled = false;
                     FUReport.Visible = false;
                     BtnAdd.Text = "OK";
+                    LblFU.Visible = false;
                 }
                 else if (btn.Text == "Edit")
                 {
@@ -1397,6 +1419,7 @@ namespace Finance_Tracker
                     FUReport.Enabled = true;
                     FUReport.Visible = true;
                     BtnAdd.Text = "Save";
+                    LblFU.Visible = true;
                 }
                 DivAddSingl.Visible = true;
                 DivAddMultiple.Visible = false;
@@ -1459,7 +1482,7 @@ namespace Finance_Tracker
         public void PopUp(string msg)
         {
             msg.Replace("'", Emp);
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
+            ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         protected void GVReports3_DataBinding(object sender, EventArgs e)

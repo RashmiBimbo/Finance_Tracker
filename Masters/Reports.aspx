@@ -140,10 +140,10 @@
                                         <%--0 --%>
                                         <asp:TemplateField>
                                             <HeaderTemplate>
-                                                <asp:CheckBox ID="CDeleteH" runat="server" BorderStyle="None" OnCheckedChanged="CDeleteH_CheckedChanged" TextAlign="Right" ToolTip="Delete" AutoPostBack="true" />
+                                                <asp:CheckBox ID="CDeleteH" runat="server" BorderStyle="None" TextAlign="Right" ToolTip="Delete" onclick="handleCheckBoxChangeH(this);" />
                                             </HeaderTemplate>
                                             <ItemTemplate>
-                                                <asp:CheckBox ID="CDelete" runat="server" ToolTip="Delete" AutoPostBack="true" OnCheckedChanged="CDelete_CheckedChanged" />
+                                                <asp:CheckBox ID="CDelete" runat="server" ToolTip="Delete" onclick="handleCheckBoxChange(this);" />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--1 --%>
@@ -182,7 +182,89 @@
         </div>
     </div>
     <script src="../assets/libs/Common.js" type="text/javascript"></script>
-    <script>                    
+    <script>    
+        let chKCount = 0;
+
+        $(document).ready(function ()
+        {
+            //debugger;
+            var GVReports = document.getElementById('<%= GVReports.ClientID %>');
+            if (GVReports !== null)
+            {
+                for (let i = 1; i < GVReports.rows.length; i++)
+                {
+                    let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                    let chkd = cbChld.checked;
+                    chKCount += chkd ? 1 : 0;
+                }
+                EnableDisableButton(chKCount);
+                //debugger;
+                var cbH = GVReports.rows[0].cells[0].querySelector('input[type="checkbox"]');
+                if (cbH !== null) cbH.checked = (chKCount == GVReports.rows.length - 1);
+            }
+            console.log("chKCount: " + chKCount);
+        });
+
+        //Handle checkbox change for checkbox in Header row of GVReports
+        function handleCheckBoxChangeH (cb)
+        {
+            //debugger;
+            var GVReports = document.getElementById('<%= GVReports.ClientID %>');
+            if (GVReports !== null)
+            {
+
+                //Update each row's checkbox
+                for (let i = 1; i < GVReports.rows.length; i++)
+                {
+                    let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                    let chkdH = cb.checked;
+                    if (chkdH !== cbChld.checked)
+                    {
+                        cbChld.checked = chkdH;
+                        chKCount += chkdH ? 1 : -1;
+                    }
+                }
+                if (GVReports.rows.length < chKCount)
+                    chKCount = GVReports.rows.length;
+                else if (chKCount < 0)
+                    chKCount = 0;
+                EnableDisableButton(chKCount);
+            }
+        }
+
+        //Handle checkbox change for checkbox in each row of GVReports
+        function handleCheckBoxChange (cb)
+        {
+            //debugger;
+            chKCount += cb.checked ? 1 : -1;
+            var GVReports = document.getElementById('<%= GVReports.ClientID%>');
+            if (GVReports !== null)
+            {
+                if (GVReports.rows.length < chKCount)
+                    chKCount = GVReports.rows.length;
+                else if
+                    (chKCount < 0) chKCount = 0;
+
+                // Update header checkbox
+                let cbH = GVReports.rows[0].querySelector('th input[type="checkbox"]');
+                cbH.checked = (GVReports.rows.length - 1 === chKCount);
+                EnableDisableButton(chKCount);
+            }
+        }
+
+        function EnableDisableButton (count)
+        {
+            let btnAddM = document.getElementById('<%= BtnDlt.ClientID %>');
+            btnAddM.disabled = (count === 0);
+        }
+
+        function BtnDltOnClientClick ()
+        {
+            console.log("BtnDltOnClientClick called");
+            //debugger;
+            console.log("chKCount: " + chKCount);
+            return true;
+        }
         function validateDropDown ()
         {
             var dropdown = document.getElementById("<%= DdlCatTypeA.ClientID %>");
@@ -193,6 +275,5 @@
             }
             return true; // Allow form submission
         }
-
     </script>
 </asp:Content>
