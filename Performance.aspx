@@ -89,8 +89,12 @@
                                     <Columns>
                                         <%--0 --%>
                                         <asp:TemplateField Visible="true">
+                                            <HeaderTemplate>
+                                                <asp:CheckBox ID="CBAddH" runat="server" onclick="CBAddHOnClick(this);" TextAlign="Right" ToolTip="Add" />
+                                            </HeaderTemplate>
                                             <ItemTemplate>
-                                                <asp:CheckBox ID="CBSubmit" runat="server" ToolTip="Add" AutoPostBack="false" />
+                                                <asp:CheckBox ID="CBAdd" runat="server" ToolTip="Add"
+                                                    onclick="CBAddOnClick(this);" />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--1 --%>
@@ -207,7 +211,7 @@
                                     <asp:TextBox ID="TxtCmnts" runat="server" Width="160px" CssClass="form-control" BackColor="White" TextMode="MultiLine" Enabled="false" Height="40px" onchange="UpdateToolTip(this);"></asp:TextBox>
                                 </div>
                             </div>
-                            <asp:Label runat="server" AssociatedControlID="FUReport" CssClass="col-md-2 control-label">Upload<span style="color:red">&nbsp*</span></asp:Label>
+                            <asp:Label runat="server" AssociatedControlID="FUReport" CssClass="col-md-2 control-label" ID="LblFU">Upload<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-sm-2" id="DvUpload" runat="server">
                                 <asp:FileUpload ID="FUReport" runat="server" CssClass="form-control" />
                             </div>
@@ -249,8 +253,6 @@
                     </div>
                 </asp:View>
                 <asp:View ID="TabView" runat="server">
-                    <%-- <asp:UpdatePanel runat="server" ID="UpdatePanel2">
-                        <ContentTemplate>--%>
                     <div class="row">
                         <asp:Label runat="server" AssociatedControlID="DdlCatType2" CssClass="col-md-2 control-label">Category Type</asp:Label>
                         <div class="col-sm-2">
@@ -277,8 +279,7 @@
                         <div class="col-sm-2">
                             <asp:TextBox ID="TxtMnth2" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" Text='<%# DateTime.Now.ToString("MMM-yyyy") %>' AutoPostBack="True"></asp:TextBox>
                             <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender2" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth2" />
-                            <ajaxToolkit:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="TxtMnth2" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
-                            <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnth2" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidator3" />--%>
+                            <ajaxToolkit:CalendarExtender ID="CETxtMnth2" runat="server" TargetControlID="TxtMnth2" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
                         </div>
                         <asp:Label runat="server" AssociatedControlID="DdlType2" CssClass="col-md-2 control-label">Type</asp:Label>
                         <div class="col-sm-2">
@@ -286,8 +287,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-                    <%-- </ContentTemplate>
-                    </asp:UpdatePanel>--%>
                     <div class="row" style="margin-left: 2px;">
                         <asp:Button runat="server" ID="BtnView2" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" ForeColor="White" UseSubmitBehavior="true" />
                     </div>
@@ -310,10 +309,10 @@
                                 <%--0 --%>
                                 <asp:TemplateField Visible="true">
                                     <HeaderTemplate>
-                                        <asp:CheckBox ID="CBSubmitH" runat="server" BorderStyle="None" OnCheckedChanged="CBSubmitH_CheckedChanged" TextAlign="Right" ToolTip="Submit" AutoPostBack="true" />
+                                        <asp:CheckBox ID="CBSubmitH" runat="server" BorderStyle="None" onclick="handleCheckBoxChangeH(this);" TextAlign="Right" ToolTip="Submit" />
                                     </HeaderTemplate>
                                     <ItemTemplate>
-                                        <asp:CheckBox ID="CBSubmit" runat="server" ToolTip="Submit" AutoPostBack="true" OnCheckedChanged="CBSubmit_CheckedChanged" />
+                                        <asp:CheckBox ID="CBSubmit" runat="server" ToolTip="Submit" onclick="handleCheckBoxChange(this);" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <%--1 --%>
@@ -340,8 +339,6 @@
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                 <%--9 --%>
                                 <asp:BoundField DataField="Status" HeaderText="Status" />
-                                <%--9--%>
-                                <%--<asp:BoundField DataField="Comments" HeaderText="Comments" />--%>
                                 <%--10--%>
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
@@ -393,8 +390,6 @@
                     </div>
                 </asp:View>
                 <asp:View ID="TabSubmit" runat="server">
-                    <%--   <asp:UpdatePanel runat="server" ID="UpdatePanel4">
-                        <ContentTemplate>--%>
                     <div class="row">
                         <asp:Label runat="server" AssociatedControlID="DdlCatType3" CssClass="col-md-2 control-label">Category Type</asp:Label>
                         <div class="col-sm-2">
@@ -422,7 +417,6 @@
                             <asp:TextBox ID="TxtMnth3" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" AutoPostBack="True"></asp:TextBox>
                             <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender3" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth3" />
                             <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth3" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
-                            <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtMnth3" CssClass="text-danger" ErrorMessage="Please select a month." ID="RequiredFieldValidator1" />--%>
                         </div>
                         <label class="col-lg-2 control-label">Type</label>
                         <div class="col-sm-2">
@@ -473,13 +467,156 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="assets/libs/Common.js" type="text/javascript"></script>
+
     <script type="text/javascript">
 
-        var countChecked = 0;
+        let chKCount = 0;
+        let chKCntA = 0;
+        $(document).ready(function ()
+        {
+            //debugger;
+            var GVAdd = document.getElementById('<%= GVAdd.ClientID %>');
+            if (GVAdd !== null)
+            {
+                for (let i = 1; i < GVAdd.rows.length; i++)
+                {
+                    let cbChld = GVAdd.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                    if (cbChld !== null)
+                    {
+                        let chkd = cbChld.checked;
+                        chKCntA += chkd ? 1 : 0;
+                    }
+                }
+                //debugger;
+                var cbH = GVAdd.rows[0].cells[0].querySelector('input[type="checkbox"]');
+                if (cbH !== null) cbH.checked = (chKCntA == GVAdd.rows.length - 1);
+                EnableDisableButton(chKCntA, '<%= BtnAddM.ClientID%>');
+            }
+            var GVReports2 = document.getElementById('<%= GVReports2.ClientID %>');
+            if (GVReports2 !== null)
+            {
+                for (let i = 1; i < GVReports2.rows.length; i++)
+                {
+                    let cbChld = GVReports2.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                    if (cbChld !== null)
+                    {
+                        let chkd = cbChld.checked;
+                        chKCount += chkd ? 1 : 0;
+                    }
+                }
+                //debugger;
+                var cbH = GVReports2.rows[0].cells[0].querySelector('input[type="checkbox"]');
+                if (cbH !== null) cbH.checked = (chKCount == GVReports2.rows.length - 1);
+                EnableDisableButton(chKCount, '<%= BtnSubmit.ClientID%>');
+            }
+        });
+
+        //Handle checkbox change for checkbox in Header row of GVReports2
+        function handleCheckBoxChangeH (cb)
+        {
+            //debugger;
+            var GVReports2 = document.getElementById('<%= GVReports2.ClientID %>');
+            if (GVReports2 == null) return;
+            //Update each row's checkbox
+            for (let i = 1; i < GVReports2.rows.length; i++)
+            {
+                let cbChld = GVReports2.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                let chkdH = cb.checked;
+                if (chkdH !== cbChld.checked)
+                {
+                    cbChld.checked = chkdH;
+                    chKCount += chkdH ? 1 : -1;
+                }
+            }
+            if (GVReports2.rows.length < chKCount)
+                chKCount = GVReports2.rows.length;
+            else if (chKCount < 0)
+                chKCount = 0;
+
+            EnableDisableButton(chKCount, '<%= BtnSubmit.ClientID%>');
+        }
+
+        //Handle checkbox change for checkbox in each row of GVReports2
+        function handleCheckBoxChange (cb)
+        {
+            //debugger;
+            chKCount += cb.checked ? 1 : -1;
+            var GVReports2 = document.getElementById('<%= GVReports2.ClientID%>');
+
+            if (GVReports2 == null) return;
+
+            if (GVReports2.rows.length < chKCount)
+                chKCount = GVReports2.rows.length;
+            else if
+                (chKCount < 0) chKCount = 0;
+
+            // Update header checkbox
+            let cbH = GVReports2.rows[0].querySelector('th input[type="checkbox"]');
+            cbH.checked = (GVReports2.rows.length - 1 === chKCount);
+            EnableDisableButton(chKCount, '<%= BtnSubmit.ClientID%>');
+        }
+
+        //Handle checkbox change for checkbox in Header row of GVReports2
+        function CBAddHOnClick (cb)
+        {
+            //debugger;
+            var GVAdd = document.getElementById('<%= GVAdd.ClientID %>');
+
+            if (GVAdd == null) return;
+
+            //Update each row's checkbox
+            for (let i = 1; i < GVAdd.rows.length; i++)
+            {
+                let cbChld = GVAdd.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                let chkdH = cb.checked;
+                if (chkdH !== cbChld.checked)
+                {
+                    cbChld.checked = chkdH;
+                    chKCntA += chkdH ? 1 : -1;
+                }
+            }
+            if (GVAdd.rows.length < chKCntA)
+                chKCntA = GVAdd.rows.length;
+            else if (chKCntA < 0)
+                chKCntA = 0;
+
+            EnableDisableButton(chKCntA, '<%= BtnAddM.ClientID%>');
+        }
+
+        //Handle checkbox change for checkbox in each row of GVAdd
+        function CBAddOnClick (cb)
+        {
+            //debugger;
+            chKCntA += cb.checked ? 1 : -1;
+            var GVAdd = document.getElementById('<%= GVAdd.ClientID%>');
+
+            if (GVAdd == null) return;
+
+            if (GVAdd.rows.length < chKCntA)
+                chKCntA = GVAdd.rows.length;
+            else if
+                (chKCntA < 0) chKCntA = 0;
+
+            // Update header checkbox
+            let cbH = GVAdd.rows[0].querySelector('th input[type="checkbox"]');
+            cbH.checked = (GVAdd.rows.length - 1 === chKCntA);
+            EnableDisableButton(chKCntA, '<%= BtnAddM.ClientID%>');
+        }
+
+        function EnableDisableButton (count, ctrlId)
+        {
+            let btnAddM = document.getElementById(ctrlId);
+            btnAddM.disabled = (count === 0);
+        }
+
+        function HideDivGVBtnM ()
+        {
+            $('#<%= DivGVBtnM.ClientID%>').hide();
+        }
 
         function DdlType_SelectedIndexChanged ()
         {
-            console.log("DdlType_SelectedIndexChanged s");
+           <%-- console.log("DdlType_SelectedIndexChanged s");
             let DivGVBtnMId = "#<%=DivGVBtnM.ClientID%>";
             let DivWeekMId = "#<%=DivWeekM.ClientID%>";
             let DvHYId = "#<%=DvHY.ClientID%>";
@@ -506,60 +643,7 @@
                     DdlHY.value = "0";
                     break;
             }
-            console.log("DdlType_SelectedIndexChanged e");
-        }
-        function HideDivGVBtnM ()
-        {
-            $('#<%= DivGVBtnM.ClientID%>').hide();
-        }
-        function handleCheckBoxChange1 ()
-        {
-           <%-- debugger;
-            var gv = document.getElementById('<%= GVAdd.ClientID %>');
-            debugger;--%>
-            //var headerCheckBox = gv.querySelectorAll('[id*="CBSubmitH].ClientID %>');
-            //var rowCheckboxes = gv.querySelectorAll('[id*="CBSubmit"]');
-            //for (var i = 0; i < rowCheckboxes.length; i++)
-            //{
-            //    if (rowCheckboxes[i].checked)
-            //    {
-            //        countChecked++;
-            //    }
-            //}
-            //if (countChecked < 0)
-            //    countChecked = 0;
-            //else if (countChecked < rowCheckboxes.length)
-            //    countChecked = rowCheckboxes.length;
-
-            //headerCheckBox.checked = (countChecked === rowCheckboxes.length);
-        }
-        function handleCheckBoxChange (cb)
-        {
-        //debugger;
-        //var gv = document.getElementById('<%--<%= GVAdd.ClientID %>--%>');
-            //debugger;
-            //var checkboxes = gv.getElementsByTagName('input');
-            //debugger;
-        //var headerCheckbox = gv.getElementById('<%--<%= CBSubmitH.ClientID %.--%>);
-            //debugger;
-            //for (var i = 0; i < checkboxes.length; i++)
-            //{
-            //    if (checkboxes[i].type === 'checkbox' && checkboxes[i].id.indexOf('CBSubmit') !== -1)
-            //    {
-            //        if (checkboxes[i].checked)
-            //        {
-            //            countChecked++;
-            //        }
-            //    }
-            //}
-            //headerCheckbox.checked = (countChecked === checkboxes.length - 1);
-            //EnableDisableButton(countChecked); 
-        }
-
-        function EnableDisableButton (count)
-        {
-            <%--var btnAddM = document.getElementById('<%= BtnAddM.ClientID %>');
-            btnAddM.disabled = (count === 0);--%>
+            console.log("DdlType_SelectedIndexChanged e");--%>
         }
 
     </script>

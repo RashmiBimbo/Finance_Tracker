@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Xml.Linq;
 using static Finance_Tracker.DBOperations;
 using static System.Convert;
 
@@ -18,7 +17,7 @@ namespace Finance_Tracker.Masters
         private string RoleId, LocId, UsrId, UsrName;
         private readonly DBOperations DBOprn;
         private const string Emp = "";
-        private static int chkDltCnt = 0;
+        private static int chkDltCntReports = 0;
         bool IsApprover, IsAdmin;
         public string DuType = "Date";
 
@@ -81,15 +80,16 @@ namespace Finance_Tracker.Masters
             }
             if (!IsPostBack)
             {
+                BtnDlt.Attributes.Add("onclick", "return BtnDltOnClientClick();");
                 Session["DuType"] = "Date";
-                chkDltCnt = 0;
+                chkDltCntReports = 0;
                 //DdlTypeA.Attributes.Add("onchange", "ChngDueDtType(this.value)");
                 DdlCatTypeA.DataBind();
                 DdlCatA.DataBind();
+                //DdlTypeA.DataBind();
                 DdlCatTypeV.DataBind();
                 DdlCatV.DataBind();
-                DdlTypeA.DataBind();
-                //DdlTypeV.DataBind();
+                DdlTypeV.DataBind();
                 Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
             }
         }
@@ -376,9 +376,9 @@ namespace Finance_Tracker.Masters
                 DvDuDt.Visible = false;
                 DdlWeekDay.SelectedIndex = 0;
                 DdlHY.SelectedIndex = 0;
-                SetTooltip(new DropDownList[] { DdlCatTypeA, DdlCatA, DdlTypeA, DdlWeekDay });
                 BtnCncl.Visible = false;
                 BtnAdd.Text = "Add";
+                SetTooltip(new DropDownList[] { DdlCatTypeA, DdlCatA, DdlTypeA, DdlWeekDay });
             }
             catch (Exception ex)
             {
@@ -395,28 +395,28 @@ namespace Finance_Tracker.Masters
                 if (cb.Checked != chked)
                 {
                     cb.Checked = chked;
-                    chkDltCnt += chked ? 1 : -1;
+                    chkDltCntReports += chked ? 1 : -1;
                 }
             }
-            if (GVReports.Rows.Count < chkDltCnt)
-                chkDltCnt = GVReports.Rows.Count;
-            else if (chkDltCnt < 0)
-                chkDltCnt = 0;
-            BtnDlt.Enabled = chkDltCnt > 0;
+            if (GVReports.Rows.Count < chkDltCntReports)
+                chkDltCntReports = GVReports.Rows.Count;
+            else if (chkDltCntReports < 0)
+                chkDltCntReports = 0;
+            BtnDlt.Enabled = chkDltCntReports > 0;
         }
 
         protected void CDelete_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cb = (CheckBox)sender;
-            chkDltCnt += cb.Checked ? 1 : -1;
-            if (GVReports.Rows.Count < chkDltCnt)
-                chkDltCnt = GVReports.Rows.Count;
-            else if (chkDltCnt < 0)
-                chkDltCnt = 0;
-            BtnDlt.Enabled = chkDltCnt > 0;
+            chkDltCntReports += cb.Checked ? 1 : -1;
+            if (GVReports.Rows.Count < chkDltCntReports)
+                chkDltCntReports = GVReports.Rows.Count;
+            else if (chkDltCntReports < 0)
+                chkDltCntReports = 0;
+            BtnDlt.Enabled = chkDltCntReports > 0;
             GridViewRow row = GVReports.HeaderRow;
             CheckBox cbH = (CheckBox)row.Cells[0].Controls[1];
-            cbH.Checked = (GVReports.Rows.Count == chkDltCnt);
+            cbH.Checked = (GVReports.Rows.Count == chkDltCntReports);
         }
 
         protected void GVReports_DataBinding(object sender, EventArgs e)
@@ -466,7 +466,7 @@ namespace Finance_Tracker.Masters
             {
                 PopUp("Reports deleted successfully!");
                 ResetGVReports();
-                chkDltCnt = 0;
+                chkDltCntReports = 0;
                 BtnDlt.Enabled = false;
             }
         }
@@ -501,13 +501,17 @@ namespace Finance_Tracker.Masters
         private string ConstructJSON()
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+            int chkCnt = 0;
+            GVReports.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+
+            //chkDltCntReports = ToInt16(HFCnt.Value);
 
             foreach (GridViewRow gvRow in GVReports.Rows)
             {
-                if (chkDltCnt == 0) break;
+                if (chkCnt < 1) break;
 
                 DataRow dRo = GVReportsDS.Select("Sno = " + gvRow.Cells[1].Text)?[0];
-                if (dRo == null) continue;
+                if (dRo is null) continue;
 
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 if (!cb.Checked) continue;
@@ -530,7 +534,7 @@ namespace Finance_Tracker.Masters
                 };
                 dtls.Add(paramVals);
                 cb.Checked = false;
-                chkDltCnt--;
+                chkCnt--;
             }
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;
@@ -603,7 +607,7 @@ namespace Finance_Tracker.Masters
             DvHY.Visible = false;
             DvWkDay.Visible = false;
             DdlWeekDay.SelectedValue = Emp;
-            DdlHY.SelectedValue ="0" ;
+            DdlHY.SelectedValue = "0";
             TxtDuDt.Text = Emp;
 
             switch (DdlTypeA.SelectedValue.Trim().ToUpper())
