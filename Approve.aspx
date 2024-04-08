@@ -90,7 +90,7 @@
                                     <asp:BoundField DataField="Type" HeaderText="Type" />
                                     <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                     <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
-                                    <asp:TemplateField HeaderText="Comments" Visible="true">
+                                    <asp:TemplateField HeaderText="Comments" Visible="true" >
                                         <ItemTemplate>
                                             <asp:TextBox runat="server" ID="TxtCmnts" TextMode="MultiLine" AutoCompleteType="None" onchange="UpdateToolTip(this);" Height="40px" />
                                         </ItemTemplate>

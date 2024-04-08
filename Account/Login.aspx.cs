@@ -130,6 +130,7 @@ namespace Finance_Tracker.Account
             Session["Modified_By"] = dt.Rows[0]["Modified_By"];
             Session["Is_Approver"] = dt.Rows[0]["Is_Approver"];
             Session["Changed_Password"] = (bool)dt.Rows[0]["Changed_Password"];
+            Session["Email"] = dt.Rows[0]["Email"]?.ToString().Trim();
         }
 
         private bool ValidateUser(params string[] args)
