@@ -148,8 +148,8 @@ namespace Finance_Tracker
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
                 TxtMnth.Attributes.Add("autocomplete", "off");
 
-                if (!IsSmtpConfigValid())
-                    PopUp("Email settings could not be verified. No emails will be sent for approval/rejection!");
+                //if (!IsSmtpConfigValid())
+                //    PopUp("Email settings could not be verified. No emails will be sent for approval/rejection!");
 
                 chkCountA = 0;
                 chKCountR = 0;
@@ -389,7 +389,7 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks approved successfully!");
-                    SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
+                    //SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
 
                     GVPending.DataSource = null;
                     GVPendingDS = null;
@@ -516,8 +516,11 @@ namespace Finance_Tracker
         protected void LBLocn_Click(object sender, EventArgs e)
         {
             LinkButton LBLocn = (LinkButton)sender;
-            string fullPath = LBLocn.ToolTip;
             string fileName = LBLocn.Text;
+            dynamic contnr = LBLocn.NamingContainer;
+            string gvID = contnr.NamingContainer.ID;
+            DataTable dt = gvID == "GVPending" ? GVPendingDS : gvID == "GVApproved" ? GVApprovedDS : null;
+            string fullPath = dt?.Rows[contnr.RowIndex]?["Location"]?.ToString();
             try
             {
                 Response.Clear();
@@ -574,8 +577,7 @@ namespace Finance_Tracker
         {
             try
             {
-                string jsonParam = ConstructJSONReject(GVApproved, chKCountR, 8, out Dictionary<string, string> mailSet);
-                // await SendMultipleEmailsAsync(mailSet, "Tasks rejection");
+                string jsonParam = ConstructJSONReject(GVApproved, GVApprovedDS, 8, out Dictionary<string, string> mailSet);
                 if (!string.IsNullOrWhiteSpace(jsonParam))
                 {
                     var output = DBOprn.ExecScalarProc("SP_Reject_Tasks", DBOprn.ConnPrimary,
@@ -591,7 +593,8 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+                    // await SendMultipleEmailsAsync(mailSet, "Tasks rejection");
+                    //SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
 
                     GVApprovedDS = null;
                     GVApproved.DataSource = null;
@@ -608,7 +611,7 @@ namespace Finance_Tracker
         {
             try
             {
-                string jsonParam = ConstructJSONReject(GVPending, chkCountA, 7, out Dictionary<string, string> mailSet);
+                string jsonParam = ConstructJSONReject(GVPending, GVPendingDS, 7, out Dictionary<string, string> mailSet);
 
                 if (!string.IsNullOrWhiteSpace(jsonParam))
                 {
@@ -625,7 +628,7 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+                    //SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
                     ResetGVPending();
                     GVPending.DataBind();
                 }
@@ -636,11 +639,11 @@ namespace Finance_Tracker
             }
         }
 
-        private string ConstructJSONReject(GridView gv, int chkCnt, int cmntIndex, out Dictionary<string, string> mailSet)
+        private string ConstructJSONReject(GridView gv, DataTable gvDS, int cmntIndex, out Dictionary<string, string> mailSet)
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
             mailSet = new Dictionary<string, string>();
-            chkCnt = 0;
+            int chkCnt = 0;
             gv.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
 
             string strt = $@"
@@ -669,7 +672,7 @@ namespace Finance_Tracker
 
                 string tblStr = Emp;
                 int sno = Convert.ToInt32(gvRow.Cells[1].Text);
-                DataRow dRo = GVApprovedDS.Select("Sno = " + sno)?[0];
+                DataRow dRo = gvDS.Select("Sno = " + sno)?[0];
 
                 string tskId = dRo["Task_Id"].ToString();
                 string usrMail = dRo["Email"].ToString();

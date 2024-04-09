@@ -318,7 +318,10 @@ namespace Finance_Tracker
         protected void LBLocn_Click(object sender, EventArgs e)
         {
             LinkButton LBLocn = (LinkButton)sender;
-            string fullPath = LBLocn.ToolTip;
+            dynamic contnr = LBLocn.NamingContainer;
+            string gvID = contnr.NamingContainer.ID;
+            DataTable dt = gvID == "GVReports" ? GVReportsDS :  null;
+            string fullPath = dt?.Rows[contnr.RowIndex]?["Location"]?.ToString();
             string fileName = LBLocn.Text;
             try
             {

@@ -923,6 +923,7 @@ namespace Finance_Tracker
                 {
                     GVAdd.SelectedIndex = -1;
                     DivGVBtnM.Visible = false;
+
                     if (dt < lstMnthDay1)
                     {
                         TxtMnthM.Text = lstMnthDay1.ToString(MonthFormat);
@@ -934,7 +935,7 @@ namespace Finance_Tracker
                 }
                 else if (ddlType.SelectedIndex == 1)
                 {
-                    string dueDt = new DateTime(dt.Year, dt.Month, Parse(txtDueDt.Text).Day).ToString("dd-MMM-yyyy");
+                    string dueDt = new DateTime(yr, mnth, Parse(txtDueDt.Text).Day).ToString("dd-MMM-yyyy");
                     txtDueDt.Text = dueDt;
                 }
             }
@@ -1388,7 +1389,7 @@ namespace Finance_Tracker
                         if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
                         break;
                 }
-                LnkReport.Text = dRo["Location"].ToString();
+                LnkReport.Text = Path.GetFileName(dRo["Location"]?.ToString());
                 DivLnk.Visible = true;
 
                 BtnCncl.Visible = true;
@@ -1454,7 +1455,13 @@ namespace Finance_Tracker
                     }
                     case "LnkReport":
                     {
-                        fullPath = lnkBtn.Text;
+                        fullPath = GVReports2DS.Select("Task_Id=" + LblTaskID.Text)?[0]?["Location"]?.ToString();
+                        break;
+                    }
+                    case "LBGVReprts":
+                    {
+                        dynamic ctrl = lnkBtn.NamingContainer;
+                        fullPath = GVReports2DS?.Rows[ctrl.RowIndex]?["Location"]?.ToString();
                         break;
                     }
                 }

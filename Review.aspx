@@ -116,8 +116,7 @@
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
-                                            Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'
-                                            ToolTip='<%# Bind("Location")%>'>
+                                            Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'>
                                         </asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>

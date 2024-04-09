@@ -342,8 +342,8 @@
                                 <%--10--%>
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
-                                        <asp:HiddenField runat="server" ID="HFLocn" Value='<%# Bind("Location") %>' />
-                                        <asp:Label ID="LblLocn" runat="server" Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' />
+                                        <asp:LinkButton ID="LBGVReprts" runat="server" ForeColor="#3366FF"  
+                                            Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' OnClick="LnkReport_Click" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <%--11--%>
@@ -356,30 +356,6 @@
                                 <asp:TemplateField HeaderText="Report_Id" Visible="False" InsertVisible="False" ShowHeader="False">
                                     <ItemTemplate>
                                         <asp:Label ID="LblReport_Id" runat="server" Text='<%# Bind("Report_Id") %>'></asp:Label>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <%--13--%>
-                                <asp:TemplateField HeaderText="Id" Visible="False">
-                                    <ItemTemplate>
-                                        <asp:Label ID="LblTaskId" runat="server" Text='<%# Bind("Task_Id") %>'></asp:Label>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <%--14--%>
-                                <asp:TemplateField Visible="False">
-                                    <ItemTemplate>
-                                        <asp:Label ID="LblFromDate" runat="server" Text='<%# Bind("From_Date") %>'></asp:Label>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <%--15--%>
-                                <asp:TemplateField Visible="False">
-                                    <ItemTemplate>
-                                        <asp:Label ID="LblToDate" runat="server" Text='<%# Bind("To_Date") %>'></asp:Label>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <%--16--%>
-                                <asp:TemplateField Visible="False">
-                                    <ItemTemplate>
-                                        <asp:Label ID="LblWeekNo" runat="server" Text='<%# Bind("Week_No") %>'></asp:Label>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -472,6 +448,7 @@
 
         let chKCount = 0;
         let chKCntA = 0;
+
         $(document).ready(function ()
         {
             //debugger;
