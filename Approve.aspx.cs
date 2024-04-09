@@ -148,8 +148,8 @@ namespace Finance_Tracker
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
                 TxtMnth.Attributes.Add("autocomplete", "off");
 
-                //if (!IsSmtpConfigValid())
-                //    PopUp("Email settings could not be verified. No emails will be sent for approval/rejection!");
+                if (!IsSmtpConfigValid())
+                    PopUp("Email settings could not be verified. No emails will be sent for approval/rejection!");
 
                 chkCountA = 0;
                 chKCountR = 0;
@@ -389,7 +389,7 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks approved successfully!");
-                    //SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
+                    SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
 
                     GVPending.DataSource = null;
                     GVPendingDS = null;
@@ -410,7 +410,7 @@ namespace Finance_Tracker
             GVPending.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
 
             string strt = $@"
-                            <p>This is the alert for approval of your submitted tasks.</p>
+                            <p>{Session["User_Name"]} has approved your submitted tasks.</p>
                             <p>Please find the details below:</p>";
 
             string tableBody = @"<table border='2'>";
@@ -422,8 +422,8 @@ namespace Finance_Tracker
                         </tr>";
 
             string footer = $@"
-                 <p>For more details please check your submitted tasks at 
-                     <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a></p>
+                 <p>For more information please check your submitted tasks at 
+                     <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a> or contact your approver</p>
                  <p>Best regrads</p>
                  <p>Grupo Bimbo</p>";
             foreach (GridViewRow gvRow in GVPending.Rows)
@@ -594,7 +594,7 @@ namespace Finance_Tracker
                     }
                     PopUp("Tasks rejected successfully!");
                     // await SendMultipleEmailsAsync(mailSet, "Tasks rejection");
-                    //SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+                    SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
 
                     GVApprovedDS = null;
                     GVApproved.DataSource = null;
@@ -628,7 +628,7 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    //SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+                    SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
                     ResetGVPending();
                     GVPending.DataBind();
                 }
@@ -647,7 +647,7 @@ namespace Finance_Tracker
             gv.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
 
             string strt = $@"
-            <p>This is the alert for rejection of your submitted tasks.</p>
+            <p>{Session["User_Name"]} has rejected your submitted tasks.</p>
             <p>Please find the details below:</p>";
 
             string tableBody = @"<table border='2'>";
@@ -659,8 +659,8 @@ namespace Finance_Tracker
                            </tr>";
 
             string footer = $@"
-                            <p>For more details please check your submitted tasks at 
-                                <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a></p>
+                            <p>For more information please check your submitted tasks at 
+                                <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a> or contact your approver.</p>
                             <p>Best regards</p>
                             <p>Grupo Bimbo</p>";
             foreach (GridViewRow gvRow in gv.Rows)
@@ -746,20 +746,22 @@ namespace Finance_Tracker
 
         private void SendEmails(Dictionary<string, string> mailSet, string subject)
         {
-            string host = Network.Host, usrNm = Network.UserName, pswd = Network.Password;
+            string host = Network.Host, pswd = Network.Password, from = settings.From, usrName = Network.UserName;
             int port = Network.Port;
 
             using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
             {
-                smtp.Port = 587; // Port number
-                smtp.Credentials = new NetworkCredential(usrNm, pswd); // Your email credentials
-                //smtp.EnableSsl = false; // Enable SSL if required
+                smtp.UseDefaultCredentials = false;
+                //smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                //smtp.DeliveryFormat = SmtpDeliveryFormat.International;
+                smtp.Credentials = new NetworkCredential(usrName, pswd); // Your email credentials
+                smtp.EnableSsl = false; // Enable SSL if required
 
                 foreach (KeyValuePair<string, string> recipient in mailSet)
                 {
                     MailMessage mail = new MailMessage
                     {
-                        From = new MailAddress(settings.From), // Your email address
+                        From = new MailAddress(from, usrName), // Your email address
                         Subject = subject,
                         Body = recipient.Value,
                         IsBodyHtml = true
