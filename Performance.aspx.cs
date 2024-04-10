@@ -81,19 +81,19 @@ namespace Finance_Tracker
 
                         OleDbParameter[] paramCln = new OleDbParameter[]
                         {
-                         new OleDbParameter("@Start_Date", strtDate)
-                        ,new OleDbParameter("@End_Date",  endDate)
-                        ,new OleDbParameter("@User_Id", User_Id)
-                        ,new OleDbParameter("@Role_Id", RoleId)
-                        ,new OleDbParameter("@Category_Type_Id", DdlCatType3.SelectedValue)
-                        ,new OleDbParameter("@Category_Id", DdlCat3.SelectedValue)
-                        ,new OleDbParameter("@Report_Id", DdlReport3.SelectedValue)
-                        ,new OleDbParameter("@Type", DdlType3.SelectedValue)
-                        ,new OleDbParameter() {
-                            ParameterName = "@IsApproved",
-                            Value = 1,
-                            OleDbType = OleDbType.Boolean
-                        }
+                             new OleDbParameter("@Start_Date", strtDate)
+                            ,new OleDbParameter("@End_Date",  endDate)
+                            ,new OleDbParameter("@User_Id", User_Id)
+                            ,new OleDbParameter("@Role_Id", RoleId)
+                            ,new OleDbParameter("@Category_Type_Id", DdlCatType3.SelectedValue)
+                            ,new OleDbParameter("@Category_Id", DdlCat3.SelectedValue)
+                            ,new OleDbParameter("@Report_Id", DdlReport3.SelectedValue)
+                            ,new OleDbParameter("@Type", DdlType3.SelectedValue)
+                            ,new OleDbParameter() {
+                                ParameterName = "@IsApproved",
+                                Value = 1,
+                                OleDbType = OleDbType.Boolean
+                            }
                         };
                         dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
                         if (dt.Rows.Count == 0)
@@ -128,7 +128,7 @@ namespace Finance_Tracker
                         string User_Id = UsrId;
 
                         OleDbParameter[] paramCln = new OleDbParameter[]
-                            {
+                        {
                             new OleDbParameter("@Start_Date", strtDate)
                            ,new OleDbParameter("@End_Date", endDate)
                            ,new OleDbParameter("@User_Id", User_Id)
@@ -137,7 +137,7 @@ namespace Finance_Tracker
                            ,new OleDbParameter("@Category_Id", DdlCat2.SelectedValue)
                            ,new OleDbParameter("@Report_Id", DdlReport2.SelectedValue)
                            ,new OleDbParameter("@Type", DdlType2.SelectedValue)
-                            };
+                         };
                         dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
                         if (dt.Rows.Count == 0)
                             dt = null;

@@ -150,6 +150,8 @@ namespace Finance_Tracker
 
                 if (!IsSmtpConfigValid())
                     PopUp("Email settings could not be verified. No emails will be sent for approval/rejection!");
+                //else
+                //    PopUp("Email settings verified.!");
 
                 chkCountA = 0;
                 chKCountR = 0;
@@ -389,7 +391,8 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks approved successfully!");
-                    SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
+                    if (mailSet != null && mailSet.Count > 0)
+                        SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
 
                     GVPending.DataSource = null;
                     GVPendingDS = null;
@@ -467,10 +470,11 @@ namespace Finance_Tracker
 
                 tblStr = $@"<tr><td>{task}</td><td>{cmnts}</td><td>{sbmtDt}</td><td>{duDt}</td></tr>";
 
-                if (!mailSet.ContainsKey(usrMail))
-                    mailSet.Add(usrMail, $@"</br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
-                else
-                    mailSet[usrMail] += tblStr;
+                if (!string.IsNullOrWhiteSpace(usrMail))
+                    if (!mailSet.ContainsKey(usrMail))
+                        mailSet.Add(usrMail, $@"</br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
+                    else
+                        mailSet[usrMail] += tblStr;
             }
             mailSet = mailSet.ToDictionary(kvp => kvp.Key, kvp => kvp.Value + "</table>" + footer);
 
@@ -593,8 +597,11 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    // await SendMultipleEmailsAsync(mailSet, "Tasks rejection");
-                    SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+
+                    ////await SendMultipleEmailsAsync(mailSet, "Tasks rejection");
+
+                    if (mailSet != null && mailSet.Count > 0)
+                        SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
 
                     GVApprovedDS = null;
                     GVApproved.DataSource = null;
@@ -628,7 +635,9 @@ namespace Finance_Tracker
                         return;
                     }
                     PopUp("Tasks rejected successfully!");
-                    SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+                    if (mailSet != null && mailSet.Count > 0)
+                        SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
+
                     ResetGVPending();
                     GVPending.DataBind();
                 }
@@ -703,10 +712,11 @@ namespace Finance_Tracker
 
                 tblStr = $@"<tr><td>{task}</td><td>{cmnts}</td><td>{sbmtDt}</td><td>{duDt}</td></tr>";
 
-                if (!mailSet.ContainsKey(usrMail))
-                    mailSet.Add(usrMail, $@"</br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
-                else
-                    mailSet[usrMail] += tblStr;
+                if (!string.IsNullOrWhiteSpace(usrMail))
+                    if (!mailSet.ContainsKey(usrMail))
+                        mailSet.Add(usrMail, $@"</br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
+                    else
+                        mailSet[usrMail] += tblStr;
             }
             mailSet = mailSet.ToDictionary(kvp => kvp.Key, kvp => kvp.Value + "</table>" + footer);
 
@@ -748,27 +758,33 @@ namespace Finance_Tracker
         {
             string host = Network.Host, pswd = Network.Password, from = settings.From, usrName = Network.UserName;
             int port = Network.Port;
-
-            using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
+            try
             {
-                smtp.UseDefaultCredentials = false;
-                //smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                //smtp.DeliveryFormat = SmtpDeliveryFormat.International;
-                smtp.Credentials = new NetworkCredential(usrName, pswd); // Your email credentials
-                smtp.EnableSsl = false; // Enable SSL if required
-
-                foreach (KeyValuePair<string, string> recipient in mailSet)
+                using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
                 {
-                    MailMessage mail = new MailMessage
+                    smtp.UseDefaultCredentials = false;
+                    //smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    //smtp.DeliveryFormat = SmtpDeliveryFormat.International;
+                    smtp.Credentials = new NetworkCredential(usrName, pswd); // Your email credentials
+                    smtp.EnableSsl = false; // Enable SSL if required
+
+                    foreach (KeyValuePair<string, string> recipient in mailSet)
                     {
-                        From = new MailAddress(from, usrName), // Your email address
-                        Subject = subject,
-                        Body = recipient.Value,
-                        IsBodyHtml = true
-                    };
-                    mail.To.Add(recipient.Key);
-                    smtp.Send(mail);
+                        MailMessage mail = new MailMessage
+                        {
+                            From = new MailAddress(from, usrName), // Your email address
+                            Subject = subject,
+                            Body = recipient.Value,
+                            IsBodyHtml = true
+                        };
+                        mail.To.Add(recipient.Key);
+                        smtp.Send(mail);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
             }
         }
 
