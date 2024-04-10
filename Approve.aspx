@@ -99,7 +99,7 @@
                                         <ItemTemplate>
                                             <asp:LinkButton ID="LBLocn" runat="server" ForeColor="#3366FF" OnClientClick=""
                                                 Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'
-                                                ToolTip='<%# Bind("Location")%>' OnClick="LBLocn_Click">
+                                                OnClick="LBLocn_Click">
                                             </asp:LinkButton>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -157,7 +157,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="File" Visible="true">
                                         <ItemTemplate>
-                                            <asp:LinkButton ID="LBLocn" runat="server" ForeColor="#3366FF" ToolTip='<%# Bind("Location")%>'
+                                            <asp:LinkButton ID="LBLocn" runat="server" ForeColor="#3366FF"
                                                 Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'
                                                 OnClick="LBLocn_Click">
                                             </asp:LinkButton>
