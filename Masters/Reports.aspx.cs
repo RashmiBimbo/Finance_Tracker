@@ -236,14 +236,14 @@ namespace Finance_Tracker.Masters
 
                 OleDbParameter[] paramCln =
                 {
-                new OleDbParameter("@Name", name),
-                new OleDbParameter("@Category_Id", cat),
-                new OleDbParameter("@Priority", priority),
-                new OleDbParameter("@Weight", weight),
-                new OleDbParameter("@Type_Id", typeId),
-                new OleDbParameter("@Due_Date", duDt),
-                new OleDbParameter("@Created_By", Session["User_Name"])
-            };
+                    new OleDbParameter("@Name", name),
+                    new OleDbParameter("@Category_Id", cat),
+                    new OleDbParameter("@Priority", priority),
+                    new OleDbParameter("@Weight", weight),
+                    new OleDbParameter("@Type_Id", typeId),
+                    new OleDbParameter("@Due_Date", duDt),
+                    new OleDbParameter("@Created_By", Session["User_Name"])
+                };
 
                 if (add)
                     proc = "SP_Report_Add";

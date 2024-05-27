@@ -99,7 +99,7 @@ namespace Finance_Tracker
             finally
             {
                 conn.Close();
-                if (cmd != null) cmd.Dispose();
+                cmd?.Dispose();
             }
         }
 
@@ -127,7 +127,7 @@ namespace Finance_Tracker
             finally
             {
                 conn.Close();
-                if (cmd != null) cmd.Dispose();
+                cmd?.Dispose();
             }
         }
 
@@ -148,7 +148,7 @@ namespace Finance_Tracker
             finally
             {
                 conn.Close();
-                if (cmd != null) cmd.Dispose();
+                cmd?.Dispose();
             }
         }
 
@@ -219,8 +219,7 @@ namespace Finance_Tracker
             finally
             {
                 conn.Close();
-                if (adapter != null)
-                    adapter.Dispose();
+                adapter?.Dispose();
             }
         }
 
