@@ -43,11 +43,11 @@ namespace Finance_Tracker
                     try
                     {
                         dt = DBOprn.GetDataProc("SP_Report_Get", DBOprn.ConnPrimary,
-                                        new OleDbParameter[]
-                                        {
-                            new OleDbParameter("@Category_Id", DdlCatS.SelectedValue)
-                                        }
-                                    );
+                                new OleDbParameter[]
+                                {
+                                    new OleDbParameter("@Category_Id", DdlCatS.SelectedValue)
+                                }
+                            );
                         if (dt.Rows.Count == 0)
                             dt = null;
                     }
@@ -171,17 +171,18 @@ namespace Finance_Tracker
                         string rptTypeCmp = DdlTypeM.SelectedValue.ToUpper();
                         string weekNo = rptTypeCmp.Equals("WEEKLY") ? DdlWeekM.SelectedValue : "0";
                         string halfNo = rptTypeCmp.Equals("HALF YEARLY") ? DdlHY.SelectedValue : "0";
+
                         dt = DBOprn.GetDataProc("SP_Get_UserTasks", DBOprn.ConnPrimary
-                        , new OleDbParameter[]
-                            {
-                            new OleDbParameter("@User_Id", UsrId)
-                           ,new OleDbParameter("@From_Date", fromDt)
-                           ,new OleDbParameter("@To_Date", toDt)
-                           ,new OleDbParameter("@WeekNo", weekNo)
-                           ,new OleDbParameter("@Report_Type", DdlTypeM.SelectedValue)
-                           ,new OleDbParameter("@Half_No", halfNo)
-                            }
-                        );
+                                ,new OleDbParameter[]
+                                 {
+                                      new OleDbParameter("@User_Id", UsrId)
+                                     ,new OleDbParameter("@From_Date", fromDt)
+                                     ,new OleDbParameter("@To_Date", toDt)
+                                     ,new OleDbParameter("@WeekNo", weekNo)
+                                     ,new OleDbParameter("@Report_Type", DdlTypeM.SelectedValue)
+                                     ,new OleDbParameter("@Half_No", halfNo)
+                                 }
+                             );
                         if (dt.Rows.Count == 0)
                             dt = null;
                         Session["Performance_GVAddDS"] = dt;
@@ -854,34 +855,6 @@ namespace Finance_Tracker
             }
         }
 
-        //private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
-        //{
-        //    ddl.Items.Clear();
-        //    ddl.Items.Add(new ListItem("All", selectVal));
-        //    ddl.SelectedIndex = 0;
-        //    ddl.ToolTip = "All";
-
-        //    if (prntDdl != null && prntDdl.SelectedIndex == 0)
-        //        return;
-
-        //    try
-        //    {
-        //        DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
-
-        //        if (dt != null && dt.Rows.Count > 0)
-        //        {
-        //            for (int i = 0; i < dt.Rows.Count; i++)
-        //            {
-        //                ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));                        
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        PopUp(ex.Message);
-        //    }
-        //}
-
         #endregion MenuClick
 
         #region Add Task
@@ -1547,5 +1520,36 @@ namespace Finance_Tracker
         //            ((HiddenField) cell.FindControl("ToDate")).Value = toDt;
         //            ((HiddenField) cell.FindControl("WeekNo")).Value = weekNo;
         //            ((HiddenField) cell.FindControl("DueDate")).Value = fromDt;
+
+
+        //private void FillDdl(DropDownList ddl, String proc, string selectVal, DropDownList prntDdl = null, OleDbParameter[] paramCln = null)
+        //{
+        //    ddl.Items.Clear();
+        //    ddl.Items.Add(new ListItem("All", selectVal));
+        //    ddl.SelectedIndex = 0;
+        //    ddl.ToolTip = "All";
+
+        //    if (prntDdl != null && prntDdl.SelectedIndex == 0)
+        //        return;
+
+        //    try
+        //    {
+        //        DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
+
+        //        if (dt != null && dt.Rows.Count > 0)
+        //        {
+        //            for (int i = 0; i < dt.Rows.Count; i++)
+        //            {
+        //                ddl.Items.Add(new ListItem(dt.Rows[i][1].ToString(), dt.Rows[i][0].ToString()));                        
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        PopUp(ex.Message);
+        //    }
+        //}
+
+
     }
 }
