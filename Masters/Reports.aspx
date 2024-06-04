@@ -60,20 +60,17 @@
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlTypeA" CssClass="col-md-2 control-label">Type<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlTypeA" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" required="required">
-                                        <asp:ListItem Text="Select" Value="" Selected="True" />
+                                    <asp:DropDownList runat="server" ID="DdlTypeA" CssClass="form-control" AutoPostBack="true" OnDataBinding="DdlType_DataBinding" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" required="required">
+                                        <%--  <asp:ListItem Text="Select" Value="" Selected="True" />
                                         <asp:ListItem Text="Half Yearly" Value="Half Yearly" />
                                         <asp:ListItem Text="Monthly" Value="Monthly" />
-                                        <asp:ListItem Text="Weekly" Value="Weekly" />
+                                        <asp:ListItem Text="Weekly" Value="Weekly" />--%>
                                     </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="row" runat="server" id="DvDuDt" visible="false">
                                 <br />
                                 <asp:Label runat="server" CssClass="col-md-2 control-label" AssociatedControlID="TxtDuDt">Due <%= Session["DuType"]%><span style="color:red">&nbsp*</span></asp:Label>
-                                <div class="col-sm-2" id="DvTxtDuDt" runat="server" visible="false">
-                                    <asp:TextBox runat="server" ID="TxtDuDt" TextMode="number" CssClass="form-control" MaxLength="2" min="1" max="31" required="required"></asp:TextBox>
-                                </div>
                                 <div class="col-sm-2" id="DvWkDay" runat="server" visible="false">
                                     <asp:DropDownList runat="server" ID="DdlWeekDay" CssClass="form-control" required="required">
                                         <asp:ListItem Text="Select" Value="" Selected="True" />
@@ -86,12 +83,24 @@
                                         <asp:ListItem Text="Saturday" Value="SATURDAY" />
                                     </asp:DropDownList>
                                 </div>
+                                <div class="col-sm-2" id="DvQrtr" runat="server" visible="false">
+                                    <asp:DropDownList runat="server" ID="DdlQrtr" CssClass="form-control" required="required">
+                                        <asp:ListItem Text="Select" Value="0" Selected="True" />
+                                        <asp:ListItem Text="1" Value="1" />
+                                        <asp:ListItem Text="2" Value="2" />
+                                        <asp:ListItem Text="3" Value="3" />
+                                        <asp:ListItem Text="4" Value="4" />
+                                    </asp:DropDownList>
+                                </div>
                                 <div class="col-sm-2" id="DvHY" runat="server" visible="false">
                                     <asp:DropDownList runat="server" ID="DdlHY" CssClass="form-control" required="required">
                                         <asp:ListItem Text="Select" Value="0" Selected="True" />
                                         <asp:ListItem Text="1" Value="1" />
                                         <asp:ListItem Text="2" Value="2" />
                                     </asp:DropDownList>
+                                </div>
+                                <div class="col-sm-2" id="DvTxtDuDt" runat="server" visible="false">
+                                    <asp:TextBox runat="server" ID="TxtDuDt" TextMode="number" CssClass="form-control" MaxLength="2" min="1" max="31" required="required"></asp:TextBox>
                                 </div>
                                 <br />
                                 <br />
@@ -185,14 +194,11 @@
     <script>    
         let chKCount = 0;
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             //debugger;
             var GVReports = document.getElementById('<%= GVReports.ClientID %>');
-            if (GVReports !== null)
-            {
-                for (let i = 1; i < GVReports.rows.length; i++)
-                {
+            if (GVReports !== null) {
+                for (let i = 1; i < GVReports.rows.length; i++) {
                     let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
                     let chkd = cbChld.checked;
                     chKCount += chkd ? 1 : 0;
@@ -206,20 +212,16 @@
         });
 
         //Handle checkbox change for checkbox in Header row of GVReports
-        function handleCheckBoxChangeH (cb)
-        {
+        function handleCheckBoxChangeH (cb) {
             //debugger;
             var GVReports = document.getElementById('<%= GVReports.ClientID %>');
-            if (GVReports !== null)
-            {
+            if (GVReports !== null) {
 
                 //Update each row's checkbox
-                for (let i = 1; i < GVReports.rows.length; i++)
-                {
+                for (let i = 1; i < GVReports.rows.length; i++) {
                     let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
                     let chkdH = cb.checked;
-                    if (chkdH !== cbChld.checked)
-                    {
+                    if (chkdH !== cbChld.checked) {
                         cbChld.checked = chkdH;
                         chKCount += chkdH ? 1 : -1;
                     }
@@ -233,13 +235,11 @@
         }
 
         //Handle checkbox change for checkbox in each row of GVReports
-        function handleCheckBoxChange (cb)
-        {
+        function handleCheckBoxChange (cb) {
             //debugger;
             chKCount += cb.checked ? 1 : -1;
             var GVReports = document.getElementById('<%= GVReports.ClientID%>');
-            if (GVReports !== null)
-            {
+            if (GVReports !== null) {
                 if (GVReports.rows.length < chKCount)
                     chKCount = GVReports.rows.length;
                 else if
@@ -252,24 +252,20 @@
             }
         }
 
-        function EnableDisableButton (count)
-        {
+        function EnableDisableButton (count) {
             let btnAddM = document.getElementById('<%= BtnDlt.ClientID %>');
             btnAddM.disabled = (count === 0);
         }
 
-        function BtnDltOnClientClick ()
-        {
+        function BtnDltOnClientClick () {
             console.log("BtnDltOnClientClick called");
             //debugger;
             console.log("chKCount: " + chKCount);
             return true;
         }
-        function validateDropDown ()
-        {
+        function validateDropDown () {
             var dropdown = document.getElementById("<%= DdlCatTypeA.ClientID %>");
-            if (dropdown.selectedIndex === 0)
-            { // Assuming the first item is "Select One"
+            if (dropdown.selectedIndex === 0) { // Assuming the first item is "Select One"
                 alert("Category Type is required");
                 return false; // Prevent form submission
             }

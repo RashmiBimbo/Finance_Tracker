@@ -105,16 +105,17 @@ namespace Finance_Tracker
             {
                 string fromDt = TxtMnth.ToolTip.Split(',')[0];
                 string toDt = TxtMnth.ToolTip.Split(',')[1];
-
+                string typ = string.IsNullOrWhiteSpace(DdlType.SelectedValue) ? "0" : DdlType.SelectedValue;
                 OleDbParameter[] paramCln = new OleDbParameter[]
                 {
                      new OleDbParameter("@From_Date", fromDt)
                     ,new OleDbParameter("@To_Date",  toDt)
-                    ,new OleDbParameter("@Type", DdlType.SelectedValue)
                     ,new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
+                    ,new OleDbParameter("@TypeId", typ)
                     ,new OleDbParameter("@IsApproved", IsApproved)
                     ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
                 };
+                //paramCln = null;
                 DataTable dt = DBOprn.GetDataProc("SP_Get_Submit_Tasks_SubOrdinates", DBOprn.ConnPrimary, paramCln);
                 if (!(dt?.Rows.Count > 0))
                     dt = null;
@@ -790,7 +791,7 @@ namespace Finance_Tracker
 
         protected void DdlType_DataBinding(object sender, EventArgs e)
         {
-            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, "All", null, null, "TypeName", "TypeId");
         }
 
         private void SetTooltip(DropDownList ddl)

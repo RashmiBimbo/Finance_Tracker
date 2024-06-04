@@ -32,25 +32,28 @@
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="DdlLocn" CssClass="col-md-2 control-label">Location<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%" />
-                                <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
-                                    CssClass="text-danger" ErrorMessage="Location is required." Enabled="false" />
+                                <asp:DropDownList runat="server" ID="DdlLocn" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="30%"  required/>
+                               <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="DdlLocn"
+                                    CssClass="text-danger" ErrorMessage="Location is required." Enabled="false" />--%>
                             </div>
-                        </div>
+                        </div>                 
+                        <br />
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtUserId" CssClass="col-md-2 control-label">User Id<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" AutoCompleteType="None" />
-                                <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId" CssClass="text-danger" ErrorMessage="User Id is required." />
+                                <asp:TextBox runat="server" ID="TxtUserId" CssClass="form-control" Width="30%" AutoCompleteType="None" required/>
+                               <%-- <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtUserId" CssClass="text-danger" ErrorMessage="User Id is required." />--%>
                             </div>
                         </div>
+                        <br />
                         <div class="form-group">
                             <asp:Label runat="server" AssociatedControlID="TxtPassword" CssClass="col-md-2 control-label">Password<span style="color:red">&nbsp*</span></asp:Label>
                             <div class="col-md-10">
-                                <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password" CssClass="form-control" Width="30%" AutoCompleteType="None" />
-                                <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtPassword" CssClass="text-danger" ErrorMessage="Password is required." />
+                                <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password" CssClass="form-control" Width="30%" AutoCompleteType="None" required/>
+                              <%--  <asp:RequiredFieldValidator runat="server" ControlToValidate="TxtPassword" CssClass="text-danger" ErrorMessage="Password is required." />--%>
                             </div>
-                        </div>
+                        </div>            
+                        <br />
                         <div class="form-group" runat="server" hidden="hidden" visible="false">
                             <div class="col-md-offset-2 col-md-10">
                                 <div class="checkbox">

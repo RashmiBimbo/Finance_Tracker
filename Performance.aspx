@@ -56,6 +56,18 @@
                                     </asp:DropDownList>
                                 </div>
                             </div>
+                            <div id="DvQrtrM" runat="server" visible="false">
+                                <asp:Label runat="server" AssociatedControlID="DdlQrtrM" CssClass="col-md-2 control-label" ID="LblQrtrM">Quarter  no.<span style="color:red">&nbsp*</span></asp:Label>
+                                <div class="col-sm-2">
+                                    <asp:DropDownList runat="server" ID="DdlQrtrM" CssClass="form-control" required="required" onchange="HideDivGVBtnM()">
+                                        <asp:ListItem Text="Select" Value="0" Selected="True" />
+                                        <asp:ListItem Text="1" Value="1" />
+                                        <asp:ListItem Text="2" Value="2" />
+                                        <asp:ListItem Text="3" Value="3" />
+                                        <asp:ListItem Text="4" Value="4" />
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
                             <div id="DvHY" runat="server" visible="false">
                                 <asp:Label runat="server" AssociatedControlID="DdlHY" CssClass="col-md-2 control-label" ID="LblHy">Half no.<span style="color:red">&nbsp*</span></asp:Label>
                                 <div class="col-sm-2">
@@ -194,6 +206,16 @@
                                         <asp:ListItem Value="5">5</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
+                            </div>
+                            <div class="col-sm-2" id="DvQrtrS" runat="server" visible="false">
+                                <asp:Label runat="server" AssociatedControlID="DdlQrtr" CssClass="col-md-2 control-label" ID="LblQrtrS" />H
+                                    <asp:DropDownList runat="server" ID="DdlQrtrS" CssClass="form-control" required="required">
+                                        <asp:ListItem Text="Select" Value="0" Selected="True" />
+                                        <asp:ListItem Text="1" Value="1" />
+                                        <asp:ListItem Text="2" Value="2" />
+                                        <asp:ListItem Text="3" Value="3" />
+                                        <asp:ListItem Text="4" Value="4" />
+                                    </asp:DropDownList>
                             </div>
                             <div id="DvHyS" runat="server" visible="false">
                                 <asp:Label runat="server" AssociatedControlID="DdlHyS" CssClass="col-md-2 control-label">Half no.</asp:Label>
@@ -342,7 +364,7 @@
                                 <%--10--%>
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="LBGVReprts" runat="server" ForeColor="#3366FF"  
+                                        <asp:LinkButton ID="LBGVReprts" runat="server" ForeColor="#3366FF"
                                             Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' OnClick="LnkReport_Click" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
@@ -449,17 +471,13 @@
         let chKCount = 0;
         let chKCntA = 0;
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             //debugger;
             var GVAdd = document.getElementById('<%= GVAdd.ClientID %>');
-            if (GVAdd !== null)
-            {
-                for (let i = 1; i < GVAdd.rows.length; i++)
-                {
+            if (GVAdd !== null) {
+                for (let i = 1; i < GVAdd.rows.length; i++) {
                     let cbChld = GVAdd.rows[i].cells[0].querySelector('input[type="checkbox"]');
-                    if (cbChld !== null)
-                    {
+                    if (cbChld !== null) {
                         let chkd = cbChld.checked;
                         chKCntA += chkd ? 1 : 0;
                     }
@@ -470,13 +488,10 @@
                 EnableDisableButton(chKCntA, '<%= BtnAddM.ClientID%>');
             }
             var GVReports2 = document.getElementById('<%= GVReports2.ClientID %>');
-            if (GVReports2 !== null)
-            {
-                for (let i = 1; i < GVReports2.rows.length; i++)
-                {
+            if (GVReports2 !== null) {
+                for (let i = 1; i < GVReports2.rows.length; i++) {
                     let cbChld = GVReports2.rows[i].cells[0].querySelector('input[type="checkbox"]');
-                    if (cbChld !== null)
-                    {
+                    if (cbChld !== null) {
                         let chkd = cbChld.checked;
                         chKCount += chkd ? 1 : 0;
                     }
@@ -489,18 +504,15 @@
         });
 
         //Handle checkbox change for checkbox in Header row of GVReports2
-        function handleCheckBoxChangeH (cb)
-        {
+        function handleCheckBoxChangeH (cb) {
             //debugger;
             var GVReports2 = document.getElementById('<%= GVReports2.ClientID %>');
             if (GVReports2 == null) return;
             //Update each row's checkbox
-            for (let i = 1; i < GVReports2.rows.length; i++)
-            {
+            for (let i = 1; i < GVReports2.rows.length; i++) {
                 let cbChld = GVReports2.rows[i].cells[0].querySelector('input[type="checkbox"]');
                 let chkdH = cb.checked;
-                if (chkdH !== cbChld.checked)
-                {
+                if (chkdH !== cbChld.checked) {
                     cbChld.checked = chkdH;
                     chKCount += chkdH ? 1 : -1;
                 }
@@ -514,8 +526,7 @@
         }
 
         //Handle checkbox change for checkbox in each row of GVReports2
-        function handleCheckBoxChange (cb)
-        {
+        function handleCheckBoxChange (cb) {
             //debugger;
             chKCount += cb.checked ? 1 : -1;
             var GVReports2 = document.getElementById('<%= GVReports2.ClientID%>');
@@ -534,20 +545,17 @@
         }
 
         //Handle checkbox change for checkbox in Header row of GVReports2
-        function CBAddHOnClick (cb)
-        {
+        function CBAddHOnClick (cb) {
             //debugger;
             var GVAdd = document.getElementById('<%= GVAdd.ClientID %>');
 
             if (GVAdd == null) return;
 
             //Update each row's checkbox
-            for (let i = 1; i < GVAdd.rows.length; i++)
-            {
+            for (let i = 1; i < GVAdd.rows.length; i++) {
                 let cbChld = GVAdd.rows[i].cells[0].querySelector('input[type="checkbox"]');
                 let chkdH = cb.checked;
-                if (chkdH !== cbChld.checked)
-                {
+                if (chkdH !== cbChld.checked) {
                     cbChld.checked = chkdH;
                     chKCntA += chkdH ? 1 : -1;
                 }
@@ -561,8 +569,7 @@
         }
 
         //Handle checkbox change for checkbox in each row of GVAdd
-        function CBAddOnClick (cb)
-        {
+        function CBAddOnClick (cb) {
             //debugger;
             chKCntA += cb.checked ? 1 : -1;
             var GVAdd = document.getElementById('<%= GVAdd.ClientID%>');
@@ -580,19 +587,16 @@
             EnableDisableButton(chKCntA, '<%= BtnAddM.ClientID%>');
         }
 
-        function EnableDisableButton (count, ctrlId)
-        {
+        function EnableDisableButton (count, ctrlId) {
             let btnAddM = document.getElementById(ctrlId);
             btnAddM.disabled = (count === 0);
         }
 
-        function HideDivGVBtnM ()
-        {
+        function HideDivGVBtnM () {
             $('#<%= DivGVBtnM.ClientID%>').hide();
         }
 
-        function DdlType_SelectedIndexChanged ()
-        {
+        function DdlType_SelectedIndexChanged () {
            <%-- console.log("DdlType_SelectedIndexChanged s");
             let DivGVBtnMId = "#<%=DivGVBtnM.ClientID%>";
             let DivWeekMId = "#<%=DivWeekM.ClientID%>";
