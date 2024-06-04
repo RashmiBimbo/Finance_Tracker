@@ -132,6 +132,33 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekM;
 
         /// <summary>
+        /// DvQrtrM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvQrtrM;
+
+        /// <summary>
+        /// LblQrtrM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblQrtrM;
+
+        /// <summary>
+        /// DdlQrtrM control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlQrtrM;
+
+        /// <summary>
         /// DvHY control.
         /// </summary>
         /// <remarks>
@@ -310,6 +337,33 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekS;
+
+        /// <summary>
+        /// DvQrtrS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvQrtrS;
+
+        /// <summary>
+        /// LblQrtrS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblQrtrS;
+
+        /// <summary>
+        /// DdlQrtrS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlQrtrS;
 
         /// <summary>
         /// DvHyS control.

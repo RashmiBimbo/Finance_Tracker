@@ -9,6 +9,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
 using static System.Convert;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+
 
 namespace Finance_Tracker.Masters
 {
@@ -86,7 +88,7 @@ namespace Finance_Tracker.Masters
                 //DdlTypeA.Attributes.Add("onchange", "ChngDueDtType(this.value)");
                 DdlCatTypeA.DataBind();
                 DdlCatA.DataBind();
-                //DdlTypeA.DataBind();
+                DdlTypeA.DataBind();
                 DdlCatTypeV.DataBind();
                 DdlCatV.DataBind();
                 DdlTypeV.DataBind();
@@ -167,15 +169,15 @@ namespace Finance_Tracker.Masters
             switch (slctItem)
             {
                 case 0:
-                {
-                    ResetTabAdd();
-                    break;
-                }
+                    {
+                        ResetTabAdd();
+                        break;
+                    }
                 case 1:
-                {
-                    ResetTabVu();
-                    break;
-                }
+                    {
+                        ResetTabVu();
+                        break;
+                    }
             }
         }
 
@@ -221,16 +223,35 @@ namespace Finance_Tracker.Masters
                 string typeId = DdlTypeA.SelectedValue.Trim();
                 string proc, duDt = Emp;
 
-                switch (typeId.ToUpper())
+                switch (DdlTypeA.SelectedItem.Text.ToUpper())
                 {
-                    case "MONTHLY":
-                        duDt = TxtDuDt.Text;
-                        break;
+                    //case "MONTHLY":
+                    //    {
+                    //        duDt = TxtDuDt.Text;
+                    //        break;
+                    //    }
                     case "WEEKLY":
-                        duDt = DdlWeekDay.SelectedValue;
-                        break;
-                    case "HALF YEARLY":
-                        duDt = "4" + DdlHY.SelectedValue;
+                        {
+                            duDt = DdlWeekDay.SelectedValue;
+                            break;
+                        }
+                    //case "QUARTERLY":
+                    //    {
+                    //        duDt = "5" + DdlQrtr.SelectedValue;
+                    //        break;
+                    //    }
+                    //case "HALF YEARLY":
+                    //    {
+                    //        duDt = "4" + DdlHY.SelectedValue;
+                    //        break;
+                    //    }
+                    //case "ANNUAL":
+                    //    {
+                    //        duDt = "61";
+                    //        break;
+                    //    }
+                    default:
+                        duDt = TxtDuDt.Text;
                         break;
                 }
 
@@ -242,7 +263,8 @@ namespace Finance_Tracker.Masters
                     new OleDbParameter("@Weight", weight),
                     new OleDbParameter("@Type_Id", typeId),
                     new OleDbParameter("@Due_Date", duDt),
-                    new OleDbParameter("@Created_By", Session["User_Name"])
+                    new OleDbParameter("@Created_By", Session["User_Name"]),
+                    new OleDbParameter("@TypeName", DdlTypeA.SelectedItem.Text)
                 };
 
                 if (add)
@@ -317,9 +339,9 @@ namespace Finance_Tracker.Masters
                     TxtWeight.Focus();
                     return false;
                 }
-                switch (DdlTypeA.SelectedValue.ToUpper().Trim())
+                switch (DdlTypeA.SelectedItem.Text.ToUpper().Trim())
                 {
-                    case "MONTHLY":
+                    default:
                         if ((duDtTxt < 1 || duDtTxt > 31))
                         {
                             PopUp("Due Date must be within the range of 1 to 31!");
@@ -327,6 +349,12 @@ namespace Finance_Tracker.Masters
                             return false;
                         }
                         break;
+                    case Emp:
+                        {
+                            PopUp("Type is required!");
+                            DdlTypeA.Focus();
+                            return false;
+                        }
                     case "WEEKLY":
                         if (string.IsNullOrWhiteSpace(DdlWeekDay.SelectedValue))
                         {
@@ -335,20 +363,36 @@ namespace Finance_Tracker.Masters
                             return false;
                         }
                         break;
-                    case "HALF YEARLY":
-                        if (DdlHY.SelectedValue == "0")
-                        {
-                            PopUp("Due Half is required!");
-                            DdlHY.Focus();
-                            return false;
-                        }
-                        break;
-                    case Emp:
-                    {
-                        PopUp("Type is required!");
-                        DdlTypeA.Focus();
-                        return false;
-                    }
+                        //case "MONTHLY":
+                        //    if ((duDtTxt < 1 || duDtTxt > 31))
+                        //    {
+                        //        PopUp("Due Date must be within the range of 1 to 31!");
+                        //        TxtDuDt.Focus();
+                        //        return false;
+                        //    }
+                        //    break;
+                        //case "QUARTERLY":
+                        //    {
+                        //        if (DdlQrtr.SelectedValue == "0")
+                        //        {
+                        //            PopUp("Due Quarter is required!");
+                        //            DdlQrtr.Focus();
+                        //            return false;
+                        //        }
+                        //        break;
+                        //    }
+                        //case "HALF YEARLY":
+                        //    if (DdlHY.SelectedValue == "0")
+                        //    {
+                        //        PopUp("Due Half is required!");
+                        //        DdlHY.Focus();
+                        //        return false;
+                        //    }
+                        //    break;
+                        //case "ANNUAL":
+                        //    {
+                        //        break;
+                        //    }
                 }
                 return true;
             }
@@ -558,23 +602,36 @@ namespace Finance_Tracker.Masters
                 DdlCatA.Items.Add(new ListItem(dRo["Category_Name"].ToString(), catVal));
                 DdlCatA.SelectedValue = catVal;
 
-                string type = dRo["Type_orgnl"].ToString().Trim();
+                string type = dRo["TypeId"].ToString().Trim();
                 DdlTypeA.SelectedValue = type;
                 DdlType_SelectedIndexChanged(null, null);
-                DvDuDt.Visible = true;
-                String duDt = dRo["Due_Date_Orgnl"].ToString();
+                //DvDuDt.Visible = true;
+                string duDt = dRo["Due_Date_Orgnl"].ToString();
 
-                switch (type.ToUpper())
+                switch (DdlTypeA.SelectedItem.Text.ToUpper())
                 {
-                    case "MONTHLY":
+                    default:
                         TxtDuDt.Text = duDt;
                         break;
                     case "WEEKLY":
                         DdlWeekDay.SelectedValue = duDt;
                         break;
-                    case "HALF YEARLY":
-                        DdlHY.SelectedValue = duDt.Replace("4", Emp);
-                        break;
+                        //case "MONTHLY":
+                        //    TxtDuDt.Text = duDt;
+                        //    break;
+                        //case "QUARTERLY":
+                        //    {
+                        //        DdlQrtr.SelectedValue = duDt.Replace("5", Emp);
+                        //        break;
+                        //    }
+                        //case "HALF YEARLY":
+                        //    DdlHY.SelectedValue = duDt.Replace("4", Emp);
+                        //    break;
+                        //case "ANNUAL":
+                        //    {
+                        //        TxtDuDt.Text = "1st April";
+                        //        break;
+                        //    }
                 }
 
                 TxtPriority.Text = dRo["Priority"].ToString();
@@ -606,33 +663,47 @@ namespace Finance_Tracker.Masters
             DvTxtDuDt.Visible = false;
             DvHY.Visible = false;
             DvWkDay.Visible = false;
+            DvQrtr.Visible = false;
             DdlWeekDay.SelectedValue = Emp;
             DdlHY.SelectedValue = "0";
+            DdlQrtr.SelectedValue = "0";
             TxtDuDt.Text = Emp;
 
-            switch (DdlTypeA.SelectedValue.Trim().ToUpper())
+            switch (DdlTypeA.SelectedItem.Text.Trim().ToUpper())
             {
-                case "MONTHLY":
-                {
+                default:
                     DvTxtDuDt.Visible = true;
                     Session["DuType"] = "Date";
                     break;
-                }
                 case "WEEKLY":
-                {
-                    DvWkDay.Visible = true;
-                    Session["DuType"] = "Day";
-                    break;
-                }
-                case "HALF YEARLY":
-                {
-                    DvHY.Visible = true;
-                    Session["DuType"] = "Half";
-                    break;
-                }
-                default:
-                    DvDuDt.Visible = false;
-                    break;
+                    {
+                        DvWkDay.Visible = true;
+                        Session["DuType"] = "Day";
+                        break;
+                    }
+                    //    case "MONTHLY":
+                    //        {
+                    //            DvTxtDuDt.Visible = true;
+                    //            Session["DuType"] = "Date";
+                    //            break;
+                    //        }
+                    //case "QUARTERLY":
+                    //    {
+                    //        DvQrtr.Visible = true;
+                    //        Session["DuType"] = "Quarter";
+                    //        break;
+                    //    }
+                    //case "HALF YEARLY":
+                    //    {
+                    //        DvHY.Visible = true;
+                    //        Session["DuType"] = "Half";
+                    //        break;
+                    //    }
+                    //case "ANNUAL":
+                    //    {
+                    //        DvDuDt.Visible = false;
+                    //        break;
+                    //    }
             }
         }
 
@@ -658,8 +729,16 @@ namespace Finance_Tracker.Masters
 
         protected void DdlType_DataBinding(object sender, EventArgs e)
         {
-            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+            DropDownList ddl = (DropDownList)sender;
+            string slctTxt = ddl.Equals(DdlTypeV) ? "All" : "Select";
+
+            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, slctTxt, null, null, "TypeName", "TypeId");
         }
+
+        //protected void DdlType_DataBinding(object sender, EventArgs e)
+        //{
+        //    FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+        //}
 
         private void PopUp(string msg)
         {
@@ -680,12 +759,13 @@ namespace Finance_Tracker.Masters
             ddl.Items.Add(new ListItem(selectTxt, selectVal));
             ddl.SelectedValue = selectVal;
             ddl.ToolTip = selectTxt;
+
+            DataTable dt;
             if (prntDdl != null && prntDdl.SelectedIndex == 0)
                 return;
-
             try
             {
-                DataTable dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
+                dt = DBOprn.GetDataProc(proc, DBOprn.ConnPrimary, paramCln);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {

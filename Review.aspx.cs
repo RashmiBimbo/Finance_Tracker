@@ -228,7 +228,7 @@ namespace Finance_Tracker
 
         protected void DdlType_DataBinding(object sender, EventArgs e)
         {
-            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, "All", null, null, "TypeName", "TypeId");
         }
 
 
@@ -320,7 +320,7 @@ namespace Finance_Tracker
             LinkButton LBLocn = (LinkButton)sender;
             dynamic contnr = LBLocn.NamingContainer;
             string gvID = contnr.NamingContainer.ID;
-            DataTable dt = gvID == "GVReports" ? GVReportsDS :  null;
+            DataTable dt = gvID == "GVReports" ? GVReportsDS : null;
             string fullPath = dt?.Rows[contnr.RowIndex]?["Location"]?.ToString();
             string fileName = LBLocn.Text;
             try

@@ -114,24 +114,6 @@ namespace Finance_Tracker.Masters
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvDuDt;
 
         /// <summary>
-        /// DvTxtDuDt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvTxtDuDt;
-
-        /// <summary>
-        /// TxtDuDt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtDuDt;
-
-        /// <summary>
         /// DvWkDay control.
         /// </summary>
         /// <remarks>
@@ -150,6 +132,24 @@ namespace Finance_Tracker.Masters
         protected global::System.Web.UI.WebControls.DropDownList DdlWeekDay;
 
         /// <summary>
+        /// DvQrtr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvQrtr;
+
+        /// <summary>
+        /// DdlQrtr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlQrtr;
+
+        /// <summary>
         /// DvHY control.
         /// </summary>
         /// <remarks>
@@ -166,6 +166,24 @@ namespace Finance_Tracker.Masters
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlHY;
+
+        /// <summary>
+        /// DvTxtDuDt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvTxtDuDt;
+
+        /// <summary>
+        /// TxtDuDt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtDuDt;
 
         /// <summary>
         /// BtnCncl control.

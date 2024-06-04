@@ -84,11 +84,10 @@ namespace Finance_Tracker
                              new OleDbParameter("@Start_Date", strtDate)
                             ,new OleDbParameter("@End_Date",  endDate)
                             ,new OleDbParameter("@User_Id", User_Id)
-                            ,new OleDbParameter("@Role_Id", RoleId)
                             ,new OleDbParameter("@Category_Type_Id", DdlCatType3.SelectedValue)
                             ,new OleDbParameter("@Category_Id", DdlCat3.SelectedValue)
                             ,new OleDbParameter("@Report_Id", DdlReport3.SelectedValue)
-                            ,new OleDbParameter("@Type", DdlType3.SelectedValue)
+                            ,new OleDbParameter("@TypeId", DdlType3.SelectedValue)
                             ,new OleDbParameter() {
                                 ParameterName = "@IsApproved",
                                 Value = 1,
@@ -132,11 +131,10 @@ namespace Finance_Tracker
                             new OleDbParameter("@Start_Date", strtDate)
                            ,new OleDbParameter("@End_Date", endDate)
                            ,new OleDbParameter("@User_Id", User_Id)
-                           ,new OleDbParameter("@Role_Id", RoleId)
                            ,new OleDbParameter("@Category_Type_Id", DdlCatType2.SelectedValue)
                            ,new OleDbParameter("@Category_Id", DdlCat2.SelectedValue)
                            ,new OleDbParameter("@Report_Id", DdlReport2.SelectedValue)
-                           ,new OleDbParameter("@Type", DdlType2.SelectedValue)
+                           ,new OleDbParameter("@TypeId", DdlType2.SelectedValue)
                          };
                         dt = DBOprn.GetDataProc("SP_Get_Tasks", DBOprn.ConnPrimary, paramCln);
                         if (dt.Rows.Count == 0)
@@ -168,18 +166,19 @@ namespace Finance_Tracker
                     {
                         string fromDt = TxtMnthM.ToolTip.Split(',')[0];
                         string toDt = TxtMnthM.ToolTip.Split(',')[1];
-                        string rptTypeCmp = DdlTypeM.SelectedValue.ToUpper();
+                        string rptTypeCmp = DdlTypeM.SelectedItem.Text.ToUpper();
                         string weekNo = rptTypeCmp.Equals("WEEKLY") ? DdlWeekM.SelectedValue : "0";
                         string halfNo = rptTypeCmp.Equals("HALF YEARLY") ? DdlHY.SelectedValue : "0";
 
                         dt = DBOprn.GetDataProc("SP_Get_UserTasks", DBOprn.ConnPrimary
-                                ,new OleDbParameter[]
+                                , new OleDbParameter[]
                                  {
                                       new OleDbParameter("@User_Id", UsrId)
                                      ,new OleDbParameter("@From_Date", fromDt)
                                      ,new OleDbParameter("@To_Date", toDt)
+                                     ,new OleDbParameter("@ReportTypeId", DdlTypeM.SelectedValue)
                                      ,new OleDbParameter("@WeekNo", weekNo)
-                                     ,new OleDbParameter("@Report_Type", DdlTypeM.SelectedValue)
+                                     ,new OleDbParameter("@Quarter_No", DdlQrtrM.SelectedValue)
                                      ,new OleDbParameter("@Half_No", halfNo)
                                  }
                              );
@@ -279,22 +278,22 @@ namespace Finance_Tracker
                     switch (Menu1.SelectedValue)
                     {
                         case "0":
-                        {
-                            DivAddSingl.Visible = false;
-                            DivAddMultiple.Visible = true;
-                            SetDivAddMultiple();
-                            break;
-                        }
+                            {
+                                DivAddSingl.Visible = false;
+                                DivAddMultiple.Visible = true;
+                                SetDivAddMultiple();
+                                break;
+                            }
                         case "1":
-                        {
-                            ResetTab2();
-                            break;
-                        }
+                            {
+                                ResetTab2();
+                                break;
+                            }
                         case "2":
-                        {
-                            ResetTab3();
-                            break;
-                        }
+                            {
+                                ResetTab3();
+                                break;
+                            }
                     }
                 }
             }
@@ -317,6 +316,8 @@ namespace Finance_Tracker
             DivWeekM.Visible = false;
             DvHY.Visible = false;
             DivGVBtnM.Visible = false;
+            DvQrtrM.Visible = false;
+            DdlQrtrM.SelectedIndex = 0;
             GVAdd.SelectedIndex = -1;
         }
 
@@ -329,19 +330,32 @@ namespace Finance_Tracker
                     DivGVBtnM.Visible = false;
                     DivWeekM.Visible = false;
                     DvHY.Visible = false;
+                    DvQrtrM.Visible = false;
 
-                    switch (DdlTypeM.SelectedValue.ToUpper().Trim())
+                    switch (DdlTypeM.SelectedItem.Text.ToUpper().Trim())
                     {
                         case "WEEKLY":
-                            DivWeekM.Visible = true;
-                            DdlWeekM.SelectedValue = "0";
-                            break;
-                        case "HALF YEARLY":
-                        {
-                            DvHY.Visible = true;
-                            DdlHY.SelectedValue = "0";
-                        }
-                        break;
+                            {
+                                DivWeekM.Visible = true;
+                                DdlWeekM.SelectedValue = "0";
+                                break;
+                            }
+                            //case "QUARTERLY":
+                            //    {
+                            //        DvQrtrM.Visible = true;
+                            //        DdlQrtrM.SelectedValue = "0";
+                            //        break;
+                            //    }
+                            //case "HALF YEARLY":
+                            //    {
+                            //        DvHY.Visible = true;
+                            //        DdlHY.SelectedValue = "0";
+                            //        break;
+                            //    }
+                            //case "ANNUAL":
+                            //    {
+                            //        break;
+                            //    }
                     }
                 }
                 SetTooltip((DropDownList)sender);
@@ -355,7 +369,7 @@ namespace Finance_Tracker
         protected void BtnViewAssTask_Click(object sender, EventArgs e)
         {
             DivGVBtnM.Visible = false;
-            string typ = DdlTypeM.SelectedValue.Trim().ToUpper();
+            string typ = DdlTypeM.SelectedItem.Text.Trim().ToUpper();
 
             if (TxtMnthM.Text == Emp)
             {
@@ -373,24 +387,50 @@ namespace Finance_Tracker
             {
                 TxtMnthM.ToolTip = dt.ToString(SqlDateFormat) + "," + new DateTime(dt.Year, dt.Month, DaysInMonth(dt.Year, dt.Month)).ToString(SqlDateFormat);
             }
-            if (typ == Emp)
+            switch (typ)
             {
-                PopUp("Please select Task type!");
-                DdlTypeM.Focus();
-                return;
+                case "":
+                    {
+                        PopUp("Please select Task type!");
+                        DdlTypeM.Focus();
+                        return;
+                    }
+                case "WEEKLY":
+                    {
+                        if (DdlWeekM.SelectedValue == "0")
+                        {
+                            PopUp("Please select a Week!");
+                            DdlWeekM.Focus();
+                            return;
+                        }
+                        break;
+                    }
+                    //case "QUARTERLY":
+                    //    {
+                    //        if (DdlQrtrM.SelectedValue == "0")
+                    //        {
+                    //            PopUp("Please select a quarter no.!");
+                    //            DdlQrtrM.Focus();
+                    //            return;
+                    //        }
+                    //        break;
+                    //    }
+                    //case "HALF YEARLY":
+                    //    {
+                    //        if (DdlHY.SelectedValue == "0")
+                    //        {
+                    //            PopUp("Please select a half no.!");
+                    //            DdlHY.Focus();
+                    //            return;
+                    //        }
+                    //        break;
+                    //    }
+                    //case "ANNUAL":
+                    //    {
+                    //        break;
+                    //    }
             }
-            if (typ == "WEEKLY" && DdlWeekM.SelectedValue == "0")
-            {
-                PopUp("Please select a Week!");
-                DdlWeekM.Focus();
-                return;
-            }
-            if (typ == "HALF YEARLY" && DdlHY.SelectedValue == "0")
-            {
-                PopUp("Please select a half no.!");
-                DdlHY.Focus();
-                return;
-            }
+
             GVAddDS = null;
             GVAdd.DataSource = null;
             GVAdd.DataBind();
@@ -495,11 +535,12 @@ namespace Finance_Tracker
             string jsonString = Emp;
             int chkCnt = 0;
             GVAdd.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
+
             if (chkCnt == 0)
             {
                 PopUp("Please check any row to add!");
                 return jsonString;
-            };
+            }
             DataTable dSrc = GVAddDS;
             if (dSrc == null || dSrc.Rows.Count == 0) return jsonString;
 
@@ -511,7 +552,6 @@ namespace Finance_Tracker
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 if (!cb.Checked) continue;
 
-                //chkCount++;
                 int sno = ToInt32(gvRow.Cells[1].Text);
                 DataRow dRo = dSrc.Select($"sno = {sno}")?[0];
 
@@ -522,9 +562,11 @@ namespace Finance_Tracker
                 string reportName = dRo["Task_Name"].ToString();
                 string rptType = dRo["Type"].ToString().Trim();
                 string rptTypeCmp = rptType.ToUpper();
-                string weekNo = rptTypeCmp.Equals("WEEKLY") ? DdlWeekM.SelectedValue : "0";
-                string halfNo = rptTypeCmp.Equals("HALF YEARLY") ? DdlHY.SelectedValue : "0";
+                string fileType = DdlTypeM.SelectedItem.Text.Trim().ToUpper();
                 string addDt = Now.ToString(SqlDateFormat);
+
+                string weekNo = "0", halfNo = "0", qrtrNo = "0", dueDt = "";
+
                 Label LblRoErr = (Label)gvRow.Cells[7].FindControl("LblRoErr");
 
                 dynamic fuAdd = (FileUpload)gvRow.Cells[6].FindControl("FUAdd");
@@ -539,7 +581,35 @@ namespace Finance_Tracker
                 else
                     LblRoErr.Text = Emp;
 
-                if (!FileOprn(fuAdd.PostedFile, TxtMnthM.Text, weekNo, DdlTypeM.SelectedValue, reportName, out string fullPath, out string msg))
+                switch (fileType)
+                {
+                    case "WEEKLY":
+                        {
+                            weekNo = DdlWeekM.SelectedValue;
+                            dueDt = "_Week_" + weekNo;
+                            break;
+                        }
+                    case "QUARTERLY":
+                        {
+                            //qrtrNo = DdlQrtrM.SelectedValue;
+                            //dueDt = "_Quarter_" + qrtrNo;
+                            dueDt = "_Quarter";
+                            break;
+                        }
+                    case "HALF YEARLY":
+                        {
+                            //halfNo = DdlHY.SelectedValue;
+                            //dueDt = "_Half_" + halfNo;
+                            dueDt = "_Half";
+                            break;
+                        }
+                    case "ANNUAL":
+                        {
+                            dueDt = "_Annual";
+                            break;
+                        }
+                }
+                if (!FileOprn(fuAdd.PostedFile, TxtMnthM.Text, weekNo, DdlTypeM.SelectedValue, reportName, out string fullPath, out string msg, dueDt))
                 {
                     LblRoErr.Text = msg;
                     LblRoErr.CssClass = "control-label text-danger ";
@@ -559,6 +629,7 @@ namespace Finance_Tracker
                     {"MONTH_FROM_DATE", fromDt},
                     {"MONTH_TO_DATE", toDt},
                     {"MONTH_WEEK_NO", weekNo},
+                    {"YEAR_QUARTER_NO", qrtrNo},
                     {"YEAR_HALF_NO", halfNo},
                     {"LOCATION", fullPath},
                     {"CREATED_BY", UsrName}
@@ -587,7 +658,7 @@ namespace Finance_Tracker
             DdlCatS.SelectedIndex = 0;
             DdlCatS.Enabled = true;
 
-            DdlReportS.DataBind();
+            //DdlReportS.DataBind();
             DdlReportS.SelectedIndex = 0;
             DdlReportS.Enabled = true;
 
@@ -601,6 +672,10 @@ namespace Finance_Tracker
             DdlWeekS.Enabled = true;
             DivWeek1.Visible = false;
             DvHyS.Visible = false;
+
+            DdlQrtrS.SelectedIndex = 0;
+            DdlQrtrS.Enabled = true;
+            DvQrtrS.Visible = false;
 
             DdlTypeS.SelectedIndex = 0;
             TxtDueDtS.Text = Emp;
@@ -931,8 +1006,36 @@ namespace Finance_Tracker
                 try
                 {
                     string Report_Id = DdlReportS.SelectedValue;
-                    string weekNo = DdlWeekM.SelectedValue;
-                    if (!FileOprn(FUReport.PostedFile, TxtMnthS.Text, weekNo, DdlTypeS.SelectedValue, DdlReportS.SelectedItem.Text, out string fullPath, out string msg))
+                    string weekNo = DdlWeekS.SelectedValue;
+                    string fileType = DdlTypeS.SelectedValue;
+                    string dueDt = Emp;
+                    //fileType == "Weekly" ? "_Week_" + weekNo : Emp;
+                    switch (DdlTypeS.SelectedItem.Text.Trim().ToUpper())
+                    {
+                        case "WEEKLY":
+                            {
+                                dueDt = "_Week_" + DdlWeekS.SelectedValue;
+                                break;
+                            }
+                        case "QUARTERLY":
+                            {
+                                //dueDt = "_Quarter_" + DdlQrtrS.SelectedValue;
+                                dueDt = "_Quarter";
+                                break;
+                            }
+                        case "HALF YEARLY":
+                            {
+                                //dueDt = "_Half_" + DdlHyS.SelectedValue;
+                                dueDt = "_Half";
+                                break;
+                            }
+                        case "ANNUAL":
+                            {
+                                dueDt = "_Annual";
+                                break;
+                            }
+                    }
+                    if (!FileOprn(FUReport.PostedFile, TxtMnthS.Text, weekNo, fileType, DdlReportS.SelectedItem.Text, out string fullPath, out string msg, dueDt))
                     {
                         PopUp(msg);
                         return;
@@ -968,7 +1071,7 @@ namespace Finance_Tracker
             }
         }
 
-        private bool FileOprn(HttpPostedFile file, string txtMnth, string weekNo, string fileType, string rprtName, out string fullPath, out string msg)
+        private bool FileOprn(HttpPostedFile file, string txtMnth, string weekNo, string fileType, string rprtName, out string fullPath, out string msg, string dueDt = "")
         {
             fullPath = Emp;
             msg = Emp;
@@ -1000,13 +1103,11 @@ namespace Finance_Tracker
                 char[] invalidPathChars = Path.GetInvalidPathChars();
                 saveFolder = new string(saveFolder.Select(chr => invalidPathChars.Contains(chr) ? '_' : chr).ToArray());
 
-                if (!Directory.Exists(saveFolder))
-                    Directory.CreateDirectory(saveFolder);
+                if (!Directory.Exists(saveFolder)) Directory.CreateDirectory(saveFolder);
 
                 // Get invalid characters in file names
                 char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
 
-                string dueDt = fileType == "Weekly" ? "_Week_" + weekNo : Emp;
                 string fileName = $"{UsrName}_{rprtName}{dueDt}_{today.ToString(DateFormat)}{Path.GetExtension(file.FileName)}";
 
                 fileName = new string(fileName.Select(chr => invalidFileNameChars.Contains(chr) ? '_' : chr).ToArray());
@@ -1130,7 +1231,6 @@ namespace Finance_Tracker
 
         protected void BtnView_Click(object sender, EventArgs e)
         {
-
             if (sender.Equals(BtnView2))
             {
                 if (string.IsNullOrEmpty(TxtMnth2.Text) || !TryParse(TxtMnth2.Text, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
@@ -1332,7 +1432,7 @@ namespace Finance_Tracker
                 DdlReportS.SelectedValue = reportId;
 
                 string type = dRo["Type"].ToString().Trim();
-                DdlTypeS.SelectedValue = DdlTypeS.Items.FindByText(type)?.Value;
+                DdlTypeS.SelectedValue = DdlTypeS.SelectedValue = DdlTypeS.Items.FindByText(type)?.Value;
 
                 TxtDueDtS.Text = dRo["Due_Date"].ToString();
 
@@ -1347,20 +1447,37 @@ namespace Finance_Tracker
                 TxtCmnts.Text = cmnts;
                 TxtCmnts.ToolTip = cmnts;
 
-                switch (type.ToUpper())
+                switch (DdlTypeS.SelectedItem.Text.ToUpper())
                 {
                     case "WEEKLY":
-                        DdlWeekS.SelectedValue = dRo["Week_No"].ToString();
-                        DivWeek1.Visible = true;
-                        DdlWeekS.Enabled = false;
-                        if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
-                        break;
-                    case "HALF YEARLY":
-                        DdlHyS.SelectedValue = dRo["Half_No"].ToString();
-                        DvHyS.Visible = true;
-                        DdlHyS.Enabled = false;
-                        if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
-                        break;
+                        {
+                            DdlWeekS.SelectedValue = dRo["Week_No"].ToString();
+                            DivWeek1.Visible = true;
+                            DdlWeekS.Enabled = false;
+                            if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
+                            break;
+                        }
+                        //case "QUARTERLY":
+                        //    {
+                        //        DdlQrtrS.SelectedValue = dRo["Quarter_No"].ToString();
+                        //        DvQrtrS.Visible = true;
+                        //        DdlQrtrS.Enabled = false;
+                        //        if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
+                        //        break;
+                        //    }
+                        //case "HALF YEARLY":
+                        //    {
+                        //        DdlHyS.SelectedValue = dRo["Half_No"].ToString();
+                        //        DvHyS.Visible = true;
+                        //        DdlHyS.Enabled = false;
+                        //        if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
+                        //        break;
+                        //    }
+                        //case "ANNUAL":
+                        //    {
+                        //        if (dvVsbl) DvUpload.Attributes["class"] = "col-sm-2";
+                        //        break;
+                        //    }
                 }
                 LnkReport.Text = Path.GetFileName(dRo["Location"]?.ToString());
                 DivLnk.Visible = true;
@@ -1406,7 +1523,7 @@ namespace Finance_Tracker
 
         protected void BtnCncl_Click(object sender, EventArgs e)
         {
-            //ResetTab1();
+            ResetTab1();
             Menu1.Items[0].Text = "Add Tasks |";
             Menu1.Items[1].Selected = true;
             Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
@@ -1421,22 +1538,22 @@ namespace Finance_Tracker
                 switch (lnkBtn.ID)
                 {
                     case "LnkReportSbmt":
-                    {
-                        GridViewRow row = (GridViewRow)lnkBtn.NamingContainer;
-                        fullPath = GVReports3DS.Select("Sno=" + row.RowIndex + 1)?[0]?["Location"].ToString();
-                        break;
-                    }
+                        {
+                            GridViewRow row = (GridViewRow)lnkBtn.NamingContainer;
+                            fullPath = GVReports3DS.Select("Sno=" + row.RowIndex + 1)?[0]?["Location"].ToString();
+                            break;
+                        }
                     case "LnkReport":
-                    {
-                        fullPath = GVReports2DS.Select("Task_Id=" + LblTaskID.Text)?[0]?["Location"]?.ToString();
-                        break;
-                    }
+                        {
+                            fullPath = GVReports2DS.Select("Task_Id=" + LblTaskID.Text)?[0]?["Location"]?.ToString();
+                            break;
+                        }
                     case "LBGVReprts":
-                    {
-                        dynamic ctrl = lnkBtn.NamingContainer;
-                        fullPath = GVReports2DS?.Rows[ctrl.RowIndex]?["Location"]?.ToString();
-                        break;
-                    }
+                        {
+                            dynamic ctrl = lnkBtn.NamingContainer;
+                            fullPath = GVReports2DS?.Rows[ctrl.RowIndex]?["Location"]?.ToString();
+                            break;
+                        }
                 }
                 string fileName = Path.GetFileName(fullPath);
 
@@ -1493,7 +1610,7 @@ namespace Finance_Tracker
             DropDownList ddl = (DropDownList)sender;
             string slctTxt = ddl.Equals(DdlTypeM) || ddl.Equals(DdlTypeS) ? "Select" : "All";
 
-            FillDdl(ddl, "SP_Report_Type_Get", Emp, slctTxt, null, null, "ReportType", "ReportType");
+            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, slctTxt, null, null, "TypeName", "TypeId");
         }
 
         //{
@@ -1549,7 +1666,5 @@ namespace Finance_Tracker
         //        PopUp(ex.Message);
         //    }
         //}
-
-
     }
 }

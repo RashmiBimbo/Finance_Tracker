@@ -386,7 +386,7 @@ namespace Finance_Tracker.Masters
 
         protected void DdlType_DataBinding(object sender, EventArgs e)
         {
-            FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, "All", null, null, "TypeName", "TypeId"); ;
         }
 
         #endregion TabUnAssign
