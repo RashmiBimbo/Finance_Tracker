@@ -52,7 +52,7 @@
                 <asp:Label runat="server" AssociatedControlID="DdlUsers" CssClass="col-md-2 control-label">User</asp:Label>
                 <div class="col-sm-2">
                     <asp:DropDownList runat="server" ID="DdlUsers" CssClass="form-control" OnDataBinding="DdlUsers_DataBinding">
-                        <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
+                        <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
                 </div>
 

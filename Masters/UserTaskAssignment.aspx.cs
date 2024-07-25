@@ -31,7 +31,7 @@ namespace Finance_Tracker.Masters
                 DataTable dt = (DataTable)Session["UserTaskAssignment_GVAssignDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
-                    string approverId = IsAdmin ? null : IsSuperAdmin ? null : UsrId;
+                    string approverId = IsAdmin && IsApprover ? UsrId : IsAdmin ? null : IsSuperAdmin ? null : UsrId;
                     string locnId = IsAdmin ? LocId : null;
                     //dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
                     dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
@@ -157,6 +157,19 @@ namespace Finance_Tracker.Masters
 
         protected void DdlUsers_DataBinding(object sender, EventArgs e)
         {
+            if (IsAdmin && IsApprover)
+            {
+                FillDdl(DdlUsers, "SP_Get_Users_ApprAdmin", Emp, "All", null,
+                    new OleDbParameter[]
+                    {
+                         new OleDbParameter("@Approver_Id", UsrId)
+                         ,new OleDbParameter("@Location_Id", LocId)
+                        ,new OleDbParameter("@User_Id", DdlUsers.SelectedValue)
+                    }
+                );
+            }
+            else
+
             if (IsAdmin)
             {
                 FillDdl(DdlUsers, "SP_Get_Users", Emp, "All", null,
