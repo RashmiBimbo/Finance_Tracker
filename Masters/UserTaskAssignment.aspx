@@ -25,11 +25,47 @@
             </div>
             <br />
             <div class="row">
-                <asp:Label runat="server" AssociatedControlID="DdlCatType" CssClass="col-md-2 control-label">Category Type</asp:Label>
+                <div id="DvApprs" runat="server">
+                    <div runat="server" id="DvApprA" visible="false">
+                        <asp:Label runat="server" AssociatedControlID="DdlApproversA" CssClass="col-md-2 control-label">Approver&nbsp&nbsp<span style="color:red">*</span></asp:Label>
+                        <div class="col-sm-2">
+                            <asp:DropDownList runat="server" ID="DdlApproversA" CssClass="form-control" OnDataBinding="DdlApprovers_DataBinding" required>
+                                <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div id="DvApprU" runat="server" visible="false">
+                        <asp:Label runat="server" AssociatedControlID="DdlApproversU" CssClass="col-md-2 control-label">Approver</asp:Label>
+                        <div class="col-sm-2">
+                            <asp:DropDownList runat="server" ID="DdlApproversU" CssClass="form-control" OnDataBinding="DdlApprovers_DataBinding">
+                                <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <asp:Label runat="server" AssociatedControlID="DdlUsrType" CssClass="col-md-2 control-label">User Type</asp:Label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlCatType" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True">
+                    <asp:DropDownList runat="server" ID="DdlUsrType" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsrType_DataBinding" OnSelectedIndexChanged="DdlUsrType_SelectedIndexChanged">
+                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
+                    </asp:DropDownList>
+                </div>
+                <asp:Label runat="server" AssociatedControlID="DdlUsers" CssClass="col-md-2 control-label">User</asp:Label>
+                <div class="col-sm-2">
+                    <asp:DropDownList runat="server" ID="DdlUsers" CssClass="form-control" OnDataBinding="DdlUsers_DataBinding">
                         <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
+                </div>
+
+            </div>
+            <br />
+            <div class="row">
+                <div id="DvCatTyp" runat="server" visible="false">
+                    <asp:Label runat="server" AssociatedControlID="DdlCatType" CssClass="col-md-2 control-label">Category Type</asp:Label>
+                    <div class="col-sm-2">
+                        <asp:DropDownList runat="server" ID="DdlCatType" CssClass="form-control" OnDataBinding="DdlCatType_DataBinding" OnSelectedIndexChanged="DdlCatType_SelectedIndexChanged" AutoPostBack="True">
+                            <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
                 </div>
                 <asp:Label runat="server" AssociatedControlID="DdlCat" CssClass="col-md-2 control-label">Category</asp:Label>
                 <div class="col-sm-2">
@@ -40,21 +76,6 @@
                 <asp:Label runat="server" AssociatedControlID="DdlTasks" CssClass="col-md-2 control-label">Report</asp:Label>
                 <div class="col-sm-2">
                     <asp:DropDownList runat="server" ID="DdlTasks" CssClass="form-control" OnDataBinding="DdlTasks_DataBinding">
-                        <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
-                    </asp:DropDownList>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <asp:Label runat="server" AssociatedControlID="DdlUsrType" CssClass="col-md-2 control-label">User Type</asp:Label>
-                <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsrType" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsrType_DataBinding" OnSelectedIndexChanged="DdlUsrType_SelectedIndexChanged">
-                        <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
-                    </asp:DropDownList>
-                </div>
-                <asp:Label runat="server" AssociatedControlID="DdlUsers" CssClass="col-md-2 control-label">User</asp:Label>
-                <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsers" CssClass="form-control" OnDataBinding="DdlUsers_DataBinding">
                         <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                     </asp:DropDownList>
                 </div>
@@ -102,6 +123,7 @@
                                             <asp:Label runat="server" ID="LblTask" Text='<%# Bind("Task_Name")%>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    <%--<asp:BoundField DataField="Approver" HeaderText="Approver" Visible="true" />--%>
                                 </Columns>
                             </asp:GridView>
                         </div>
@@ -147,6 +169,11 @@
                                             <asp:Label runat="server" ID="LblTask" Text='<%# Bind("Task_Name")%>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Approver">
+                                        <ItemTemplate>
+                                            <asp:Label runat="server" ID="LblApprover" Text='<%# Bind("Approver")%>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                 </Columns>
                             </asp:GridView>
                         </div>
@@ -165,17 +192,13 @@
         let chkCntA = 0;
         let chkCntU = 0;
 
-        $(document).ready(function ()
-        {
-            try
-            {
+        $(document).ready(function () {
+            try {
                 //debugger;
                 let gv = document.getElementById('<%= GVAssign.ClientID %>');
-                if (gv !== null) 
-                {
+                if (gv !== null) {
                     let cnt = chkCntA
-                    for (let i = 1; i < gv.rows.length; i++)
-                    {
+                    for (let i = 1; i < gv.rows.length; i++) {
                         let cbChld = gv.rows[i].cells[0].querySelector('input[type="checkbox"]');
                         let chkd = cbChld.checked;
                         chkCntA += chkd ? 1 : 0;
@@ -187,10 +210,8 @@
                     EnableDisableBtnA(chkCntA);
                 }
                 gv = document.getElementById('<%= GVView.ClientID %>');
-                if (gv !== null) 
-                {
-                    for (let i = 1; i < gv.rows.length; i++)
-                    {
+                if (gv !== null) {
+                    for (let i = 1; i < gv.rows.length; i++) {
                         let cbChld = gv.rows[i].cells[0].querySelector('input[type="checkbox"]');
                         let chkd = cbChld.checked;
                         chkCntU += chkd ? 1 : 0;
@@ -202,29 +223,23 @@
                     EnableDisableBtnU(chkCntU);
                 }
             }
-            catch (e)
-            {
+            catch (e) {
                 console.log(e);
             }
         });
 
         //Handle checkbox change for checkbox in Header row of GVAssign
-        function CBAddHOnClick (cb)
-        {
-            try
-            {
+        function CBAddHOnClick (cb) {
+            try {
                 //console.log("hi CBAddHOnClick");
                 //debugger;
                 var GVAssign = document.getElementById('<%= GVAssign.ClientID %>');
-                if (GVAssign !== null) 
-                {
+                if (GVAssign !== null) {
                     //Update each row's checkbox
-                    for (let i = 1; i < GVAssign.rows.length; i++)
-                    {
+                    for (let i = 1; i < GVAssign.rows.length; i++) {
                         let cbChld = GVAssign.rows[i].cells[0].querySelector('input[type="checkbox"]');
                         let chkdH = cb.checked;
-                        if (chkdH !== cbChld.checked)
-                        {
+                        if (chkdH !== cbChld.checked) {
                             cbChld.checked = chkdH;
                             chkCntA += chkdH ? 1 : -1;
                         }
@@ -238,24 +253,20 @@
                 }
                 //console.log("bye CBAddHOnClick");
 
-            } catch (e)
-            {
+            } catch (e) {
 
                 console.log(e);
             }
         }
 
         //Handle checkbox change for checkbox in each row of GVAssign
-        function CBAddOnClick (cb)
-        {
-            try
-            {
+        function CBAddOnClick (cb) {
+            try {
                 //console.log("hi CBAddOnClick");
                 //debugger;
                 chkCntA += cb.checked ? 1 : -1;
                 var GVAssign = document.getElementById('<%= GVAssign.ClientID%>');
-                if (GVAssign !== null)
-                {
+                if (GVAssign !== null) {
                     if (GVAssign.rows.length < chkCntA)
                         chkCntA = GVAssign.rows.length;
                     else if
@@ -268,36 +279,29 @@
                 }
                 //console.log("bye CBAddOnClick");
 
-            } catch (e)
-            {
+            } catch (e) {
                 console.log(e);
             }
         }
 
-        function EnableDisableBtnA (count)
-        {
+        function EnableDisableBtnA (count) {
             let btnAssign = document.getElementById('<%= BtnAssign.ClientID %>');
             btnAssign.disabled = (count === 0);
         }
 
         //Handle checkbox change for checkbox in Header row of GVView
-        function CBEditHOnClick (cb)
-        {
-            try
-            {
+        function CBEditHOnClick (cb) {
+            try {
                 //console.log("hi CBEditHOnClick");
                 //debugger;
                 var GVView = document.getElementById('<%= GVView.ClientID %>');
 
                 //Update each row's checkbox
-                if (GVView !== null)
-                {
-                    for (let i = 1; i < GVView.rows.length; i++)
-                    {
+                if (GVView !== null) {
+                    for (let i = 1; i < GVView.rows.length; i++) {
                         let cbChld = GVView.rows[i].cells[0].querySelector('input[type="checkbox"]');
                         let chkdH = cb.checked;
-                        if (chkdH !== cbChld.checked)
-                        {
+                        if (chkdH !== cbChld.checked) {
                             cbChld.checked = chkdH;
                             chkCntU += chkdH ? 1 : -1;
                         }
@@ -310,24 +314,20 @@
                     EnableDisableBtnU(chkCntU);
                 }
 
-            } catch (e)
-            {
+            } catch (e) {
                 console.log(e);
             }
             //console.log("by CBEditHOnClick");
         }
 
         //Handle checkbox change for checkbox in each row of GVView
-        function CBEditOnClick (cb)
-        {
-            try
-            {
+        function CBEditOnClick (cb) {
+            try {
                 //console.log("hi CBEditOnClick");
                 //debugger;
                 chkCntU += cb.checked ? 1 : -1;
                 var GVView = document.getElementById('<%= GVView.ClientID%>');
-                if (GVView !== null)
-                {
+                if (GVView !== null) {
                     if (GVView.rows.length < chkCntU)
                         chkCntU = GVView.rows.length;
                     else if
@@ -340,22 +340,18 @@
                 }
             }
             //console.log("by CBEditOnClick");
-            catch (e)
-            {
+            catch (e) {
                 console.log(e);
             }
         }
 
-        function EnableDisableBtnU (count)
-        {
+        function EnableDisableBtnU (count) {
             let btnUnAssign = document.getElementById('<%= BtnUnAssign.ClientID %>');
             btnUnAssign.disabled = (count === 0);
         }
 
-        function BtnOnClientClick (HFClientID, chr)
-        {
-            try
-            {
+        function BtnOnClientClick (HFClientID, chr) {
+            try {
                 //console.log("BtnOnClientClick called");
                 //console.log("HFClientID: " + HFClientID);
                 //debugger;
@@ -366,38 +362,32 @@
                 //console.log("HFCnt Value: " + hf.val());
                 return true;
             }
-            catch (e)
-            {
+            catch (e) {
                 console.log(e);
                 return false;
             }
         }
         // Function to store scroll position
-        function storeScrollPosition ()
-        {
+        function storeScrollPosition () {
             var gridview = document.getElementById('<%= GVAssign.ClientID %>');
-            if (gridview != null)
-            {
+            if (gridview != null) {
                 var scrollPosition = gridview.scrollTop;
                 sessionStorage.setItem('GridViewScrollPosition', scrollPosition);
             }
         }
 
         // Function to restore scroll position
-        function restoreScrollPosition ()
-        {
+        function restoreScrollPosition () {
             console.log("hi restoreScrollPosition");
             var scrollPosition = sessionStorage.getItem('GridViewScrollPosition');
             var gridview = document.getElementById('<%= GVAssign.ClientID %>');
-            if (gridview != null && scrollPosition != null)
-            {
+            if (gridview != null && scrollPosition != null) {
                 gridview.scrollTop = scrollPosition;
             }
             console.log("by restoreScrollPosition");
         }
 
-        function setscroll ()
-        {
+        function setscroll () {
             debugger;
             var y = $(scroll.Y);
             console.log(y);

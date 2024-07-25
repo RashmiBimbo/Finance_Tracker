@@ -18,7 +18,7 @@ namespace Finance_Tracker.Masters
         private readonly DBOperations DBOprn;
         private const string Emp = "";
         private static int chKCntGVView = 0, chKCntGVAssign = 0;
-        bool IsApprover, IsAdmin;
+        bool IsApprover, IsAdmin, IsSuperAdmin;
 
         #endregion Fields
 
@@ -31,10 +31,10 @@ namespace Finance_Tracker.Masters
                 DataTable dt = (DataTable)Session["UserTaskAssignment_GVAssignDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
-                    string approverId = IsAdmin ? null : UsrId;
+                    string approverId = IsAdmin ? null : IsSuperAdmin ? null : UsrId;
                     string locnId = IsAdmin ? LocId : null;
                     //dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
-                    dt = GetData("SP_Get_Unassigned_Tasks", UsrId, LocId);
+                    dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
                     Session["UserTaskAssignment_GVAssignDS"] = dt;
@@ -56,8 +56,8 @@ namespace Finance_Tracker.Masters
                 DataTable dt = (DataTable)Session["UserTaskAssignment_GVViewDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
-                    //string approverId = IsAdmin ? null : UsrId;
-                    dt = GetData("SP_Get_Assigned_Tasks", UsrId, null);
+                    string approverId = IsSuperAdmin ? DdlApproversU.SelectedValue : UsrId;
+                    dt = GetData("SP_Get_Assigned_Tasks", approverId, null);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
                     Session["UserTaskAssignment_GVViewDS"] = dt;
@@ -103,7 +103,8 @@ namespace Finance_Tracker.Masters
                 UsrName = Session["User_Name"]?.ToString();
 
                 IsAdmin = LoginTypes[roleId] == Admin;
-                if (!(IsAdmin || IsApprover))
+                IsSuperAdmin = LoginTypes[roleId] == SuperAdmin;
+                if (!(IsAdmin || IsApprover || IsSuperAdmin))
                 {
                     Response.Redirect("~/Default");
                     return;
@@ -114,7 +115,7 @@ namespace Finance_Tracker.Masters
                     GVAssignDS = null;
                     GVViewDS = null;
 
-                    foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers })
+                    foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers, DdlApproversA, DdlApproversU })
                         ddl.DataBind();
                     chKCntGVView = 0;
                     chKCntGVAssign = 0;
@@ -177,6 +178,15 @@ namespace Finance_Tracker.Masters
                     }
                 );
             }
+            else if (IsSuperAdmin)
+            {
+                FillDdl(DdlUsers, "SP_Get_Users", Emp, "All", null,
+                    new OleDbParameter[]
+                    {
+                         new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
+                    }
+                );
+            }
         }
 
         protected void DdlUsrType_DataBinding(object sender, EventArgs e)
@@ -199,6 +209,12 @@ namespace Finance_Tracker.Masters
             DdlTasks.SelectedIndex = 0;
             DdlUsrType.SelectedIndex = 0;
             DdlUsers.SelectedIndex = 0;
+            DvApprs.Visible = IsSuperAdmin;
+            DvApprU.Visible = slctItem != 0;
+            DvApprA.Visible = slctItem == 0;
+            //else
+            //if ()
+            //    DdlApproversU.Visible = true;
         }
 
         protected void DdlCatType_SelectedIndexChanged(object sender, EventArgs e)
@@ -225,15 +241,15 @@ namespace Finance_Tracker.Masters
             switch (Menu.SelectedValue)
             {
                 case "0":
-                {
-                    ResetGVAssign();
-                    break;
-                }
+                    {
+                        ResetGVAssign();
+                        break;
+                    }
                 case "1":
-                {
-                    ResetGVView();
-                    break;
-                }
+                    {
+                        ResetGVView();
+                        break;
+                    }
             }
         }
 
@@ -384,6 +400,12 @@ namespace Finance_Tracker.Masters
             };
         }
 
+        protected void DdlApprovers_DataBinding(object sender, EventArgs e)
+        {
+            string selectTxt = sender.Equals(DdlApproversA) ? "Select" : "All";
+            FillDdl(sender as DropDownList, "SP_Get_Users", Emp, selectTxt, null);
+        }
+
         protected void DdlType_DataBinding(object sender, EventArgs e)
         {
             FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, "All", null, null, "TypeName", "TypeId"); ;
@@ -435,19 +457,25 @@ namespace Finance_Tracker.Masters
             DataTable dt = null;
             try
             {
+                List<OleDbParameter> parms = new List<OleDbParameter>
+                {
+                     new OleDbParameter("@Approver_Id", approverId)
+                    ,new OleDbParameter("@User_Id", DdlUsers.SelectedValue)
+                    ,new OleDbParameter("@Report_Id", DdlTasks.SelectedValue)
+                    ,new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
+                    ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
+                    ,new OleDbParameter("@LocationId", locnId)
+                    ,new OleDbParameter("@RoleId", DdlUsrType.SelectedValue)
+                    ,new OleDbParameter("@Assigner", IsSuperAdmin ? UsrId : Emp)
+                };
+                //if (proc == "SP_Get_Unassigned_Tasks")
+                //{
+                //    parms.Add(new OleDbParameter("@Assigner", IsSuperAdmin ? UsrId : Emp));
+                //}
+                //else
+                //    parms.Add(new OleDbParameter("@Assigner", IsSuperAdmin ? UsrId : Emp));
                 dt = DBOprn.GetDataProc
-                    (proc, DBOprn.ConnPrimary
-                        , new OleDbParameter[]
-                         {
-                              new OleDbParameter("@Approver_Id", approverId)
-                             ,new OleDbParameter("@User_Id", DdlUsers.SelectedValue)
-                             ,new OleDbParameter("@Report_Id", DdlTasks.SelectedValue)
-                             ,new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
-                             ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
-                             ,new OleDbParameter("@LocationId", locnId)
-                             ,new OleDbParameter("@RoleId", DdlUsrType.SelectedValue)
-                         }
-                    );
+                    (proc, DBOprn.ConnPrimary, parms.ToArray());
             }
             catch (Exception e)
             {
@@ -479,32 +507,15 @@ namespace Finance_Tracker.Masters
                 string subordinateID = dRow["UserId"].ToString();
                 string reportId = dRow["ReportId"].ToString();
                 string reportName = dRow["Task_Name"].ToString();
+                string approver = IsSuperAdmin ? DdlApproversA.SelectedValue : UsrId;
                 Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
-                    {
-                        "USER_ID" ,
-                         subordinateID.ToUpper()
-                    },
-                    {
-                        "REPORT_ID",
-                        reportId
-                    },
-                    {
-                        "REPORT_NAME",
-                         reportName
-                    },
-                    {
-                        "CREATED_BY",
-                        UsrName
-                    },
-                    {
-                        "APPROVER",
-                        UsrId.ToUpper()
-                    },
-                    {
-                        "ACTIVE",
-                         activ
-                    }
+                    { "USER_ID" , subordinateID.ToUpper() },
+                    { "REPORT_ID", reportId },
+                    { "REPORT_NAME", reportName },
+                    { "CREATED_BY", UsrName },
+                    { "APPROVER", approver.ToUpper() },
+                    { "ACTIVE", activ }
                 };
                 dtls.Add(paramVals);
                 cb.Checked = false;

@@ -74,14 +74,14 @@ namespace Finance_Tracker
             string roleId = Session["Role_Id"]?.ToString() ?? string.Empty;
             bool isApprover = Session["Is_Approver"] != null && Convert.ToBoolean(Session["Is_Approver"]);
             bool isAdmin = roleId.Equals("1");
-            bool isSuprAdmin = roleId.Equals("1");
+            bool isSuprAdmin = roleId.Equals("4");
 
             LnkReview.Visible = isAdmin || isSuprAdmin;
             LnkRegister.Visible = isAdmin || isSuprAdmin;
             LnkApprove.Visible = isApprover;
-            LnkMasters.Visible = isAdmin || isApprover;
-            LnkReports.Visible = isAdmin || isApprover;
-            LnkUTA.Visible = isAdmin || isApprover;
+            LnkMasters.Visible = isAdmin || isApprover || isSuprAdmin;
+            LnkReports.Visible = isAdmin || isApprover || isSuprAdmin;
+            LnkUTA.Visible = isAdmin || isApprover || isSuprAdmin;
         }
 
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
