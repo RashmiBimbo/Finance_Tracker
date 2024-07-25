@@ -186,7 +186,7 @@ namespace Finance_Tracker.Account
         {
             FillDdl(DdlLocn, "SP_Get_Locations", Emp);
             string usrLocn = ((string)Session["Location_Id"]).ToUpper();
-            if (string.IsNullOrWhiteSpace(usrLocn)) Response.Redirect("~/Account/Login");
+            if (string.IsNullOrWhiteSpace(usrLocn) && RoleId != 4) Response.Redirect("~/Account/Login");
             if (RoleId == 1)
             {
                 DdlLocn.Enabled = false;
