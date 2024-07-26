@@ -428,7 +428,7 @@ namespace Finance_Tracker
             string footer = $@"
                  <p>For more information please check your submitted tasks at 
                      <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a> or contact your approver</p>
-                 <p>Best regrads</p>
+                 <p>Best regards</p>
                  <p>Grupo Bimbo</p>";
             foreach (GridViewRow gvRow in GVPending.Rows)
             {

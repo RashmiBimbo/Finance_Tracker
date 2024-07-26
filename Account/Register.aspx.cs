@@ -6,6 +6,10 @@ using System.Data;
 using System.Data.OleDb;
 using System.Web.UI.WebControls;
 using System.Net.Mail;
+using System.Net;
+using System.Net.Configuration;
+using System.Configuration;
+using System.Net.NetworkInformation;
 
 namespace Finance_Tracker.Account
 {
@@ -15,6 +19,8 @@ namespace Finance_Tracker.Account
         private DBOperations DBOprn = new DBOperations();
         int RoleId;
         private readonly string Emp = string.Empty;
+        private static SmtpSection settings;
+        private static SmtpNetworkElement Network;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -30,13 +36,45 @@ namespace Finance_Tracker.Account
                 if (string.IsNullOrWhiteSpace(usrId))
                     Response.Redirect("~/Account/Login");
 
-                if (!(RoleId == 1 || RoleId == 4))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+                //if (!(RoleId == 1 || RoleId == 4))
+                //{
+                //    Response.Redirect("~/Default");
+                //    return;
+                //}
+
+                if (!IsSmtpConfigValid())
+                    PopUp("Email settings could not be verified. No emails will be sent for registration!");
                 DdlRole.DataBind();
                 DdlLocn.DataBind();
+            }
+        }
+
+        private bool IsSmtpConfigValid()
+        {
+            settings = ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+            Network = settings?.Network;
+
+            bool @return =
+                (settings != null
+                && Network != null
+                && !string.IsNullOrWhiteSpace(settings.From)
+                && !string.IsNullOrWhiteSpace(Network.Host)
+                && !string.IsNullOrWhiteSpace(Network.UserName)
+                && !string.IsNullOrWhiteSpace(Network.Password));
+            if (!@return) return false;
+            try
+            {
+                using (var ping = new Ping())
+                {
+                    PingReply reply = ping.Send(Network.Host, 1000); // Timeout set to 1 second
+                    return reply.Status == IPStatus.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                PopUp("Error checking SMTP server accessibility: " + ex.Message);
+                return false;
             }
         }
 
@@ -88,6 +126,7 @@ namespace Finance_Tracker.Account
                         PopUp(output.ToString());
                         return;
                     }
+                    SendMail(email, usrName, usrId, pswd);
                     PopUp("User added successfully!");
                     ResetCtrls();
                 }
@@ -95,6 +134,46 @@ namespace Finance_Tracker.Account
                 {
                     PopUp(ex.Message);
                 }
+            }
+        }
+
+        private void SendMail(string email, string usrName, string usrId, string pswd)
+        {
+            string host = Network.Host, hostPswd = Network.Password, from = settings.From, hostName = Network.UserName;
+            int port = Network.Port;
+            string subject = "Welcome to Finance Tracker";
+            try
+            {
+                string msg = $@"</br><p>Hi, {usrName}!</br>
+                                </br>{Session["User_Name"]} has registered you as a user in Finance Tracker Application.</br>  
+                                </br>Please find your credentials below:</br>                                                                  
+                                </br><b>User Id</b>: {usrId}</br>
+                                </br><b>Password</b>: {pswd}</br>                                  
+                                </br>You can now <a href=""http://10.10.1.171:88/Account/Login"">login</a> to your account.</br>
+                                </br>This is an automatically generated mail. Please do not reply as there will be no responses.</br>
+                                </br>Best regards,</br>  
+                                </br>Grupo Bimbo</p>";
+                using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
+                {
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(hostName, hostPswd); // Your email credentials
+                    smtp.EnableSsl = true; // Enable SSL if required
+                    
+
+                    MailMessage mail = new MailMessage
+                    {
+                        From = new MailAddress(from, usrName), // Your email address
+                        Subject = subject,
+                        Body = msg,
+                        IsBodyHtml = true
+                    };
+                    mail.To.Add(email);
+                    smtp.Send(mail);
+                }
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
             }
         }
 
