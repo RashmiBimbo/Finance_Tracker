@@ -75,11 +75,11 @@ namespace Finance_Tracker.Masters
             UsrName = Session["User_Name"]?.ToString();
 
             IsAdmin = LoginTypes[RoleId] == Admin;
-            if (!(IsAdmin || IsApprover))
-            {
-                Response.Redirect("~/Default");
-                return;
-            }
+            //if (!(IsAdmin || IsApprover))
+            //{
+            //    Response.Redirect("~/Default");
+            //    return;
+            //}
             if (!IsPostBack)
             {
                 BtnDlt.Attributes.Add("onclick", "return BtnDltOnClientClick();");

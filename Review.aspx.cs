@@ -90,11 +90,11 @@ namespace Finance_Tracker
                     Response.Redirect("~/Account/Login");
 
                 int RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
-                if (!(RoleId == 1 || RoleId == 4))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+                //if (!(RoleId == 1 || RoleId == 4))
+                //{
+                //    Response.Redirect("~/Default");
+                //    return;
+                //}
                 TxtMnth.Attributes.Add("autocomplete", "off");
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
                 DdlType.DataBind();

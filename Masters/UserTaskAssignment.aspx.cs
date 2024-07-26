@@ -104,11 +104,11 @@ namespace Finance_Tracker.Masters
 
                 IsAdmin = LoginTypes[roleId] == Admin;
                 IsSuperAdmin = LoginTypes[roleId] == SuperAdmin;
-                if (!(IsAdmin || IsApprover || IsSuperAdmin))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+                //if (!(IsAdmin || IsApprover || IsSuperAdmin))
+                //{
+                //    Response.Redirect("~/Default");
+                //    return;
+                //}
 
                 if (!IsPostBack)
                 {
