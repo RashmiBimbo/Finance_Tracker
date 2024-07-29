@@ -10,11 +10,10 @@ using System.Web.UI.WebControls;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Configuration;
 using System.Net.Configuration;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using static System.DateTime;
+using static Finance_Tracker.DBOperations;
 
 namespace Finance_Tracker
 {
@@ -110,10 +109,10 @@ namespace Finance_Tracker
                 {
                      new OleDbParameter("@From_Date", fromDt)
                     ,new OleDbParameter("@To_Date",  toDt)
-                    ,new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
-                    ,new OleDbParameter("@TypeId", typ)
-                    ,new OleDbParameter("@IsApproved", IsApproved)
                     ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
+                    ,new OleDbParameter("@IsApproved", IsApproved)
+                    ,new OleDbParameter("@ReportTypeId", typ)
+                    ,new OleDbParameter("@Approver_Id", Session["User_Id"]?.ToString().Trim().ToUpper())
                 };
                 //paramCln = null;
                 DataTable dt = DBOprn.GetDataProc("SP_Get_Submit_Tasks_SubOrdinates", DBOprn.ConnPrimary, paramCln);
@@ -156,35 +155,6 @@ namespace Finance_Tracker
 
                 chkCountA = 0;
                 chKCountR = 0;
-            }
-        }
-
-        private bool IsSmtpConfigValid()
-        {
-            settings = ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
-            Network = settings?.Network;
-
-            bool @return =
-                (settings != null
-                && Network != null
-                && !string.IsNullOrWhiteSpace(settings.From)
-                && !string.IsNullOrWhiteSpace(Network.Host)
-                && !string.IsNullOrWhiteSpace(Network.UserName)
-                && !string.IsNullOrWhiteSpace(Network.Password));
-            if (!@return) return false;
-            try
-            {
-                using (var ping = new Ping())
-                {
-                    PingReply reply = ping.Send(Network.Host, 1000); // Timeout set to 1 second
-                    return reply.Status == IPStatus.Success;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle other exceptions
-                PopUp("Error checking SMTP server accessibility: " + ex.Message);
-                return false;
             }
         }
 
@@ -426,10 +396,12 @@ namespace Finance_Tracker
                         </tr>";
 
             string footer = $@"
-                 <p>For more information please check your submitted tasks at 
-                     <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a> or contact your approver</p>
-                 <p>Best regards</p>
-                 <p>Grupo Bimbo</p>";
+                 <p> You can check your approved tasks at Performance page at
+                     <a href = ""http://10.10.1.171:88"">Finance Tracker</a>.</p>
+                 <p>For more information contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a>.</ p >
+                 <p>This is an automatically generated mail. Please do not reply as there will be no responses.</p>
+                 <p> Best Regards, </p>
+                 <p> Grupo Bimbo </p> ";
             foreach (GridViewRow gvRow in GVPending.Rows)
             {
                 if (chkCnt < 1) break;
@@ -444,7 +416,7 @@ namespace Finance_Tracker
                 string tskId = dRo["Task_Id"].ToString();
                 string usrMail = dRo["Email"].ToString();
                 string usrNm = dRo["User_Name"].ToString();
-                string usrId = dRo["UserId"].ToString();
+                string usrId = dRo["User_Id"].ToString();
                 string sbmtDt = dRo["Submit_Date"].ToString();
                 string duDt = dRo["Due_Date"].ToString();
                 string task = dRo["Report_Name"].ToString();
@@ -657,22 +629,25 @@ namespace Finance_Tracker
             gv.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
 
             string strt = $@"
-            <p>{Session["User_Name"]} has rejected your submitted tasks.</p>
-            <p>Please find the details below:</p>";
+                            <p>{Session["User_Name"]} has rejected your submitted tasks.</p>
+                            <p>Please find the details below:</p>";
 
             string tableBody = @"<table border='2'>";
             tableBody += @"<tr>
-                           <th>Task</th>
-                           <th>Comments</th>
-                           <th>Submit Date</th>
-                           <th>Due Date</th>
-                           </tr>";
+                        <th>Task</th>
+                        <th>Comments</th>
+                        <th>Submit Date</th>
+                        <th>Due Date</th>
+                        </tr>";
 
             string footer = $@"
-                            <p>For more information please check your submitted tasks at 
-                                <a href= ""http://10.10.1.171:88/Performance"">Finance Tracker</a> or contact your approver.</p>
-                            <p>Best regards</p>
-                            <p>Grupo Bimbo</p>";
+                 <p> You can check your submitted tasks at Performance page at
+                     <a href = ""http://10.10.1.171:88"">Finance Tracker</a>.
+                 </p>
+                 <p> For more information contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a>.</ p >
+                 <p>This is an automatically generated mail. Please do not reply as there will be no responses.</p>
+                 <p> Best Regards, </p>
+                 <p> Grupo Bimbo </p> ";
             foreach (GridViewRow gvRow in gv.Rows)
             {
                 if (chkCnt < 1) break;
@@ -687,7 +662,7 @@ namespace Finance_Tracker
                 string tskId = dRo["Task_Id"].ToString();
                 string usrMail = dRo["Email"].ToString();
                 string usrNm = dRo["User_Name"].ToString();
-                string usrId = dRo["UserId"].ToString();
+                string usrId = dRo["User_Id"].ToString();
                 string sbmtDt = dRo["Submit_Date"].ToString();
                 string duDt = dRo["Due_Date"].ToString();
                 string task = dRo["Report_Name"].ToString();

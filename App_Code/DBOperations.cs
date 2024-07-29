@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AjaxControlToolkit.Bundling;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Net.Configuration;
+using System.Net.NetworkInformation;
 using System.Web;
 using System.Web.UI;
 //using Finance_Tracker.App_Code;
@@ -17,6 +20,9 @@ namespace Finance_Tracker
         public readonly string ConStrSecondary, ConStrPrimary;
         public OleDbConnection ConnSecondary, ConnPrimary;
         public const string Admin = "ADMIN", Corporate = "CORPORATE", Plant = "PLANT", SuperAdmin = "SUPERADMIN";
+        public const string Emp = "";
+        public static SmtpSection settings;
+        public static SmtpNetworkElement Network;
 
         public static readonly Dictionary<string, string> LoginTypes = new Dictionary<string, string>
         {
@@ -26,7 +32,33 @@ namespace Finance_Tracker
             { "4", SuperAdmin }
         };
 
-
+        public static bool IsSmtpConfigValid()
+        {
+            settings = ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+            Network = settings?.Network;
+            bool @return =
+                (settings != null
+                && Network != null
+                && !string.IsNullOrWhiteSpace(settings.From)
+                && !string.IsNullOrWhiteSpace(Network.Host)
+                && !string.IsNullOrWhiteSpace(Network.UserName)
+                && !string.IsNullOrWhiteSpace(Network.Password));
+            if (!@return) return false;
+            try
+            {
+                using (Ping ping = new Ping())
+                {
+                    PingReply reply = ping.Send(Network.Host, 1000); // Timeout set to 1 second
+                    return reply.Status == IPStatus.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                //PopUp("Error checking SMTP server accessibility: " + ex.Message);
+                return false;
+            }
+        }
         public DBOperations()
         {
             ConnStrs = ConfigurationManager.ConnectionStrings;

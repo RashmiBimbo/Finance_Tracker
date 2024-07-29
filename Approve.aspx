@@ -87,7 +87,7 @@
                                     <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                     <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
                                     <asp:BoundField DataField="Report_Name" HeaderText="Task" ReadOnly="True" />
-                                    <asp:BoundField DataField="Type" HeaderText="Type" />
+                                    <asp:BoundField DataField="Report_Type" HeaderText="Task Type" />
                                     <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                     <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                     <asp:TemplateField HeaderText="Comments" Visible="true">
@@ -146,7 +146,7 @@
                                     <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                     <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
                                     <asp:BoundField DataField="Report_Name" HeaderText="Task" ReadOnly="True" />
-                                    <asp:BoundField DataField="Type" HeaderText="Type" />
+                                    <asp:BoundField DataField="Report_Type" HeaderText="Task Type" />
                                     <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
                                     <asp:BoundField DataField="Submit_Date" HeaderText="Submit Date" />
                                     <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />

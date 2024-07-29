@@ -1,9 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using AjaxControlToolkit.Bundling;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
@@ -33,7 +38,7 @@ namespace Finance_Tracker.Masters
                 {
                     string approverId = IsAdmin && IsApprover ? UsrId : IsAdmin ? null : IsSuperAdmin ? null : UsrId;
                     string locnId = IsAdmin ? LocId : null;
-                    //dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
+                    //dt = GetSubmitted("SP_Get_Unassigned_Tasks", approverId, locnId);
                     dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
@@ -117,8 +122,12 @@ namespace Finance_Tracker.Masters
 
                     foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers, DdlApproversA, DdlApproversU })
                         ddl.DataBind();
+
                     chKCntGVView = 0;
                     chKCntGVAssign = 0;
+
+                    if (!IsSmtpConfigValid())
+                        PopUp("Email settings could not be verified. No emails will be sent for task assignment!");
 
                     Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
                 }
@@ -329,13 +338,47 @@ namespace Finance_Tracker.Masters
         protected void BtnAssign_Click(object sender, EventArgs e)
         {
             //int.TryParse(HFCntA.Value, out chKCntGVAssign);
-            string jsonParam = ConstructJSON("1", GVAssign, GVAssignDS);
+            string jsonParam = ConstructJSON("1", GVAssign, GVAssignDS, out Dictionary<string, string> mailSet);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
                 PopUp("Tasks assigned successfully!");
+                if (mailSet != null && mailSet.Count > 0)
+                    SendEmails(mailSet, "Tasks Assignment Alert - Finance Tracker");
                 ResetGVAssign();
                 chKCntGVAssign = 0;
                 BtnAssign.Enabled = false;
+            }
+        }
+
+        private void SendEmails(Dictionary<string, string> mailSet, string subject)
+        {
+            string host = Network.Host, pswd = Network.Password, from = settings.From, usrName = Network.UserName;
+            int port = Network.Port;
+            try
+            {
+                using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
+                {
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(usrName, pswd); // Your email credentials
+                    smtp.EnableSsl = false; // Enable SSL if required
+
+                    foreach (KeyValuePair<string, string> recipient in mailSet)
+                    {
+                        MailMessage mail = new MailMessage
+                        {
+                            From = new MailAddress(from, usrName), // Your email address
+                            Subject = subject,
+                            Body = recipient.Value,
+                            IsBodyHtml = true
+                        };
+                        mail.To.Add(recipient.Key);
+                        smtp.Send(mail);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
             }
         }
 
@@ -403,7 +446,7 @@ namespace Finance_Tracker.Masters
         protected void BtnUnAssign_Click(object sender, EventArgs e)
         {
             //int.TryParse(HFCntU.Value, out chKCntGVAssign);
-            string jsonParam = ConstructJSON("0", GVView, GVViewDS);
+            string jsonParam = ConstructJSON("0", GVView, GVViewDS, out _);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
                 PopUp("Tasks unassigned successfully!");
@@ -502,25 +545,57 @@ namespace Finance_Tracker.Masters
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
-        private string ConstructJSON(string activ, GridView gv, DataTable gvDS)
+        private string ConstructJSON(string activ, GridView gv, DataTable gvDS, out Dictionary<string, string> mailSet)
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+            mailSet = new Dictionary<string, string>();
 
             int chkCnt = 0;
             gv.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
 
+            string tableBody = Emp, strt = Emp, footer = Emp;
+            if (activ == "1")
+            {
+                strt = $@"
+                       <p></br>{Session["User_Name"]} has assigned you some tasks.</p>
+                       <p>Please find the details below:</p>";
+
+                tableBody = @"<table border='2'>
+                        <tr>
+                        <th>Task</th>
+                        <th>Type</th>
+                        <th>Due Date</th>
+                        <th>Weight</th>
+                        <th>Approver</th>
+                        </tr>";
+                footer = $@"
+                 <p>You can check your assigned tasks at Performance page at
+                     <a href= ""http://10.10.1.171:88"">Finance Tracker</a>.</p>
+                 <p>For more information contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a>.</p>
+                 <p>This is an automatically generated mail. Please do not reply as there will be no responses.</p>
+                 <p>Best Regards,</p>
+                 <p>Grupo Bimbo</p>";
+            }
             foreach (GridViewRow gvRow in gv.Rows)
             {
                 if (chkCnt < 1) break;
 
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 if (!cb.Checked) continue;
+                string tblStr = Emp;
+                string sno = gvRow.Cells[1].Text;
+                DataRow dRo = gvDS.Select("Sno = " + sno)[0];
 
-                DataRow dRow = gvDS.Select("Sno = " + gvRow.Cells[1].Text)[0];
-                string subordinateID = dRow["UserId"].ToString();
-                string reportId = dRow["ReportId"].ToString();
-                string reportName = dRow["Task_Name"].ToString();
+                string subordinateID = dRo["UserId"].ToString();
+                string usrNm = dRo["User_Name"].ToString();
+                string reportId = dRo["ReportId"].ToString();
+                string reportName = dRo["Task_Name"].ToString();
+                string rptType = dRo["Report_Type"].ToString();
                 string approver = IsSuperAdmin ? DdlApproversA.SelectedValue : UsrId;
+                string usrMail = dRo["Email"].ToString();
+                string dueDate = dRo["Due_Date"].ToString();
+                string weight = dRo["Weight"].ToString();
+
                 Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
                     { "USER_ID" , subordinateID.ToUpper() },
@@ -533,7 +608,20 @@ namespace Finance_Tracker.Masters
                 dtls.Add(paramVals);
                 cb.Checked = false;
                 chkCnt--;
+                if (activ == "1")
+                {
+                    tblStr = $@"<tr><td>{reportName}</td><td>{rptType}</td><td>{dueDate}</td><td>{weight}</td><td>{approver}</td></tr>";
+
+                    if (!string.IsNullOrWhiteSpace(usrMail))
+                        if (!mailSet.ContainsKey(usrMail))
+                            mailSet.Add(usrMail, $@"</br></br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
+                        else
+                            mailSet[usrMail] += tblStr;
+                }
             }
+
+            if (activ == "1")
+                mailSet = mailSet.ToDictionary(kvp => kvp.Key, kvp => kvp.Value + "</table>" + footer);
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;
         }
