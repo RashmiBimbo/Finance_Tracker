@@ -557,7 +557,7 @@ namespace Finance_Tracker.Masters
             if (activ == "1")
             {
                 strt = $@"
-                       <p></br>{Session["User_Name"]} has assigned you some tasks.</p>
+                       <p>{Session["User_Name"]} has assigned you some tasks.</p>
                        <p>Please find the details below:</p>";
 
                 tableBody = @"<table border='2'>
@@ -572,7 +572,7 @@ namespace Finance_Tracker.Masters
                  <p>You can check your assigned tasks at Performance page at
                      <a href= ""http://10.10.1.171:88"">Finance Tracker</a>.</p>
                  <p>For more information contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a>.</p>
-                 <p>This is an automatically generated mail. Please do not reply as there will be no responses.</p>
+                 <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
                  <p>Best Regards,</p>
                  <p>Grupo Bimbo</p>";
             }
@@ -614,7 +614,7 @@ namespace Finance_Tracker.Masters
 
                     if (!string.IsNullOrWhiteSpace(usrMail))
                         if (!mailSet.ContainsKey(usrMail))
-                            mailSet.Add(usrMail, $@"</br></br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
+                            mailSet.Add(usrMail, $@"</br></br></br><p>Dear {usrNm},</p> {strt} {tableBody} {tblStr}");
                         else
                             mailSet[usrMail] += tblStr;
                 }

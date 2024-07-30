@@ -118,15 +118,15 @@ namespace Finance_Tracker.Account
             string subject = "Welcome to Finance Tracker";
             try
             {
-                string msg = $@"</br>
-                                <p>Hi, {usrName}!</p>
+                string msg = $@"</br></br>
+                                <p>Dear {usrName},</p>
                                 <p>{Session["User_Name"]} has registered you as a user in Finance Tracker Application.</p>  
                                 <p>Please find your credentials below:</p>                                                                  
                                 <p><b>User Id</b>: {usrId}</p>
                                 <p><b>Password</b>: {pswd}</p>                                  
                                 <p>You can now <a href=""http://10.10.1.171:88/Account/Login"">login</a> to your account.</p>
                                 <p>For more information, please contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a></p>
-                                <p>This is an automatically generated mail. Please do not reply as there will be no responses.</p>
+                                <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
                                 <p>Best Regards,</p> 
                                 <p>Grupo Bimbo</p>";
                 using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server

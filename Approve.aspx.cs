@@ -445,7 +445,7 @@ namespace Finance_Tracker
 
                 if (!string.IsNullOrWhiteSpace(usrMail))
                     if (!mailSet.ContainsKey(usrMail))
-                        mailSet.Add(usrMail, $@"</br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
+                        mailSet.Add(usrMail, $@"</br></br><p>Dear {usrNm},</p> {strt} {tableBody} {tblStr}");
                     else
                         mailSet[usrMail] += tblStr;
             }
@@ -645,7 +645,7 @@ namespace Finance_Tracker
                      <a href = ""http://10.10.1.171:88"">Finance Tracker</a>.
                  </p>
                  <p> For more information contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a>.</ p >
-                 <p>This is an automatically generated mail. Please do not reply as there will be no responses.</p>
+                 <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
                  <p> Best Regards, </p>
                  <p> Grupo Bimbo </p> ";
             foreach (GridViewRow gvRow in gv.Rows)
@@ -690,7 +690,7 @@ namespace Finance_Tracker
 
                 if (!string.IsNullOrWhiteSpace(usrMail))
                     if (!mailSet.ContainsKey(usrMail))
-                        mailSet.Add(usrMail, $@"</br><p>Hi, {usrNm}!</p> {strt} {tableBody} {tblStr}");
+                        mailSet.Add(usrMail, $@"</br></br><p>Dear {usrNm},</p> {strt} {tableBody} {tblStr}");
                     else
                         mailSet[usrMail] += tblStr;
             }
