@@ -154,6 +154,12 @@
                                             <ItemTemplate>
                                                 <asp:CheckBox ID="CDelete" runat="server" ToolTip="Delete" onclick="handleCheckBoxChange(this);" />
                                             </ItemTemplate>
+                                        </asp:TemplateField>          
+                                        <%--7--%>
+                                        <asp:TemplateField HeaderText="Action">
+                                            <ItemTemplate>
+                                                <asp:LinkButton CssClass="control-label" ForeColor="#3366FF" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnTxt")%>' />
+                                            </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--1 --%>
                                         <asp:BoundField DataField="Sno" HeaderText="Sno" ControlStyle-Width="8px" />
@@ -171,12 +177,6 @@
                                         <asp:BoundField DataField="Weight" HeaderText="Weight" />
                                         <%--6--%>
                                         <asp:BoundField DataField="Type" HeaderText="Type" />
-                                        <%--7--%>
-                                        <asp:TemplateField HeaderText="Action">
-                                            <ItemTemplate>
-                                                <asp:LinkButton CssClass="control-label" ForeColor="#3366FF" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnTxt")%>' />
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
                             </div>

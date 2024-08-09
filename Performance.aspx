@@ -337,6 +337,11 @@
                                         <asp:CheckBox ID="CBSubmit" runat="server" ToolTip="Submit" onclick="handleCheckBoxChange(this);" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
+                                <asp:TemplateField AccessibleHeaderText="Action" HeaderText="Action" ControlStyle-Width="40px">
+                                    <ItemTemplate>
+                                        <asp:LinkButton runat="server" ID="BtnEdit" OnCommand="BtnEdit_Command" CommandName="EditRow" CommandArgument="<%# Container.DataItemIndex %>" Text='<%# Bind("BtnText")%>' ForeColor="#3366FF"></asp:LinkButton>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <%--1 --%>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <%--2 --%>
@@ -369,11 +374,6 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <%--11--%>
-                                <asp:TemplateField AccessibleHeaderText="Action" HeaderText="Action" ControlStyle-Width="40px">
-                                    <ItemTemplate>
-                                        <asp:LinkButton runat="server" ID="BtnEdit" OnCommand="BtnEdit_Command" CommandName="EditRow" CommandArgument="<%# Container.DataItemIndex %>" Text='<%# Bind("BtnText")%>' ForeColor="#3366FF"></asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
                                 <%--12--%>
                                 <asp:TemplateField HeaderText="Report_Id" Visible="False" InsertVisible="False" ShowHeader="False">
                                     <ItemTemplate>
