@@ -1382,7 +1382,7 @@ namespace Finance_Tracker
                 if (!cb.Checked) continue;
 
                 if (chkCnt < 1) break;
-                DataRow dRo = GVReports2DS.Select("Sno = " + gvRow.Cells[1].Text)?[0];
+                DataRow dRo = GVReports2DS.Select("Sno = " + gvRow.Cells[2].Text)?[0];
                 if (dRo == null) continue;
 
                 string id = dRo["Task_Id"].ToString();

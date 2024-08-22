@@ -554,7 +554,7 @@ namespace Finance_Tracker.Masters
             {
                 if (chkCnt < 1) break;
 
-                DataRow dRo = GVReportsDS.Select("Sno = " + gvRow.Cells[1].Text)?[0];
+                DataRow dRo = GVReportsDS.Select("Sno = " + gvRow.Cells[2].Text)?[0];
                 if (dRo is null) continue;
 
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
@@ -735,11 +735,6 @@ namespace Finance_Tracker.Masters
             FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, slctTxt, null, null, "TypeName", "TypeId");
         }
 
-        //protected void DdlType_DataBinding(object sender, EventArgs e)
-        //{
-        //    FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
-        //}
-
         private void PopUp(string msg)
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
@@ -748,9 +743,10 @@ namespace Finance_Tracker.Masters
         private void SetTooltip(DropDownList[] ddlLst = null, DropDownList ddl = null)
         {
             if (ddlLst != null)
+            {
                 ddlLst.ToList().ForEach(itm => itm.ToolTip = itm.SelectedItem.Text);
-            else if (ddl != null)
                 ddl.ToolTip = ddl.SelectedItem.Text;
+            }
         }
 
         private void FillDdl(DropDownList ddl, string proc, string selectVal, string selectTxt = "All", DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = "", string ValField = "")

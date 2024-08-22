@@ -42,7 +42,7 @@ namespace Finance_Tracker
             app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
 
             // Enables the application to remember the second login verification factor such as phone or email.
-            // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
+            // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in From.
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 

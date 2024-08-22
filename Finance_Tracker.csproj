@@ -255,6 +255,7 @@
     <Content Include="Global.asax" />
     <Content Include="Account\Web.config" />
     <Content Include="logo-text.ico" />
+    <Content Include="Masters\Users.aspx" />
     <Content Include="Masters\UserTaskAssignment.aspx" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
@@ -561,6 +562,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Masters\Users.aspx.cs">
+      <DependentUpon>Users.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Masters\Users.aspx.designer.cs">
+      <DependentUpon>Users.aspx</DependentUpon>
     </Compile>
     <Compile Include="Masters\UserTaskAssignment.aspx.cs">
       <DependentUpon>UserTaskAssignment.aspx</DependentUpon>

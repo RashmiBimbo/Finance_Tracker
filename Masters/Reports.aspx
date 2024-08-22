@@ -143,8 +143,8 @@
                                     CssClass="table table-bordered table-striped table-responsive table-hover" TabIndex="10"
                                     OnDataBinding="GVReports_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False">
                                     <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" VerticalAlign="Bottom" />
-                                    <HeaderStyle Font-Bold="True" ForeColor="white" Wrap="False" />
-                                    <AlternatingRowStyle BackColor="#7ad0ed" />
+                                    <HeaderStyle Font-Bold="True"  Wrap="False" />
+                                    <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                     <Columns>
                                         <%--0 --%>
                                         <asp:TemplateField>
@@ -158,7 +158,7 @@
                                         <%--7--%>
                                         <asp:TemplateField HeaderText="Action">
                                             <ItemTemplate>
-                                                <asp:LinkButton CssClass="control-label" ForeColor="#3366FF" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnTxt")%>' />
+                                                <asp:LinkButton CssClass="control-label" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnTxt")%>' />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--1 --%>

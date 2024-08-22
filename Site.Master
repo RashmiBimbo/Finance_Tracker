@@ -65,6 +65,7 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a runat="server" id="LnkReports" href="~/Masters/Reports.aspx">Reports</a></li>
                                 <li><a runat="server" id="LnkUTA" href="~/Masters/UserTaskAssignment">Task Assignment</a></li>
+                                <li><a runat="server" id="LnkUsers" href="~/Masters/Users">Users</a></li>
                             </ul>
                         </li>
                     </ul>
