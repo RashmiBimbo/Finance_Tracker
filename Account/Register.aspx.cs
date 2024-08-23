@@ -20,8 +20,8 @@ namespace Finance_Tracker.Account
         private DBOperations DBOprn = new DBOperations();
         int RoleId;
         private readonly string Emp = string.Empty;
-        private static SmtpSection settings;
-        private static SmtpNetworkElement Network;
+        //private static SmtpSection settings;
+        //private static SmtpNetworkElement Network;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -113,7 +113,7 @@ namespace Finance_Tracker.Account
 
         private void SendMail(string email, string usrName, string usrId, string pswd)
         {
-            string host = Network.Host, hostPswd = Network.Password, from = settings.From, hostName = Network.UserName;
+            string host = DBOperations.Network.Host, hostPswd = DBOperations.Network.Password, from = DBOperations.Settings.From, hostName = DBOperations.Network.UserName;
             int port = Network.Port;
             string subject = "Welcome to Finance Tracker";
             try

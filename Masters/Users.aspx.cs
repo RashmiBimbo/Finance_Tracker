@@ -11,6 +11,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
 using System.Threading.Tasks;
+using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
+using System.Web.Services.Description;
 
 namespace Finance_Tracker.Masters
 {
@@ -202,6 +204,7 @@ namespace Finance_Tracker.Masters
             {
                 PopUp("User(s) deleted successfully!");
                 ResetGVUsers();
+                DdlUser.DataBind();
                 BtnDlt.Enabled = false;
             }
         }
@@ -268,7 +271,7 @@ namespace Finance_Tracker.Masters
                 {
                     { "REC_ID", id },
                     { "MODIFIED_BY", LoggdUsrName?.ToString().Trim() },
-                    { "MODIFIED_DATE", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffff") }
+                    { "MODIFIED_DATE", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") }
                 };
                 dtls.Add(paramVals);
                 cb.Checked = false;
@@ -546,23 +549,23 @@ namespace Finance_Tracker.Masters
             return success;
         }
 
-        private async Task SendEditMail(string usrName, string slctdRole, string email, string locn, string adrs)
+        private void SendEditMail(string usrName, string slctdRole, string email, string locn, string adrs)
         {
-            string subject = "Update in User Profile";
+            string subject = "Update in Profile";
+            string usrNameDtl =  IsEmpty(usrName) ? Emp :$"<p><b>User Name</b>: {usrName}</p>";
+            string slctdRoleDtl =  IsEmpty(slctdRole) ? Emp :$"<p><b>Role</b>: {slctdRole}</p>";
+            string emailDtl = IsEmpty(email) ? Emp : $"<p><b>Email</b>: {email}</p>";
+            string adrsDtl = IsEmpty(adrs) ? Emp : $"<p><b>Address</b>: {adrs}</p>";
             try
             {
-                string msg = $@"</br></br>
+                string msg = $@"</br></br></br>
                                 <p>Dear,</p>
                                 <p>{LoggdUsrName} has edited your details in Finance Tracker Application.</p>  
                                 <p>Please find your details below:</p>                                                                  
-                                <p><b>User Id</b>: {usrName}</p>
-                                <p><b>Role</b>: {slctdRole}</p>                                  
-                                <p><b>Email</b>: {email}</p>                                  
-                                <p><b>Location</b>: {locn}</p>                                  
-                                <p><b>Address</b>: {adrs}</p>                                  
+                                {usrNameDtl}{slctdRoleDtl}{emailDtl}{adrsDtl}                                 
                                 <p>You can now <a href=""http://10.10.1.171:88/Account/Login"">login</a> to your account.</p>
                                 <p>For more information, please contact <a href=""mailto:{LoggdUsrMail}"">{LoggdUsrName}</a></p>
-                                <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
+                                <p>This is an automatically generated emailId. Please do not reply as there will be no responses.</p>
                                 <p>Best Regards,</p> 
                                 <p>Grupo Bimbo</p>";
                 SendMail(subject, msg, email);
@@ -573,12 +576,12 @@ namespace Finance_Tracker.Masters
             }
         }
 
-        private async Task SendAddMail(string email, string usrName, string usrId, string pswd, string locn, string slctdRole)
+        private void SendAddMail(string email, string usrName, string usrId, string pswd, string locn, string slctdRole)
         {
             string subject = "Welcome to Finance Tracker";
             try
             {
-                string msg = $@"</br></br>
+                string msg = $@"</br></br></br>
                                 <p>Dear {usrName},</p>
                                 <p>{LoggdUsrName} has registered you as a user in Finance Tracker Application.</p>  
                                 <p>Please find your credentials below:</p>                                                                  
@@ -588,7 +591,7 @@ namespace Finance_Tracker.Masters
                                 <p><b>Role</b>: {slctdRole}</p>                                  
                                 <p>You can now <a href=""http://10.10.1.171:88/Account/Login"">login</a> to your account.</p>
                                 <p>For more information, please contact <a href=""mailto:{LoggdUsrMail}"">{LoggdUsrName}</a></p>
-                                <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
+                                <p>This is an automatically generated emailId. Please do not reply as there will be no responses.</p>
                                 <p>Best Regards,</p> 
                                 <p>Grupo Bimbo</p>";
                 SendMail(subject, msg, email);
@@ -599,7 +602,7 @@ namespace Finance_Tracker.Masters
             }
         }
 
-        private void SendMail(string subject, string msg, string email)
+        private void SendMail(string subject, string msg, string emailId)
         {
             if (Network is null) return;
             if (Settings is null) return;
@@ -609,20 +612,20 @@ namespace Finance_Tracker.Masters
             HostName = IsEmpty(HostName) ? Network.UserName : HostName;
             From = IsEmpty(From) ? Settings.From : From;
 
-            using (SmtpClient smtp = new SmtpClient(Host, Port)) // Your SMTP server
+            using (SmtpClient smtp = new SmtpClient(DBOperations.Network.Host, DBOperations.Network.Port)) // Your SMTP server
             {
                 smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new NetworkCredential(HostName, HostPswd); // Your email credentials
+                smtp.Credentials = new NetworkCredential(DBOperations.Network.UserName, DBOperations.Network.Password); // Your emailId credentials
                 smtp.EnableSsl = false; // Enable SSL if required                   
 
                 MailMessage mail = new MailMessage
                 {
-                    From = new MailAddress(From, HostName), // Your email address
+                    From = new MailAddress(DBOperations.Settings.From, DBOperations.Network.UserName), // Your emailId address
                     Subject = subject,
                     Body = msg,
                     IsBodyHtml = true
                 };
-                mail.To.Add(email);
+                mail.To.Add(emailId);
                 smtp.Send(mail);
             }
         }

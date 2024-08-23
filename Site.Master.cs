@@ -79,7 +79,7 @@ namespace Finance_Tracker
             bool isSuprAdmin = LoginTypes[roleId] == SuperAdmin;
 
             LnkReview.Visible = isAdmin || isSuprAdmin;
-            LnkRegister.Visible = isAdmin || isSuprAdmin;
+            //LnkRegister.Visible = isAdmin || isSuprAdmin;
             LnkApprove.Visible = isApprover;
             LnkMasters.Visible = isAdmin || isApprover || isSuprAdmin;
             LnkReports.Visible = isAdmin || isApprover || isSuprAdmin;

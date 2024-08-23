@@ -22,7 +22,7 @@
                             <DynamicSelectedStyle BackColor="#5D7B9D" />
                             <Items>
                                 <asp:MenuItem Text="Add Users |" Value="0" />
-                                <asp:MenuItem Text="View Users" Value="1" />
+                                <asp:MenuItem Text="Delete Users" Value="1" />
                             </Items>
                             <StaticHoverStyle BackColor="#7C6F57" ForeColor="White" />
                             <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />

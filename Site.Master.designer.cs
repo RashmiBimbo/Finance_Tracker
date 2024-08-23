@@ -69,13 +69,13 @@ namespace Finance_Tracker
         protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkUTA;
 
         /// <summary>
-        /// LnkRegister control.
+        /// LnkUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkRegister;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor LnkUsers;
 
         /// <summary>
         /// BtnLogOut control.

@@ -352,8 +352,8 @@ namespace Finance_Tracker.Masters
 
         private void SendEmails(Dictionary<string, string> mailSet, string subject)
         {
-            string host = Network.Host, pswd = Network.Password, from = settings.From, usrName = Network.UserName;
-            int port = Network.Port;
+            string host = DBOperations.Network.Host, pswd = DBOperations.Network.Password, from = DBOperations.Settings.From, usrName = DBOperations.Network.UserName;
+            int port = DBOperations.Network.Port;
             try
             {
                 using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server

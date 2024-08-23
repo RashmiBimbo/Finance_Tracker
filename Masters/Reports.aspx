@@ -18,7 +18,7 @@
                             <DynamicSelectedStyle BackColor="#5D7B9D" />
                             <Items>
                                 <asp:MenuItem Selected="True" Text="Add Report |" Value="0"></asp:MenuItem>
-                                <asp:MenuItem Text="View Reports" Value="1"></asp:MenuItem>
+                                <asp:MenuItem Text="Delete Reports" Value="1"></asp:MenuItem>
                             </Items>
                             <StaticHoverStyle BackColor="#7C6F57" ForeColor="White" />
                             <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
