@@ -1382,7 +1382,7 @@ namespace Finance_Tracker
                 if (!cb.Checked) continue;
 
                 if (chkCnt < 1) break;
-                DataRow dRo = GVReports2DS.Select("Sno = " + gvRow.Cells[1].Text)?[0];
+                DataRow dRo = GVReports2DS.Select("Sno = " + gvRow.Cells[2].Text)?[0];
                 if (dRo == null) continue;
 
                 string id = dRo["Task_Id"].ToString();
@@ -1405,14 +1405,14 @@ namespace Finance_Tracker
         #endregion View Sbmt Task
 
         #region Edit Task
-
-        protected void BtnEdit_Command(object sender, CommandEventArgs e)
+        protected void BtnAction_Click(object sender, EventArgs e)
         {
             try
             {
-                if (e.CommandName != "EditRow") return;
+                LinkButton btn = sender as LinkButton;
+                Control ctrl = btn.NamingContainer;
+                int rowIndex = ((GridViewRow)ctrl).RowIndex;
 
-                int rowIndex = ToInt32(e.CommandArgument);
                 DataRow dRo = GVReports2DS.Select($"Sno = {rowIndex + 1}")[0];
                 GridViewRow row = GVReports2.Rows[rowIndex];
 
@@ -1493,7 +1493,6 @@ namespace Finance_Tracker
                 DdlReportS.Enabled = false;
                 TxtMnthS.Enabled = false;
 
-                LinkButton btn = (LinkButton)sender;
                 if (btn.Text == "View")
                 {
                     BtnCncl.Visible = false;

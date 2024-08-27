@@ -6,6 +6,11 @@ using System.Data;
 using System.Data.OleDb;
 using System.Web.UI.WebControls;
 using System.Net.Mail;
+using System.Net;
+using System.Net.Configuration;
+using System.Configuration;
+using System.Net.NetworkInformation;
+using static Finance_Tracker.DBOperations;
 
 namespace Finance_Tracker.Account
 {
@@ -15,6 +20,8 @@ namespace Finance_Tracker.Account
         private DBOperations DBOprn = new DBOperations();
         int RoleId;
         private readonly string Emp = string.Empty;
+        //private static SmtpSection settings;
+        //private static SmtpNetworkElement Network;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -30,13 +37,18 @@ namespace Finance_Tracker.Account
                 if (string.IsNullOrWhiteSpace(usrId))
                     Response.Redirect("~/Account/Login");
 
-                if (!(RoleId == 1 || RoleId == 4))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+                //if (!(RoleId == 1 || RoleId == 4))
+                //{
+                //    Response.Redirect("~/Default");
+                //    return;
+                //}
+
+                if (!IsSmtpConfigValid())
+                    PopUp("Email settings could not be verified. No emails will be sent for registration!");
                 DdlRole.DataBind();
                 DdlLocn.DataBind();
+                TxtUsrId.Attributes.Add("autocomplete", "off");
+                TxtPassword.Attributes.Add("autocomplete", "off");
             }
         }
 
@@ -88,6 +100,7 @@ namespace Finance_Tracker.Account
                         PopUp(output.ToString());
                         return;
                     }
+                    SendMail(email, usrName, usrId, pswd);
                     PopUp("User added successfully!");
                     ResetCtrls();
                 }
@@ -95,6 +108,47 @@ namespace Finance_Tracker.Account
                 {
                     PopUp(ex.Message);
                 }
+            }
+        }
+
+        private void SendMail(string email, string usrName, string usrId, string pswd)
+        {
+            string host = DBOperations.Network.Host, hostPswd = DBOperations.Network.Password, from = DBOperations.Settings.From, hostName = DBOperations.Network.UserName;
+            int port = Network.Port;
+            string subject = "Welcome to Finance Tracker";
+            try
+            {
+                string msg = $@"</br></br>
+                                <p>Dear {usrName},</p>
+                                <p>{Session["User_Name"]} has registered you as a user in Finance Tracker Application.</p>  
+                                <p>Please find your credentials below:</p>                                                                  
+                                <p><b>User Id</b>: {usrId}</p>
+                                <p><b>Password</b>: {pswd}</p>                                  
+                                <p>You can now <a href=""http://10.10.1.171:88/Account/Login"">login</a> to your account.</p>
+                                <p>For more information, please contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a></p>
+                                <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
+                                <p>Best Regards,</p> 
+                                <p>Grupo Bimbo</p>";
+                using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
+                {
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(hostName, hostPswd); // Your email credentials
+                    smtp.EnableSsl = false; // Enable SSL if required                   
+
+                    MailMessage mail = new MailMessage
+                    {
+                        From = new MailAddress(from, hostName), // Your email address
+                        Subject = subject,
+                        Body = msg,
+                        IsBodyHtml = true
+                    };
+                    mail.To.Add(email);
+                    smtp.Send(mail);
+                }
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
             }
         }
 

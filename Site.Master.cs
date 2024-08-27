@@ -4,6 +4,7 @@ using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
+using static Finance_Tracker.DBOperations;
 
 namespace Finance_Tracker
 {
@@ -73,15 +74,17 @@ namespace Finance_Tracker
         {
             string roleId = Session["Role_Id"]?.ToString() ?? string.Empty;
             bool isApprover = Session["Is_Approver"] != null && Convert.ToBoolean(Session["Is_Approver"]);
-            bool isAdmin = roleId.Equals("1");
-            bool isSuprAdmin = roleId.Equals("4");
+
+            bool isAdmin = LoginTypes[roleId] == Admin;
+            bool isSuprAdmin = LoginTypes[roleId] == SuperAdmin;
 
             LnkReview.Visible = isAdmin || isSuprAdmin;
-            LnkRegister.Visible = isAdmin || isSuprAdmin;
+            //LnkRegister.Visible = isAdmin || isSuprAdmin;
             LnkApprove.Visible = isApprover;
             LnkMasters.Visible = isAdmin || isApprover || isSuprAdmin;
             LnkReports.Visible = isAdmin || isApprover || isSuprAdmin;
             LnkUTA.Visible = isAdmin || isApprover || isSuprAdmin;
+            LnkUsers.Visible = isAdmin || isSuprAdmin;
         }
 
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)

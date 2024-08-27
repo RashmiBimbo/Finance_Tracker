@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Web;
 using System.Web.UI;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Owin;
-using Finance_Tracker.Models;
 using System.Data;
 using System.Web.UI.WebControls;
 

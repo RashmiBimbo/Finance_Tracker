@@ -89,7 +89,7 @@
                         <div runat="server" id="DivGVBtnM" visible="true">
                             <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto;" runat="server" visible="true" id="DivGVAdd">
                                 <asp:GridView ID="GVAdd"
-                                    runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover border" Font-Size="Medium" ForeColor="#333333" GridLines="Both" RowStyle-HorizontalAlign="LEFT" TabIndex="10" OnDataBinding="GVAdd_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True">
+                                    runat="server" Font-Bold="False" CssClass="table table-bordered  table-responsive table-hover border" Font-Size="Medium" ForeColor="#333333" GridLines="Both" RowStyle-HorizontalAlign="LEFT" TabIndex="10" OnDataBinding="GVAdd_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False" AllowSorting="True">
                                     <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" Width="0em" />
                                     <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
                                     <PagerSettings NextPageText="&gt;" PreviousPageText="&lt;" />
@@ -97,7 +97,7 @@
                                     <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                                     <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                                     <EditRowStyle BackColor="#7C6F57" />
-                                    <AlternatingRowStyle BackColor="#7ad0ed" />
+                                    <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                     <Columns>
                                         <%--0 --%>
                                         <asp:TemplateField Visible="true">
@@ -243,7 +243,7 @@
                             <asp:UpdatePanel runat="server">
                                 <ContentTemplate>
                                     <div class="col-12">
-                                        <asp:LinkButton CssClass="control-label " ID="LnkReport" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" />
+                                        <asp:LinkButton class="control-label" ID="LnkReport" runat="server" OnClick="LnkReport_Click" />
                                     </div>
                                 </ContentTemplate>
                                 <Triggers>
@@ -253,13 +253,13 @@
                             <br />
                         </div>
                         <div class="row">
-                            <%-- <div>--%>
-                            <asp:Button runat="server" ID="BtnCncl" OnClick="BtnCncl_Click" Text="Cancel" CssClass="col-2 btn btn-default" ForeColor="White" Visible="false" />
                             <%--</div>
                             <div class="row">
                                 <asp:UpdatePanel runat="server">
                                     <ContentTemplate>--%>
                             <asp:Button runat="server" ID="BtnAdd" OnClick="BtnAdd_Click" Text="Add" CssClass="btn btn-primary" ForeColor="White" />
+                            <%-- <div>--%>
+                            <asp:Button runat="server" ID="BtnCncl" OnClick="BtnCncl_Click" Text="Cancel" CssClass="btn btn-default" ForeColor="White" Visible="false" />
                             <%-- </ContentTemplate>
                                     <Triggers>
                                         <asp:PostBackTrigger ControlID="BtnCncl" />
@@ -326,7 +326,7 @@
                             <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                             <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                             <EditRowStyle BackColor="#7C6F57" />
-                            <AlternatingRowStyle BackColor="#7ad0ed" />
+                            <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                             <Columns>
                                 <%--0 --%>
                                 <asp:TemplateField Visible="true">
@@ -337,14 +337,18 @@
                                         <asp:CheckBox ID="CBSubmit" runat="server" ToolTip="Submit" onclick="handleCheckBoxChange(this);" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
+                                <asp:TemplateField AccessibleHeaderText="Action" HeaderText="Action">
+                                    <ItemTemplate>
+                                        <asp:LinkButton CssClass="control-label" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnText")%>' />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <%--1 --%>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <%--2 --%>
                                 <%--  <asp:BoundField DataField="Category_Type" HeaderText="Category Type" ReadOnly="True" />--%>
                                 <asp:TemplateField HeaderText="" Visible="false">
                                     <ItemTemplate>
-                                        <asp:Label ID="LblCatType" runat="server" Text='<%# Bind("Category_Type")%>'>
-                                        </asp:Label>
+                                        <asp:Label ID="LblCatType" runat="server" Text='<%# Bind("Category_Type")%>'></asp:Label>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <%--3 --%>
@@ -364,16 +368,11 @@
                                 <%--10--%>
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="LBGVReprts" runat="server" ForeColor="#3366FF"
+                                        <asp:LinkButton ID="LBGVReprts" runat="server" class="control-label"
                                             Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' OnClick="LnkReport_Click" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <%--11--%>
-                                <asp:TemplateField AccessibleHeaderText="Action" HeaderText="Action" ControlStyle-Width="40px">
-                                    <ItemTemplate>
-                                        <asp:LinkButton runat="server" ID="BtnEdit" OnCommand="BtnEdit_Command" CommandName="EditRow" CommandArgument="<%# Container.DataItemIndex %>" Text='<%# Bind("BtnText")%>' ForeColor="#3366FF"></asp:LinkButton>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
                                 <%--12--%>
                                 <asp:TemplateField HeaderText="Report_Id" Visible="False" InsertVisible="False" ShowHeader="False">
                                     <ItemTemplate>
@@ -428,7 +427,7 @@
                     <br />
                     <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv3">
                         <asp:GridView ID="GVReports3"
-                            runat="server" CssClass="table table-bordered table-condensed table-striped table-hover" CellPadding="20" CellSpacing="15" Font-Bold="False"
+                            runat="server" CssClass="table table-bordered table-striped table-hover" CellPadding="20" CellSpacing="15" Font-Bold="False"
                             Font-Size="Medium" ForeColor="#333333" GridLines="Both"
                             RowStyle-HorizontalAlign="LEFT" RowStyle-Wrap="false"
                             HeaderStyle-Wrap="false" TabIndex="10"
@@ -451,12 +450,12 @@
                                 <asp:TemplateField HeaderText="File" Visible="true">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="HFLocn" Value='<%# Bind("Location") %>' />
-                                        <asp:LinkButton CssClass="control-label" ID="LnkReportSbmt" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' />
+                                        <asp:LinkButton CssClass="control-label" ID="LnkReportSbmt" runat="server" OnClick="LnkReport_Click" Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>' />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
                             <EditRowStyle BackColor="#7C6F57" />
-                            <AlternatingRowStyle BackColor="#7ad0ed" />
+                            <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                         </asp:GridView>
                     </div>
                 </asp:View>

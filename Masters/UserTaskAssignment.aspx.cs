@@ -1,12 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using AjaxControlToolkit.Bundling;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
+using Newtonsoft.Json.Linq;
+using Microsoft.Ajax.Utilities;
 
 namespace Finance_Tracker.Masters
 {
@@ -33,7 +40,7 @@ namespace Finance_Tracker.Masters
                 {
                     string approverId = IsAdmin && IsApprover ? UsrId : IsAdmin ? null : IsSuperAdmin ? null : UsrId;
                     string locnId = IsAdmin ? LocId : null;
-                    //dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
+                    //dt = GetSubmitted("SP_Get_Unassigned_Tasks", approverId, locnId);
                     dt = GetData("SP_Get_Unassigned_Tasks", approverId, locnId);
                     if (!(dt?.Rows.Count > 0))
                         dt = null;
@@ -104,21 +111,26 @@ namespace Finance_Tracker.Masters
 
                 IsAdmin = LoginTypes[roleId] == Admin;
                 IsSuperAdmin = LoginTypes[roleId] == SuperAdmin;
-                if (!(IsAdmin || IsApprover || IsSuperAdmin))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+                //if (!(IsAdmin || IsApprover || IsSuperAdmin))
+                //{
+                //    Response.Redirect("~/Default");
+                //    return;
+                //}
 
                 if (!IsPostBack)
                 {
                     GVAssignDS = null;
                     GVViewDS = null;
 
-                    foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers, DdlApproversA, DdlApproversU })
+                    //foreach (DropDownList ddl in new DropDownList[] { DdlCatType, DdlCat, DdlTasks, DdlUsrType, DdlUsers, DdlApproversA, DdlApproversU })
+                    foreach (DropDownList ddl in new DropDownList[] { DdlCat, DdlTasks, DdlUsrType, DdlUsers, DdlApproversA, DdlApproversU })
                         ddl.DataBind();
+
                     chKCntGVView = 0;
                     chKCntGVAssign = 0;
+
+                    if (!IsSmtpConfigValid())
+                        PopUp("Email settings could not be verified. No emails will be sent for task assignment!");
 
                     Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
                 }
@@ -139,8 +151,9 @@ namespace Finance_Tracker.Masters
             FillDdl(DdlCat, "SP_Get_Categories", "0", "All", null,
                 new OleDbParameter[]
                 {
-                    new OleDbParameter("@Type_Id", DdlCatType.SelectedValue)
-                }
+                     new OleDbParameter("@Type_Id", DdlCatType.SelectedValue)
+                    ,new OleDbParameter("@User_Type", DdlUsrType.SelectedItem.Text)
+                }, "Category_Name", "Category_Id"
             );
         }
 
@@ -151,6 +164,13 @@ namespace Finance_Tracker.Masters
                 {
                      new OleDbParameter("@Category_Id", DdlCat.SelectedValue)
                     ,new OleDbParameter("@Category_Type_Id", DdlCatType.SelectedValue)
+                    ,new OleDbParameter(){
+                        ParameterName = "@Type",
+                        Value = 0,
+                        OleDbType = OleDbType.Integer
+                    }
+                    ,new OleDbParameter("@Report_Id", DdlTasks.SelectedValue)
+                    ,new OleDbParameter("@User_Type", DdlUsrType.SelectedItem.Text)
                 }, "Report_Name", "Report_Id"
             );
         }
@@ -165,12 +185,10 @@ namespace Finance_Tracker.Masters
                          new OleDbParameter("@Approver_Id", UsrId)
                          ,new OleDbParameter("@Location_Id", LocId)
                         ,new OleDbParameter("@User_Id", DdlUsers.SelectedValue)
-                    }
+                    }, "User_Name", "UserId"
                 );
             }
-            else
-
-            if (IsAdmin)
+            else if (IsAdmin)
             {
                 FillDdl(DdlUsers, "SP_Get_Users", Emp, "All", null,
                     new OleDbParameter[]
@@ -178,7 +196,7 @@ namespace Finance_Tracker.Masters
                          new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
                          //new OleDbParameter("@Role_Id", "0")
                         ,new OleDbParameter("@Location_Id", LocId)
-                    }
+                    }, "User_Name", "User_Id"
                 );
             }
             else if (IsApprover)
@@ -188,7 +206,7 @@ namespace Finance_Tracker.Masters
                     {
                          new OleDbParameter("@Approver_Id", UsrId)
                         ,new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
-                    }
+                    }, "User_Name", "UserId"
                 );
             }
             else if (IsSuperAdmin)
@@ -197,14 +215,15 @@ namespace Finance_Tracker.Masters
                     new OleDbParameter[]
                     {
                          new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
-                    }
+                    }, "User_Name", "User_Id"
                 );
             }
         }
 
         protected void DdlUsrType_DataBinding(object sender, EventArgs e)
         {
-            FillDdl(DdlUsrType, "SP_Get_Roles", "0");
+            string selectTxt = MultiView1.ActiveViewIndex == 0 ? "Select" : "All";
+            FillDdl(DdlUsrType, "SP_Get_Roles", "0", selectTxt);
             int roleId = Convert.ToInt32(Session["Role_Id"]);
 
             DdlUsrType.Items.FindByValue("4").Enabled = roleId > 4;
@@ -217,14 +236,38 @@ namespace Finance_Tracker.Masters
             MultiView1.ActiveViewIndex = slctItem;
             DivAdd.Visible = false;
             DivView.Visible = false;
-            DdlCatType.SelectedIndex = 0;
-            DdlCat.SelectedIndex = 0;
-            DdlTasks.SelectedIndex = 0;
+            //DdlCatType.SelectedIndex = 0;
             DdlUsrType.SelectedIndex = 0;
-            DdlUsers.SelectedIndex = 0;
             DvApprs.Visible = IsSuperAdmin;
-            DvApprU.Visible = slctItem != 0;
-            DvApprA.Visible = slctItem == 0;
+            switch (slctItem)
+            {
+                case 0:
+                    {
+                        DvApprA.Visible = true;
+                        DvApprU.Visible = false;
+                        SpnUsrTyp.Visible = true;
+                        DdlUsrType.Items[0].Text = "Select";
+                        //SpnUsrTyp.Attributes["required"] = true;
+                        foreach (DropDownList ddl in new DropDownList[] { DdlCat, DdlTasks, DdlUsers })
+                            ddl.Items.Cast<ListItem>().ToList().ForEach(itm => itm.Enabled = itm.Value == Emp || itm.Value == "0");
+                        break;
+                    }
+                case 1:
+                    {
+                        DvApprU.Visible = true;
+                        DvApprA.Visible = false;
+                        SpnUsrTyp.Visible = false;
+                        DdlUsrType.Items[0].Text = "All";
+
+                        foreach (DropDownList ddl in new DropDownList[] { DdlCat, DdlTasks, DdlUsers })
+                        {
+                            ddl.DataBind();
+                            ddl.Items.Cast<ListItem>().ToList().ForEach(itm => itm.Enabled = true);
+                            ddl.SelectedIndex = 0;
+                        }
+                        break;
+                    }
+            }
             //else
             //if ()
             //    DdlApproversU.Visible = true;
@@ -247,6 +290,8 @@ namespace Finance_Tracker.Masters
         {
             DdlUsrType.ToolTip = DdlUsrType.SelectedItem.Text;
             DdlUsers.DataBind();
+            DdlCat.DataBind();
+            DdlTasks.DataBind();
         }
 
         protected void BtnView_Click(object sender, EventArgs e)
@@ -255,6 +300,12 @@ namespace Finance_Tracker.Masters
             {
                 case "0":
                     {
+                        if (DdlUsrType.SelectedIndex == 0)
+                        {
+                            PopUp("Please select a user type");
+                            DdlUsrType.Focus();
+                            return;
+                        }
                         ResetGVAssign();
                         break;
                     }
@@ -329,13 +380,47 @@ namespace Finance_Tracker.Masters
         protected void BtnAssign_Click(object sender, EventArgs e)
         {
             //int.TryParse(HFCntA.Value, out chKCntGVAssign);
-            string jsonParam = ConstructJSON("1", GVAssign, GVAssignDS);
+            string jsonParam = ConstructJSON("1", GVAssign, GVAssignDS, out Dictionary<string, string> mailSet);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
                 PopUp("Tasks assigned successfully!");
+                if (mailSet != null && mailSet.Count > 0)
+                    SendEmails(mailSet, "Tasks Assignment Alert - Finance Tracker");
                 ResetGVAssign();
                 chKCntGVAssign = 0;
                 BtnAssign.Enabled = false;
+            }
+        }
+
+        private void SendEmails(Dictionary<string, string> mailSet, string subject)
+        {
+            string host = DBOperations.Network.Host, pswd = DBOperations.Network.Password, from = DBOperations.Settings.From, usrName = DBOperations.Network.UserName;
+            int port = DBOperations.Network.Port;
+            try
+            {
+                using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
+                {
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential(usrName, pswd); // Your email credentials
+                    smtp.EnableSsl = false; // Enable SSL if required
+
+                    foreach (KeyValuePair<string, string> recipient in mailSet)
+                    {
+                        MailMessage mail = new MailMessage
+                        {
+                            From = new MailAddress(from, usrName), // Your email address
+                            Subject = subject,
+                            Body = recipient.Value,
+                            IsBodyHtml = true
+                        };
+                        mail.To.Add(recipient.Key);
+                        smtp.Send(mail);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                PopUp(e.Message);
             }
         }
 
@@ -403,7 +488,7 @@ namespace Finance_Tracker.Masters
         protected void BtnUnAssign_Click(object sender, EventArgs e)
         {
             //int.TryParse(HFCntU.Value, out chKCntGVAssign);
-            string jsonParam = ConstructJSON("0", GVView, GVViewDS);
+            string jsonParam = ConstructJSON("0", GVView, GVViewDS, out _);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
                 PopUp("Tasks unassigned successfully!");
@@ -415,8 +500,14 @@ namespace Finance_Tracker.Masters
 
         protected void DdlApprovers_DataBinding(object sender, EventArgs e)
         {
+            if (sender is null) return;
             string selectTxt = sender.Equals(DdlApproversA) ? "Select" : "All";
-            FillDdl(sender as DropDownList, "SP_Get_Users", Emp, selectTxt, null);
+            FillDdl(sender as DropDownList, "SP_Get_Users", Emp, selectTxt, null, null, "User_Name", "User_Id");
+        }
+
+        protected void DdlTasks_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         protected void DdlType_DataBinding(object sender, EventArgs e)
@@ -480,6 +571,7 @@ namespace Finance_Tracker.Masters
                     ,new OleDbParameter("@LocationId", locnId)
                     ,new OleDbParameter("@RoleId", DdlUsrType.SelectedValue)
                     ,new OleDbParameter("@Assigner", IsSuperAdmin ? UsrId : Emp)
+                    ,new OleDbParameter("@User_Type", DdlUsrType.SelectedItem.Text)
                 };
                 //if (proc == "SP_Get_Unassigned_Tasks")
                 //{
@@ -502,25 +594,57 @@ namespace Finance_Tracker.Masters
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
-        private string ConstructJSON(string activ, GridView gv, DataTable gvDS)
+        private string ConstructJSON(string activ, GridView gv, DataTable gvDS, out Dictionary<string, string> mailSet)
         {
             List<Dictionary<string, string>> dtls = new List<Dictionary<string, string>>();
+            mailSet = new Dictionary<string, string>();
 
             int chkCnt = 0;
             gv.Rows.Cast<GridViewRow>().ToList().ForEach(gvRow => chkCnt += ((CheckBox)gvRow.Cells[0].Controls[1]).Checked ? 1 : 0);
 
+            string tableBody = Emp, strt = Emp, footer = Emp;
+            if (activ == "1")
+            {
+                strt = $@"
+                       <p>{Session["User_Name"]} has assigned you some tasks.</p>
+                       <p>Please find the details below:</p>";
+
+                tableBody = @"<table border='2'>
+                        <tr>
+                        <th>Task</th>
+                        <th>Type</th>
+                        <th>Due Date</th>
+                        <th>Weight</th>
+                        <th>Approver</th>
+                        </tr>";
+                footer = $@"
+                 <p>You can check your assigned tasks at Performance page at
+                     <a href= ""http://10.10.1.171:88"">Finance Tracker</a>.</p>
+                 <p>For more information contact <a href=""mailto:{Session["Email"]}"">{Session["User_Name"]}</a>.</p>
+                 <p>This is an automatically generated email. Please do not reply as there will be no responses.</p>
+                 <p>Best Regards,</p>
+                 <p>Grupo Bimbo</p>";
+            }
             foreach (GridViewRow gvRow in gv.Rows)
             {
                 if (chkCnt < 1) break;
 
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
                 if (!cb.Checked) continue;
+                string tblStr = Emp;
+                string sno = gvRow.Cells[1].Text;
+                DataRow dRo = gvDS.Select("Sno = " + sno)[0];
 
-                DataRow dRow = gvDS.Select("Sno = " + gvRow.Cells[1].Text)[0];
-                string subordinateID = dRow["UserId"].ToString();
-                string reportId = dRow["ReportId"].ToString();
-                string reportName = dRow["Task_Name"].ToString();
+                string subordinateID = dRo["UserId"].ToString();
+                string usrNm = dRo["User_Name"].ToString();
+                string reportId = dRo["ReportId"].ToString();
+                string reportName = dRo["Task_Name"].ToString();
+                string rptType = dRo["Report_Type"].ToString();
                 string approver = IsSuperAdmin ? DdlApproversA.SelectedValue : UsrId;
+                string usrMail = dRo["Email"].ToString();
+                string dueDate = dRo["Due_Date"].ToString();
+                string weight = dRo["Weight"].ToString();
+
                 Dictionary<string, string> paramVals = new Dictionary<string, string>()
                 {
                     { "USER_ID" , subordinateID.ToUpper() },
@@ -533,7 +657,20 @@ namespace Finance_Tracker.Masters
                 dtls.Add(paramVals);
                 cb.Checked = false;
                 chkCnt--;
+                if (activ == "1")
+                {
+                    tblStr = $@"<tr><td>{reportName}</td><td>{rptType}</td><td>{dueDate}</td><td>{weight}</td><td>{approver}</td></tr>";
+
+                    if (!string.IsNullOrWhiteSpace(usrMail))
+                        if (!mailSet.ContainsKey(usrMail))
+                            mailSet.Add(usrMail, $@"</br></br></br><p>Dear {usrNm},</p> {strt} {tableBody} {tblStr}");
+                        else
+                            mailSet[usrMail] += tblStr;
+                }
             }
+
+            if (activ == "1")
+                mailSet = mailSet.ToDictionary(kvp => kvp.Key, kvp => kvp.Value + "</table>" + footer);
             string jsonString = JsonConvert.SerializeObject(dtls, Formatting.Indented);
             return jsonString;
         }

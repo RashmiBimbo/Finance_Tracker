@@ -18,7 +18,7 @@
                             <DynamicSelectedStyle BackColor="#5D7B9D" />
                             <Items>
                                 <asp:MenuItem Selected="True" Text="Add Report |" Value="0"></asp:MenuItem>
-                                <asp:MenuItem Text="View Reports" Value="1"></asp:MenuItem>
+                                <asp:MenuItem Text="Delete Reports" Value="1"></asp:MenuItem>
                             </Items>
                             <StaticHoverStyle BackColor="#7C6F57" ForeColor="White" />
                             <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
@@ -121,20 +121,31 @@
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlCatV" CssClass="col-md-2 control-label">Category</asp:Label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlCatV" CssClass="form-control" OnDataBinding="DdlCat_DataBinding">
+                                    <asp:DropDownList runat="server" ID="DdlCatV" CssClass="form-control" AutoPostBack="true" OnDataBinding="DdlCat_DataBinding" OnSelectedIndexChanged="DdlCatV_SelectedIndexChanged">
                                         <asp:ListItem Text="All" Selected="True" Value="0" />
                                     </asp:DropDownList>
                                 </div>
                                 <asp:Label runat="server" AssociatedControlID="DdlTypeV" CssClass="col-md-2 control-label">Type</asp:Label>
                                 <div class="col-sm-2 col-md-2">
-                                    <asp:DropDownList runat="server" ID="DdlTypeV" CssClass="form-control" OnDataBinding="DdlType_DataBinding">
+                                    <asp:DropDownList runat="server" ID="DdlTypeV" CssClass="form-control" AutoPostBack="true" OnDataBinding="DdlType_DataBinding"
+                                        OnSelectedIndexChanged="DdlType_SelectedIndexChanged">
                                         <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
                             <br />
-                            <div class="row" style="margin-left: 2px;">
-                                <asp:Button runat="server" ID="BtnView" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" />
+                            <div class="row">
+                                <asp:Label runat="server" AssociatedControlID="DdlTasks" CssClass="col-md-2 control-label">Report</asp:Label>
+                                <div class="col-sm-2">
+                                    <asp:DropDownList runat="server" ID="DdlTasks" CssClass="form-control" OnDataBinding="DdlTasks_DataBinding">
+                                        <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="row col-sm-2" style="margin-left: 2px;">
+                                    <asp:Button runat="server" ID="BtnView" OnClick="BtnView_Click" Text="View" CssClass="btn btn-primary" />
+                                </div>
                             </div>
                             <br />
                             <div style="width: auto; max-width: 1600px; height: auto; max-height: 350px; overflow: auto;">
@@ -143,8 +154,8 @@
                                     CssClass="table table-bordered table-striped table-responsive table-hover" TabIndex="10"
                                     OnDataBinding="GVReports_DataBinding" BorderStyle="Solid" AutoGenerateColumns="False">
                                     <RowStyle BackColor="white" HorizontalAlign="LEFT" Wrap="false" VerticalAlign="Bottom" />
-                                    <HeaderStyle Font-Bold="True" ForeColor="white" Wrap="False" />
-                                    <AlternatingRowStyle BackColor="#7ad0ed" />
+                                    <HeaderStyle Font-Bold="True" Wrap="False" />
+                                    <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                     <Columns>
                                         <%--0 --%>
                                         <asp:TemplateField>
@@ -153,6 +164,12 @@
                                             </HeaderTemplate>
                                             <ItemTemplate>
                                                 <asp:CheckBox ID="CDelete" runat="server" ToolTip="Delete" onclick="handleCheckBoxChange(this);" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <%--7--%>
+                                        <asp:TemplateField HeaderText="Action">
+                                            <ItemTemplate>
+                                                <asp:LinkButton CssClass="control-label" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnTxt")%>' />
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--1 --%>
@@ -171,12 +188,6 @@
                                         <asp:BoundField DataField="Weight" HeaderText="Weight" />
                                         <%--6--%>
                                         <asp:BoundField DataField="Type" HeaderText="Type" />
-                                        <%--7--%>
-                                        <asp:TemplateField HeaderText="Action">
-                                            <ItemTemplate>
-                                                <asp:LinkButton CssClass="control-label" ForeColor="#3366FF" ID="BtnAction" runat="server" OnClick="BtnAction_Click" Text='<%# Bind("BtnTxt")%>' />
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
                             </div>
@@ -189,87 +200,90 @@
                 </contenttemplate>
             </updatepanel>
         </div>
-    </div>
-    <script src="../assets/libs/Common.js" type="text/javascript"></script>
-    <script>    
-        let chKCount = 0;
+        <script src="../assets/libs/Common.js" type="text/javascript"></script>
+        <script>    
+            let chKCount = 0;
 
-        $(document).ready(function () {
-            //debugger;
-            var GVReports = document.getElementById('<%= GVReports.ClientID %>');
-            if (GVReports !== null) {
-                for (let i = 1; i < GVReports.rows.length; i++) {
-                    let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
-                    let chkd = cbChld.checked;
-                    chKCount += chkd ? 1 : 0;
-                }
-                EnableDisableButton(chKCount);
+            $(document).ready(function () {
                 //debugger;
-                var cbH = GVReports.rows[0].cells[0].querySelector('input[type="checkbox"]');
-                if (cbH !== null) cbH.checked = (chKCount == GVReports.rows.length - 1);
-            }
-            console.log("chKCount: " + chKCount);
-        });
-
-        //Handle checkbox change for checkbox in Header row of GVReports
-        function handleCheckBoxChangeH (cb) {
-            //debugger;
-            var GVReports = document.getElementById('<%= GVReports.ClientID %>');
-            if (GVReports !== null) {
-
-                //Update each row's checkbox
-                for (let i = 1; i < GVReports.rows.length; i++) {
-                    let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
-                    let chkdH = cb.checked;
-                    if (chkdH !== cbChld.checked) {
-                        cbChld.checked = chkdH;
-                        chKCount += chkdH ? 1 : -1;
+                var GVReports = document.getElementById('<%= GVReports.ClientID %>');
+                if (GVReports !== null) {
+                    for (let i = 1; i < GVReports.rows.length; i++) {
+                        let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                        let chkd = cbChld.checked;
+                        chKCount += chkd ? 1 : 0;
                     }
+                    EnableDisableButton(chKCount);
+                    //debugger;
+                    var cbH = GVReports.rows[0].cells[0].querySelector('input[type="checkbox"]');
+                    if (cbH !== null) cbH.checked = (chKCount == GVReports.rows.length - 1);
                 }
-                if (GVReports.rows.length < chKCount)
-                    chKCount = GVReports.rows.length;
-                else if (chKCount < 0)
-                    chKCount = 0;
-                EnableDisableButton(chKCount);
+                console.log("chKCount: " + chKCount);
+            });
+
+            //Handle checkbox change for checkbox in Header row of GVReports
+            function handleCheckBoxChangeH (cb) {
+                //debugger;
+                var GVReports = document.getElementById('<%= GVReports.ClientID %>');
+                if (GVReports !== null) {
+
+                    //Update each row's checkbox
+                    for (let i = 1; i < GVReports.rows.length; i++) {
+                        let cbChld = GVReports.rows[i].cells[0].querySelector('input[type="checkbox"]');
+                        let chkdH = cb.checked;
+                        if (chkdH !== cbChld.checked) {
+                            cbChld.checked = chkdH;
+                            chKCount += chkdH ? 1 : -1;
+                        }
+                    }
+                    if (GVReports.rows.length < chKCount)
+                        chKCount = GVReports.rows.length;
+                    else if (chKCount < 0)
+                        chKCount = 0;
+                    EnableDisableButton(chKCount);
+                }
             }
-        }
 
-        //Handle checkbox change for checkbox in each row of GVReports
-        function handleCheckBoxChange (cb) {
-            //debugger;
-            chKCount += cb.checked ? 1 : -1;
-            var GVReports = document.getElementById('<%= GVReports.ClientID%>');
-            if (GVReports !== null) {
-                if (GVReports.rows.length < chKCount)
-                    chKCount = GVReports.rows.length;
-                else if
-                    (chKCount < 0) chKCount = 0;
+            //Handle checkbox change for checkbox in each row of GVReports
+            function handleCheckBoxChange (cb) {
+                //debugger;
+                chKCount += cb.checked ? 1 : -1;
+                var GVReports = document.getElementById('<%= GVReports.ClientID%>');
+                if (GVReports !== null) {
+                    if (GVReports.rows.length < chKCount)
+                        chKCount = GVReports.rows.length;
+                    else if
+                        (chKCount < 0) chKCount = 0;
 
-                // Update header checkbox
-                let cbH = GVReports.rows[0].querySelector('th input[type="checkbox"]');
-                cbH.checked = (GVReports.rows.length - 1 === chKCount);
-                EnableDisableButton(chKCount);
+                    // Update header checkbox
+                    let cbH = GVReports.rows[0].querySelector('th input[type="checkbox"]');
+                    cbH.checked = (GVReports.rows.length - 1 === chKCount);
+                    EnableDisableButton(chKCount);
+                }
             }
-        }
 
-        function EnableDisableButton (count) {
-            let btnAddM = document.getElementById('<%= BtnDlt.ClientID %>');
-            btnAddM.disabled = (count === 0);
-        }
-
-        function BtnDltOnClientClick () {
-            console.log("BtnDltOnClientClick called");
-            //debugger;
-            console.log("chKCount: " + chKCount);
-            return true;
-        }
-        function validateDropDown () {
-            var dropdown = document.getElementById("<%= DdlCatTypeA.ClientID %>");
-            if (dropdown.selectedIndex === 0) { // Assuming the first item is "Select One"
-                alert("Category Type is required");
-                return false; // Prevent form submission
+            function EnableDisableButton (count) {
+                let btnAddM = document.getElementById('<%= BtnDlt.ClientID %>');
+                btnAddM.disabled = (count === 0);
             }
-            return true; // Allow form submission
-        }
-    </script>
+
+            function BtnDltOnClientClick () {
+                console.log("BtnDltOnClientClick called");
+                var ans = confirm("Are you sure you want to Delete the selected report(s)?");
+                console.log(ans.valueOf());
+
+                //debugger;
+                console.log("chKCount: " + chKCount);
+                return ans;
+            }
+            function validateDropDown () {
+                var dropdown = document.getElementById("<%= DdlCatTypeA.ClientID %>");
+                if (dropdown.selectedIndex === 0) { // Assuming the first item is "Select One"
+                    alert("Category Type is required");
+                    return false; // Prevent form submission
+                }
+                return true; // Allow form submission
+            }
+        </script>
+    </div>
 </asp:Content>

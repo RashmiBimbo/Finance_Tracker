@@ -105,6 +105,15 @@ namespace Finance_Tracker
         protected global::System.Web.UI.WebControls.DropDownList DdlUsr;
 
         /// <summary>
+        /// DdlReportType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DdlReportType;
+
+        /// <summary>
         /// DdlType control.
         /// </summary>
         /// <remarks>
@@ -112,6 +121,15 @@ namespace Finance_Tracker
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlType;
+
+        /// <summary>
+        /// DvTxtMnth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DvTxtMnth;
 
         /// <summary>
         /// TxtMnth control.

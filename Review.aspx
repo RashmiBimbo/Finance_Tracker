@@ -61,19 +61,30 @@
                                         <asp:ListItem Value="" Selected="True">All</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <label class="col-lg-2 control-label">Type</label>
+                                <label class="col-lg-2 control-label">Report Type</label>
                                 <div class="col-sm-2">
-                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" OnDataBinding="DdlType_DataBinding">
+                                    <asp:DropDownList runat="server" ID="DdlReportType" CssClass="form-control" OnDataBinding="DdlReportType_DataBinding">
+                                        <asp:ListItem Selected="True" Text="All" Value="0"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
                             <br />
                             <div class="row">
-                                <asp:Label runat="server" AssociatedControlID="TxtMnth" CssClass="col-md-2 control-label">Month<span style="color :red">&nbsp*</span></asp:Label>
+                                <label class="col-lg-2 control-label">Type</label>
                                 <div class="col-sm-2">
-                                    <asp:TextBox ID="TxtMnth" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" AutoPostBack="True"></asp:TextBox>
-                                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth" />
-                                    <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                                    <asp:DropDownList runat="server" ID="DdlType" CssClass="form-control" OnSelectedIndexChanged="DdlType_SelectedIndexChanged" AutoPostBack="true">
+                                        <asp:ListItem Text="Master" Value="0" Selected="True" />
+                                        <asp:ListItem Text="Approved" Value="1" />
+                                        <asp:ListItem Text="Submitted" Value="2" />
+                                    </asp:DropDownList>
+                                </div>
+                                <div runat="server" id="DvTxtMnth" visible="false">
+                                    <asp:Label runat="server" AssociatedControlID="TxtMnth" CssClass="col-md-2 control-label">Month<span style="color :red">&nbsp*</span></asp:Label>
+                                    <div class="col-sm-2">
+                                        <asp:TextBox ID="TxtMnth" runat="server" Width="160px" CssClass="form-control" BackColor="White" OnTextChanged="TxtMnth_TextChanged" AutoPostBack="True"></asp:TextBox>
+                                        <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" WatermarkText="Select Month" TargetControlID="TxtMnth" />
+                                        <ajaxToolkit:CalendarExtender ID="CalendarExtender4" runat="server" TargetControlID="TxtMnth" CssClass="modal-content" DaysModeTitleFormat="dd-MMM-yyyy" TodaysDateFormat="MMM-yyyy" Format="MMM-yyyy" DefaultView="Months" />
+                                    </div>
                                 </div>
                             </div>
                         </ContentTemplate>
@@ -103,19 +114,22 @@
                             <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                             <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                             <EditRowStyle BackColor="#7C6F57" />
-                            <AlternatingRowStyle BackColor="#7ad0ed" />
+                            <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                             <Columns>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
-                                <asp:BoundField DataField="Category_Type_Name" HeaderText="Category Type" ReadOnly="True" />
-                                <asp:BoundField DataField="Category_Name" HeaderText="Category" ReadOnly="True" />
+                                <%--<asp:BoundField DataField="Category_Type_Name" HeaderText="Category Type" ReadOnly="True" />--%>
+                                <%--<asp:BoundField DataField="Category_Name" HeaderText="Category" ReadOnly="True" />--%>
                                 <asp:BoundField DataField="Report_Name" HeaderText="Report" ReadOnly="True" />
-                                <asp:BoundField DataField="Type" HeaderText="Type" />
+                                <asp:BoundField DataField="Report_Type" HeaderText="Report Type" />
                                 <asp:BoundField DataField="Due_Date" HeaderText="Due Date" />
+                                <asp:BoundField DataField="Priority" HeaderText="Priority" />
+                                <asp:BoundField DataField="Weight" HeaderText="Weight" />
                                 <asp:BoundField DataField="Approve_Date" HeaderText="Approve Date" />
-                                <asp:TemplateField HeaderText="File" Visible="true">
+                                <asp:BoundField DataField="Approver" HeaderText="Approver" />
+                                <asp:TemplateField HeaderText="File" Visible="true">      
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
+                                        <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" 
                                             Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'>
                                         </asp:LinkButton>
                                     </ItemTemplate>
@@ -123,6 +137,11 @@
                                 <asp:TemplateField HeaderText="" Visible="false">
                                     <ItemTemplate>
                                         <asp:HiddenField runat="server" ID="HFTaskId" Value='<%# Bind("Task_Id")%>' Visible="false" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="" Visible="false">
+                                    <ItemTemplate>
+                                        <asp:HiddenField runat="server" ID="HFUserId" Value='<%# Bind("User_Id")%>' Visible="false" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -137,9 +156,25 @@
     <script src="assets/libs/Common.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the dropdown and the div element by their client-side IDs
+            var ddlType = document.getElementById('<%= DdlType.ClientID %>');
+            var dvTxtMnth = document.getElementById('<%= DvTxtMnth.ClientID %>');
 
-        function CallPrint (strid)
-        {
+            // Add a change event listener to the dropdown
+            ddlType.addEventListener("change", function () {
+                // Get the selected value of the dropdown
+                var selectedValue = ddlType.value;
+
+                // Toggle visibility of the div based on the selected value
+                if (selectedValue !== '0') {
+                    dvTxtMnth.style.display = 'block'; // Show the div
+                } else {
+                    dvTxtMnth.style.display = 'none'; // Hide the div
+                }
+            });
+        });
+        function CallPrint (strid) {
             var gridHtml = document.getElementById('<%= GVReports.ClientID %>').outerHTML;
 
             // Open a new window
@@ -156,8 +191,7 @@
             printWindow.print();
         }
 
-        function ExportToExcelXls ()
-        {
+        function ExportToExcelXls () {
             debugger;
 
             // Get the GridView HTML content
@@ -187,8 +221,7 @@
             document.body.removeChild(link);
         }
 
-        function ExportToExcel ()
-        {
+        function ExportToExcel () {
             //debugger;
             var grid = document.getElementById('<%= GVReports.ClientID %>');
             //debugger;

@@ -9,14 +9,15 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static System.DateTime;
+using static Finance_Tracker.DBOperations;
 
 namespace Finance_Tracker
 {
     public partial class Review : System.Web.UI.Page
     {
-        const string MonthFormat = "MMM-yyyy";
-        const string SqlDateFormat = "yyyy-MM-dd";
-        const string Emp = "";
+        private const string MonthFormat = "MMM-yyyy";
+        private const string SqlDateFormat = "yyyy-MM-dd";
+        //private const string Emp = "";
         private readonly DBOperations DBOprn = new DBOperations();
         private static int chKCount = 0;
 
@@ -30,7 +31,26 @@ namespace Finance_Tracker
 
                 if (!(dt?.Rows.Count > 0))
                 {
-                    dt = GetData(true);
+                    switch (DdlType.SelectedValue)
+                    {
+                        case "0":
+                            {
+                                dt = GetMaster();
+                                break;
+                            }
+                        case "1":
+                            {
+                                dt = GetSubmitted(true);
+                                break;
+                            }
+                        case "2":
+                            {
+                                dt = GetSubmitted(false);
+                                break;
+                            }
+                        default:
+                            break;
+                    }
                     Session["Review_GVReportsDS"] = dt;
                 }
                 return dt;
@@ -44,7 +64,7 @@ namespace Finance_Tracker
             }
         }
 
-        private DataTable GetData(bool IsApproved)
+        private DataTable GetSubmitted(bool IsApproved)
         {
             DataTable dt = null;
             try
@@ -55,16 +75,42 @@ namespace Finance_Tracker
                 OleDbParameter[] paramCln = new OleDbParameter[]
                 {
                      new OleDbParameter("@From_Date", fromDt)
-                    ,new OleDbParameter("@To_Date",  toDt)
-                    ,new OleDbParameter("@Type",  DdlType.SelectedValue)
-                    ,new OleDbParameter("@Approver_Id", string.Empty)
-                    ,new OleDbParameter("@IsApproved", IsApproved)
+                    ,new OleDbParameter("@To_Date", toDt)
                     ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
-                    ,new OleDbParameter("@Report_Id",Convert.ToInt16(0))
-                    ,new OleDbParameter("@Role_Id", DdlUsrType.SelectedValue)
-                    ,new OleDbParameter("@Location_Id",  Session["Location_Id"].ToString())
+                    ,new OleDbParameter("@IsApproved", IsApproved)
+                    ,new OleDbParameter("@ReportTypeId", Convert.ToInt32(DdlReportType.SelectedValue))
+                    ,new OleDbParameter("@Approver_Id", "")
+                    ,new OleDbParameter("@Location_Id", Session["Location_Id"].ToString())
+                    ,new OleDbParameter("@Role_Id", Convert.ToInt32(DdlUsrType.SelectedValue))
+                    ,new OleDbParameter("@Report_Id", Convert.ToInt32(0))
                 };
                 dt = DBOprn.GetDataProc("SP_Get_Submit_Tasks_SubOrdinates", DBOprn.ConnPrimary, paramCln);
+                if (!(dt?.Rows.Count > 0))
+                    dt = null;
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                PopUp(ex.Message);
+                return null;
+            }
+        }
+
+        private DataTable GetMaster()
+        {
+            DataTable dt = null;
+            try
+            {
+                OleDbParameter[] paramCln = new OleDbParameter[]
+                {
+                     new OleDbParameter("@Role_Id", Convert.ToInt32(DdlUsrType.SelectedValue))
+                    ,new OleDbParameter("@User_Id", DdlUsr.SelectedValue)
+                    ,new OleDbParameter("@Type_Id", Convert.ToInt32(DdlReportType.SelectedValue))
+                    ,new OleDbParameter("@Location_Id", Session["Location_Id"].ToString())
+                    ,new OleDbParameter("@Report_Id", Convert.ToInt32(0))
+                    ,new OleDbParameter("@Approver_Id", string.Empty)
+                };
+                dt = DBOprn.GetDataProc("SP_Review_MasterData", DBOprn.ConnPrimary, paramCln);
                 if (!(dt?.Rows.Count > 0))
                     dt = null;
                 return dt;
@@ -90,14 +136,14 @@ namespace Finance_Tracker
                     Response.Redirect("~/Account/Login");
 
                 int RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
-                if (!(RoleId == 1 || RoleId == 4))
-                {
-                    Response.Redirect("~/Default");
-                    return;
-                }
+                //if (!(RoleId == 1 || RoleId == 4))
+                //{
+                //    Response.Redirect("~/Default");
+                //    return;
+                //}
                 TxtMnth.Attributes.Add("autocomplete", "off");
                 Menu1_MenuItemClick(Menu1, new MenuEventArgs(Menu1.Items[0]));
-                DdlType.DataBind();
+                DdlReportType.DataBind();
                 DdlUsrType_DataBinding(DdlUsrType, new EventArgs());
                 DdlUsr.DataBind();
                 chKCount = 0;
@@ -226,9 +272,9 @@ namespace Finance_Tracker
             DdlUsr.ToolTip = DdlUsr.SelectedItem.Text;
         }
 
-        protected void DdlType_DataBinding(object sender, EventArgs e)
+        protected void DdlReportType_DataBinding(object sender, EventArgs e)
         {
-            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, "All", null, null, "TypeName", "TypeId");
+            FillDdl((DropDownList)sender, "SP_ReportTypes_Get", "0", "All", null, null, "TypeName", "TypeId");
         }
 
 
@@ -273,17 +319,21 @@ namespace Finance_Tracker
 
         protected void BtnView_Click(object sender, EventArgs e)
         {
-            if (TxtMnth.Text == string.Empty)
-            {
-                PopUp("Please select a Month!");
-                TxtMnth.Focus();
-                return;
-            }
 
-            if (!TryParseExact(TxtMnth.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+            if (DdlType.SelectedValue != "0")
             {
-                PopUp("Please enter month in correct format like 'Jan-2024'!");
-                return;
+                if (TxtMnth.Text == string.Empty)
+                {
+                    PopUp("Please select a Month!");
+                    TxtMnth.Focus();
+                    return;
+                }
+
+                if (!TryParseExact(TxtMnth.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                {
+                    PopUp("Please enter month in correct format like 'Jan-2024'!");
+                    return;
+                }
             }
             GVReportsDS = null;
             GVReports.DataSource = null;
@@ -467,6 +517,11 @@ namespace Finance_Tracker
             {
                 PopUp(ex.Message);
             }
+        }
+
+        protected void DdlType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DvTxtMnth.Visible = DdlType.SelectedValue != "0";
         }
     }
 }

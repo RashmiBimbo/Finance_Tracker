@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AjaxControlToolkit.Bundling;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Net.Configuration;
+using System.Net.NetworkInformation;
 using System.Web;
 using System.Web.UI;
 //using Finance_Tracker.App_Code;
@@ -12,11 +15,13 @@ namespace Finance_Tracker
 {
     public class DBOperations
     {
-        public readonly string strSQLCon;
-        ConnectionStringSettingsCollection ConnStrs;
+        private readonly ConnectionStringSettingsCollection ConnStrs;
         public readonly string ConStrSecondary, ConStrPrimary;
         public OleDbConnection ConnSecondary, ConnPrimary;
         public const string Admin = "ADMIN", Corporate = "CORPORATE", Plant = "PLANT", SuperAdmin = "SUPERADMIN";
+        public const string Emp = "";
+        public static SmtpSection Settings;
+        public static SmtpNetworkElement Network;
 
         public static readonly Dictionary<string, string> LoginTypes = new Dictionary<string, string>
         {
@@ -26,13 +31,56 @@ namespace Finance_Tracker
             { "4", SuperAdmin }
         };
 
-
+        public static bool IsSmtpConfigValid()
+        {
+            Settings = ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+            Network = Settings?.Network;
+            bool @return =
+                (Settings != null
+                && Network != null
+                && !string.IsNullOrWhiteSpace(Settings.From)
+                && !string.IsNullOrWhiteSpace(Network.Host)
+                && !string.IsNullOrWhiteSpace(Network.UserName)
+                && !string.IsNullOrWhiteSpace(Network.Password));
+            if (!@return) return false;
+            try
+            {
+                using (Ping ping = new Ping())
+                {
+                    PingReply reply = ping.Send(Network.Host, 1000); // Timeout set to 1 second
+                    return reply.Status == IPStatus.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                //PopUp("Error checking SMTP server accessibility: " + ex.Message);
+                return false;
+            }
+        }
         public DBOperations()
         {
             ConnStrs = ConfigurationManager.ConnectionStrings;
             ConStrPrimary = ConnStrs["AppDBConnStrPrimary"].ConnectionString;
             ConStrSecondary = ConnStrs["AppDBConnStrSecondary"].ConnectionString;
             AuthenticatConns();
+        }
+
+        /// <summary>
+        /// checks if string is null, empty or just white space
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsEmpty(string input)
+        {
+            try
+            {
+                return string.IsNullOrWhiteSpace(input);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public OleDbConnection InitializeConnection(string constr)
@@ -249,7 +297,7 @@ namespace Finance_Tracker
             string GenrateNewID;
             try
             {
-                string StrQry = " Select 'VC'+Right('00000000'+convert(varchar,(Convert(int,Right(Isnull(Max(" + strColmn + "),0),8)) +1)),8) as pRowID from " + strTable + "";
+                string StrQry = " Select 'VC'+Right('00000000'+convert(varchar,(Convert(int,Right(Isnull(Max(" + strColmn + "),0),8)) +1)),8) as pRowID From " + strTable + "";
                 DataTable dtTemp = SelQuery(StrQry, conn ?? ConnPrimary);
                 GenrateNewID = dtTemp.Rows[0]["pRowID"].ToString();
             }
@@ -263,7 +311,7 @@ namespace Finance_Tracker
         // #Region " Genrate New Invoice ID"
         // Public Function GenrateNewID(ByVal strTable As String, ByVal strDepot As String, ByVal monyr As String, ByVal tsaletype As String, Optional ByVal strColmn As String = "pRowID", Optional ByVal ConName As ConName = ConName.ConnectionString1) As String
         // Try
-        // StrQry = " Select left('" & strDepot & "',2)+'/" & tsaletype & "/'+'" & monyr & "/'+Right('00000'+convert(varchar,(Convert(int,Right(Isnull(Max(" & strColmn & "),0),5)) +1)),5) as pRowID from " & strTable & " where Loading_Location='" & strDepot & "' and dbo.FN_GetMMYr(Route_managemnet_Date)='" & monyr & "' "
+        // StrQry = " Select left('" & strDepot & "',2)+'/" & tsaletype & "/'+'" & monyr & "/'+Right('00000'+convert(varchar,(Convert(int,Right(Isnull(Max(" & strColmn & "),0),5)) +1)),5) as pRowID From " & strTable & " where Loading_Location='" & strDepot & "' and dbo.FN_GetMMYr(Route_managemnet_Date)='" & monyr & "' "
         // dtTemp = SelQuery(StrQry, ConName)
         // GenrateNewID = dtTemp.Rows(0).Item("pRowID")
         // Catch ex As Exception
