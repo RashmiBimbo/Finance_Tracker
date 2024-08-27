@@ -447,14 +447,13 @@ namespace Finance_Tracker.Masters
                     EditUser(usrId, usrName, slctdRoleId, email, locId, adrs, loginType, locn, slctdRole, rec_Id);
                     ResetGVUsers();
                     BtnCancel_Click(BtnCancel, null);
-                    return;
                 }
                 else
                 {
                     AddUser(usrId, usrName, slctdRoleId, email, locId, adrs, loginType, locn, slctdRole, pswd);
                     ResetCtrls();
-                    return;
                 }
+                DdlUser.DataBind();
             }
         }
 
@@ -552,8 +551,8 @@ namespace Finance_Tracker.Masters
         private void SendEditMail(string usrName, string slctdRole, string email, string locn, string adrs)
         {
             string subject = "Update in Profile";
-            string usrNameDtl =  IsEmpty(usrName) ? Emp :$"<p><b>User Name</b>: {usrName}</p>";
-            string slctdRoleDtl =  IsEmpty(slctdRole) ? Emp :$"<p><b>Role</b>: {slctdRole}</p>";
+            string usrNameDtl = IsEmpty(usrName) ? Emp : $"<p><b>User Name</b>: {usrName}</p>";
+            string slctdRoleDtl = IsEmpty(slctdRole) ? Emp : $"<p><b>Role</b>: {slctdRole}</p>";
             string emailDtl = IsEmpty(email) ? Emp : $"<p><b>Email</b>: {email}</p>";
             string adrsDtl = IsEmpty(adrs) ? Emp : $"<p><b>Address</b>: {adrs}</p>";
             try

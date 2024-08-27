@@ -109,7 +109,7 @@
                             <asp:UpdatePanel runat="server">
                                 <ContentTemplate>
                                     <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <asp:LinkButton CssClass="control-label" ID="LnkReport" ForeColor="#3366FF" runat="server" OnClick="LnkReport_Click" />
+                                        <asp:LinkButton CssClass="control-label" ID="LnkReport" runat="server" OnClick="LnkReport_Click" />
                                     </div>
                                 </ContentTemplate>
                                 <Triggers>
@@ -196,7 +196,7 @@
                     <br />
                     <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px;" runat="server" id="GVReportsDiv2">
                         <asp:GridView ID="GVReports2"
-                            runat="server" Font-Bold="False" CssClass="table table-bordered table-condensed table-responsive table-hover"
+                            runat="server" Font-Bold="False" CssClass="table table-bordered  table-responsive table-hover"
                             Font-Size="Medium" ForeColor="#333333" GridLines="Both"
                             RowStyle-HorizontalAlign="LEFT" TabIndex="10"
                             OnDataBinding="GVReports_DataBinding" Visible="False" BorderStyle="Solid" AutoGenerateColumns="False">
@@ -207,7 +207,7 @@
                             <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                             <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                             <EditRowStyle BackColor="#7C6F57" />
-                            <AlternatingRowStyle BackColor="#7ad0ed" />
+                            <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                             <Columns>
                                 <%--0 --%>
                                 <asp:TemplateField Visible="true">
@@ -341,7 +341,7 @@
                             <br />
                             <div style="width: 100%; max-width: 1500px; height: auto; max-height: 350px; overflow: auto; margin-bottom: 10px" runat="server" id="GVReportsDiv3">
                                 <asp:GridView ID="GVReports3"
-                                    runat="server" CssClass="table table-bordered table-condensed table-striped table-hover" CellPadding="20" CellSpacing="15" Font-Bold="False"
+                                    runat="server" CssClass="table table-bordered  table-striped table-hover" CellPadding="20" CellSpacing="15" Font-Bold="False"
                                     Font-Size="Medium" ForeColor="#333333" GridLines="Both"
                                     RowStyle-HorizontalAlign="LEFT" RowStyle-Wrap="false"
                                     HeaderStyle-Wrap="false" TabIndex="10"
@@ -372,7 +372,7 @@
                                         </asp:TemplateField>
                                     </Columns>
                                     <EditRowStyle BackColor="#7C6F57" />
-                                    <AlternatingRowStyle BackColor="#7ad0ed" />
+                                    <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                 </asp:GridView>
                             </div>
                        <%-- </ContentTemplate>

@@ -78,7 +78,7 @@
                                     <HeaderStyle BackColor="075098" Font-Bold="True"
                                         ForeColor="white" Wrap="False" />
                                     <EditRowStyle BackColor="#7C6F57" />
-                                    <AlternatingRowStyle BackColor="#7ad0ed" />
+                                    <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                 </asp:GridView>
                             </div>
                         </asp:View>

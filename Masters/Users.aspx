@@ -41,18 +41,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <asp:Label runat="server" AssociatedControlID="TxtUsrName"
-                                    CssClass="col-md-2 control-label">User Name<span
+                                <asp:Label runat="server" AssociatedControlID="TxtUsrName" CssClass="col-md-2 control-label">User Name<span
                                             style="color: red">&nbsp*</span>
                                 </asp:Label>
                                 <div class="col-md-10">
-                                    <asp:TextBox runat="server" ID="TxtUsrName" CssClass="form-control"
-                                        autocomplete="new-password" Width="40%" />
+                                    <asp:TextBox runat="server" ID="TxtUsrName" CssClass="form-control" autocomplete="new-password" Width="40%" />
                                 </div>
                             </div>
                             <div class="form-group" id="DivPswd" runat="server">
-                                <asp:Label runat="server" AssociatedControlID="TxtPassword"
-                                    CssClass="col-md-2 control-label">Password<span style="color: red">&nbsp*</span>
+                                <asp:Label runat="server" AssociatedControlID="TxtPassword" CssClass="col-md-2 control-label">Password<span style="color: red">&nbsp*</span>
                                 </asp:Label>
                                 <div class="col-md-10">
                                     <asp:TextBox runat="server" ID="TxtPassword" TextMode="Password"
@@ -60,8 +57,7 @@
                                 </div>
                             </div>
                             <div class="form-group" id="DivCPswd" runat="server">
-                                <asp:Label runat="server" AssociatedControlID="TxtConfirmPassword"
-                                    CssClass="col-md-2 control-label">Confirm password<span
+                                <asp:Label runat="server" AssociatedControlID="TxtConfirmPassword" CssClass="col-md-2 control-label">Confirm password<span
                                             style="color: red">&nbsp*</span></asp:Label>
                                 <div class="col-md-10">
                                     <asp:TextBox runat="server" ID="TxtConfirmPassword" TextMode="Password"
@@ -82,24 +78,18 @@
                                     CssClass="col-md-2 control-label">Role<span style="color: red">&nbsp*</span>
                                 </asp:Label>
                                 <div class="col-md-10">
-                                    <asp:DropDownList runat="server" ID="DdlRoleA" CssClass="form-control"
-                                        OnDataBinding="DdlRole_DataBinding" Width="40%"
-                                        onchange="UpdateToolTip(this);" />
+                                    <asp:DropDownList runat="server" ID="DdlRoleA" CssClass="form-control" OnDataBinding="DdlRole_DataBinding" Width="40%" onchange="UpdateToolTip(this);" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <asp:Label runat="server" AssociatedControlID="DdlLocnA"
-                                    CssClass="col-md-2 control-label">Location<span style="color: red">&nbsp*</span>
+                                <asp:Label runat="server" AssociatedControlID="DdlLocnA" CssClass="col-md-2 control-label">Location<span style="color: red">&nbsp*</span>
                                 </asp:Label>
                                 <div class="col-md-10">
-                                    <asp:DropDownList runat="server" ID="DdlLocnA" CssClass="form-control"
-                                        OnDataBinding="DdlLocn_DataBinding" Width="40%"
-                                        onchange="UpdateToolTip(this);" />
+                                    <asp:DropDownList runat="server" ID="DdlLocnA" CssClass="form-control" OnDataBinding="DdlLocn_DataBinding" Width="40%" onchange="UpdateToolTip(this);" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <asp:Label runat="server" AssociatedControlID="TxtAddress"
-                                    CssClass="col-md-2 control-label">Address
+                                <asp:Label runat="server" AssociatedControlID="TxtAddress" CssClass="col-md-2 control-label">Address
                                 </asp:Label>
                                 <div class="col-md-10">
                                     <asp:TextBox runat="server" ID="TxtAddress" CssClass="form-control"

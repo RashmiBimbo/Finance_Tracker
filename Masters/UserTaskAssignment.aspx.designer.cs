@@ -69,6 +69,15 @@ namespace Finance_Tracker.Masters
         protected global::System.Web.UI.WebControls.DropDownList DdlApproversU;
 
         /// <summary>
+        /// SpnUsrTyp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl SpnUsrTyp;
+
+        /// <summary>
         /// DdlUsrType control.
         /// </summary>
         /// <remarks>

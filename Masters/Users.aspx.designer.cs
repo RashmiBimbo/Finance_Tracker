@@ -19,7 +19,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Menu Menu;
 
@@ -28,7 +28,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.MultiView MultiView1;
 
@@ -37,7 +37,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View TabAdd;
 
@@ -46,7 +46,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtUsrId;
 
@@ -55,7 +55,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtUsrName;
 
@@ -64,7 +64,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivPswd;
 
@@ -73,7 +73,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtPassword;
 
@@ -82,7 +82,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DivCPswd;
 
@@ -91,7 +91,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtConfirmPassword;
 
@@ -100,7 +100,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtEmail;
 
@@ -109,7 +109,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlRoleA;
 
@@ -118,7 +118,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlLocnA;
 
@@ -127,7 +127,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TxtAddress;
 
@@ -136,7 +136,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnRegister;
 
@@ -145,7 +145,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnCancel;
 
@@ -154,7 +154,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HFRecIdA;
 
@@ -163,7 +163,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View TabEdit;
 
@@ -172,7 +172,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlRoleV;
 
@@ -181,7 +181,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlLocnV;
 
@@ -190,7 +190,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList DdlUser;
 
@@ -199,7 +199,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnView;
 
@@ -208,7 +208,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GVUsers;
 
@@ -217,7 +217,7 @@ namespace Finance_Tracker.Masters
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
-        /// To modify move field declaration From designer file to code-behind file.
+        /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnDlt;
     }

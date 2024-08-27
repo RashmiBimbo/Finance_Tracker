@@ -35,6 +35,7 @@ namespace Finance_Tracker.Masters
                            new OleDbParameter("@Category_Id", DdlCatV.SelectedValue)
                            ,new OleDbParameter("@Category_Type_Id", DdlCatTypeV.SelectedValue)
                            ,new OleDbParameter("@Type", DdlTypeV.SelectedValue)
+                           ,new OleDbParameter("@Report_Id", DdlTasks.SelectedValue)
                         };
                     dt = DBOprn.GetDataProc("SP_Report_Get", DBOprn.ConnPrimary, paramCln);
                     if (dt.Rows.Count == 0)
@@ -86,12 +87,14 @@ namespace Finance_Tracker.Masters
                 Session["DuType"] = "Date";
                 chkDltCntReports = 0;
                 //DdlTypeA.Attributes.Add("onchange", "ChngDueDtType(this.value)");
-                DdlCatTypeA.DataBind();
-                DdlCatA.DataBind();
-                DdlTypeA.DataBind();
-                DdlCatTypeV.DataBind();
-                DdlCatV.DataBind();
-                DdlTypeV.DataBind();
+                foreach (DropDownList ddl in new[] { DdlCatTypeA, DdlCatTypeV, DdlCatA, DdlCatV, DdlTypeA, DdlTypeV, DdlTasks })
+                    ddl?.DataBind();
+                //DdlCatTypeA.DataBind();
+                //DdlCatA.DataBind();
+                //DdlTypeA.DataBind();
+                //DdlCatTypeV.DataBind();
+                //DdlCatV.DataBind();
+                //DdlTypeV.DataBind();
                 Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
             }
         }
@@ -124,7 +127,7 @@ namespace Finance_Tracker.Masters
                     FillDdl(DdlCatA, "SP_Get_Categories", "0", "Select", DdlCatTypeA,
                         new OleDbParameter[]
                         {
-                        new OleDbParameter("@Type_Id", DdlCatTypeA.SelectedValue)
+                            new OleDbParameter("@Type_Id", DdlCatTypeA.SelectedValue)
                         }
                     );
                 }
@@ -133,7 +136,7 @@ namespace Finance_Tracker.Masters
                     FillDdl(DdlCatV, "SP_Get_Categories", "0", "All", null,
                         new OleDbParameter[]
                         {
-                        new OleDbParameter("@Type_Id", DdlCatTypeV.SelectedValue)
+                            new OleDbParameter("@Type_Id", DdlCatTypeV.SelectedValue)
                         }
                     );
                 }
@@ -146,7 +149,7 @@ namespace Finance_Tracker.Masters
 
         protected void DdlCatType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DropDownList ddl = null, prntDdl = null;
+            DropDownList ddl = null, prntDdl = null, ddlTasks = null; ;
             if (sender.Equals(DdlCatTypeA))
             {
                 ddl = DdlCatA;
@@ -156,9 +159,11 @@ namespace Finance_Tracker.Masters
             {
                 ddl = DdlCatV;
                 prntDdl = DdlCatTypeV;
+                ddlTasks = DdlTasks;
             }
             SetTooltip(null, prntDdl);
             ddl.DataBind();
+            ddlTasks?.DataBind();
         }
 
         protected void Menu_MenuItemClick(object sender, MenuEventArgs e)
@@ -200,9 +205,9 @@ namespace Finance_Tracker.Masters
                     }
                     else
                     {
-                        ResetGVReports();
-                        BtnCncl_Click(BtnCncl, null);
                         PopUp("Report updated successfully!");
+                        BtnCncl_Click(BtnCncl, null);
+                        ResetGVReports();
                     }
                 }
                 catch (Exception ex)
@@ -482,7 +487,8 @@ namespace Finance_Tracker.Masters
                     {
                         GVReports.Visible = true;
                         //DvGV.Visible = true;
-                        BtnDlt.Visible = true;
+                        //while(!BtnDlt.Visible)
+                            BtnDlt.Visible = true;
                     }
                 }
                 BtnDlt.Visible = GVReports.Visible;
@@ -658,6 +664,12 @@ namespace Finance_Tracker.Masters
 
         protected void DdlType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (sender != null && sender.Equals(DdlTypeV))
+            {
+                DdlTasks.DataBind();
+                return;
+            }
+
             SetTooltip(null, DdlTypeA);
             DvDuDt.Visible = true;
             DvTxtDuDt.Visible = false;
@@ -735,6 +747,30 @@ namespace Finance_Tracker.Masters
             FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, slctTxt, null, null, "TypeName", "TypeId");
         }
 
+        protected void DdlCatV_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddl = null, ddlTasks = null;
+            if (sender.Equals(DdlCatV))
+            {
+                ddl = DdlCatV;
+                ddlTasks = DdlTasks;
+            }
+            SetTooltip(null, ddl);
+            ddlTasks?.DataBind();
+        }
+
+        protected void DdlTasks_DataBinding(object sender, EventArgs e)
+        {
+            FillDdl(DdlTasks, "SP_Report_Get", "0", "All", null,
+                new OleDbParameter[]
+                {
+                     new OleDbParameter("@Category_Id", DdlCatV.SelectedValue)
+                    ,new OleDbParameter("@Category_Type_Id", DdlCatTypeV.SelectedValue)
+                    ,new OleDbParameter("@Type", DdlTypeV.SelectedValue)
+                }, "Report_Name", "Report_Id"
+            );
+        }
+
         private void PopUp(string msg)
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
@@ -742,11 +778,9 @@ namespace Finance_Tracker.Masters
 
         private void SetTooltip(DropDownList[] ddlLst = null, DropDownList ddl = null)
         {
-            if (ddlLst != null)
-            {
-                ddlLst.ToList().ForEach(itm => itm.ToolTip = itm.SelectedItem.Text);
+            ddlLst?.ToList().ForEach(itm => itm.ToolTip = itm.SelectedItem.Text);
+            if (!(ddl is null))
                 ddl.ToolTip = ddl.SelectedItem.Text;
-            }
         }
 
         private void FillDdl(DropDownList ddl, string proc, string selectVal, string selectTxt = "All", DropDownList prntDdl = null, OleDbParameter[] paramCln = null, string TxtField = "", string ValField = "")

@@ -74,7 +74,7 @@
                                 <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                                 <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                                 <EditRowStyle BackColor="#7C6F57" />
-                                <AlternatingRowStyle BackColor="#7ad0ed" />
+                                <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                 <Columns>
                                     <asp:TemplateField HeaderText="Approve" Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                         <HeaderTemplate>
@@ -97,7 +97,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="File" Visible="true">
                                         <ItemTemplate>
-                                            <asp:LinkButton ID="LBLocn" runat="server" ForeColor="#3366FF" OnClientClick=""
+                                            <asp:LinkButton ID="LBLocn" runat="server" OnClientClick=""
                                                 Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'
                                                 OnClick="LBLocn_Click">
                                             </asp:LinkButton>
@@ -133,7 +133,7 @@
                                 <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                                 <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                                 <EditRowStyle BackColor="#7C6F57" />
-                                <AlternatingRowStyle BackColor="#7ad0ed" />
+                                <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                 <Columns>
                                     <asp:TemplateField Visible="true" ControlStyle-CssClass="form-check-input" ControlStyle-Width="20px">
                                         <HeaderTemplate>

@@ -114,7 +114,7 @@
                             <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                             <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                             <EditRowStyle BackColor="#7C6F57" />
-                            <AlternatingRowStyle BackColor="#7ad0ed" />
+                            <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                             <Columns>
                                 <asp:BoundField DataField="Sno" HeaderText="Sno" Visible="true" ControlStyle-Width="10px" />
                                 <asp:BoundField DataField="User_Name" HeaderText="User" ReadOnly="True" />
@@ -129,7 +129,7 @@
                                 <asp:BoundField DataField="Approver" HeaderText="Approver" />
                                 <asp:TemplateField HeaderText="File" Visible="true">      
                                     <ItemTemplate>
-                                        <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" ForeColor="#3366FF"
+                                        <asp:LinkButton ID="LBLocn" runat="server" OnClick="LBLocn_Click" 
                                             Text='<%# System.IO.Path.GetFileName(Eval("Location").ToString())%>'>
                                         </asp:LinkButton>
                                     </ItemTemplate>

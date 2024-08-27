@@ -43,9 +43,11 @@
                         </div>
                     </div>
                 </div>
-                <asp:Label runat="server" AssociatedControlID="DdlUsrType" CssClass="col-md-2 control-label">User Type</asp:Label>
+                <asp:Label runat="server" AssociatedControlID="DdlUsrType" CssClass="col-md-2 control-label">User Type
+                    <span id="SpnUsrTyp" runat="server" style="color: red">&nbsp&nbsp*</span>
+                </asp:Label>
                 <div class="col-sm-2">
-                    <asp:DropDownList runat="server" ID="DdlUsrType" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsrType_DataBinding" OnSelectedIndexChanged="DdlUsrType_SelectedIndexChanged">
+                    <asp:DropDownList runat="server" ID="DdlUsrType" CssClass="form-control" AutoPostBack="True" OnDataBinding="DdlUsrType_DataBinding" OnSelectedIndexChanged="DdlUsrType_SelectedIndexChanged" required>
                         <asp:ListItem Value="0" Selected="True">Select</asp:ListItem>
                     </asp:DropDownList>
                 </div>
@@ -98,7 +100,7 @@
                                 <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                                 <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                                 <EditRowStyle BackColor="#7C6F57" />
-                                <AlternatingRowStyle BackColor="#7ad0ed" />
+                                <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                 <Columns>
                                     <%--0 --%>
                                     <asp:TemplateField Visible="true">
@@ -144,7 +146,7 @@
                                 <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
                                 <HeaderStyle BackColor="075098" Font-Bold="True" ForeColor="white" Wrap="False" />
                                 <EditRowStyle BackColor="#7C6F57" />
-                                <AlternatingRowStyle BackColor="#7ad0ed" />
+                                <%--<AlternatingRowStyle BackColor="#7ad0ed" />--%>
                                 <Columns>
                                     <%--0 --%>
                                     <asp:TemplateField Visible="true">
