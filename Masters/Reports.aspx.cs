@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
 using static System.Convert;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker.Masters
 {
@@ -56,7 +56,7 @@ namespace Finance_Tracker.Masters
             DBOprn = new DBOperations();
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp("Database connection could not be established!");
+                PopUp(this, "Database connection could not be established!");
                 Response.Redirect("~/Default");
             }
         }
@@ -114,7 +114,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -143,7 +143,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -201,18 +201,18 @@ namespace Finance_Tracker.Masters
                     if (add)
                     {
                         ResetTabAdd();
-                        PopUp("Report added successfully!");
+                        PopUp(this, "Report added successfully!");
                     }
                     else
                     {
-                        PopUp("Report updated successfully!");
+                        PopUp(this, "Report updated successfully!");
                         BtnCncl_Click(BtnCncl, null);
                         ResetGVReports();
                     }
                 }
                 catch (Exception ex)
                 {
-                    PopUp(ex.Message);
+                    PopUp(this, ex.Message);
                 }
             }
         }
@@ -284,14 +284,14 @@ namespace Finance_Tracker.Masters
 
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(output.ToString());
+                    PopUp(this, output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return false;
             }
         }
@@ -308,19 +308,19 @@ namespace Finance_Tracker.Masters
 
                 if (DdlCatTypeA.SelectedValue == "0")
                 {
-                    PopUp("Category Type is required!");
+                    PopUp(this, "Category Type is required!");
                     DdlCatTypeA.Focus();
                     return false;
                 }
                 if (DdlCatA.SelectedValue == "0")
                 {
-                    PopUp("Category is required!");
+                    PopUp(this, "Category is required!");
                     DdlCatA.Focus();
                     return false;
                 }
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    PopUp("Report Name is required!");
+                    PopUp(this, "Report Name is required!");
                     TxtReportName.Focus();
                     return false;
                 }
@@ -329,18 +329,18 @@ namespace Finance_Tracker.Masters
                     string invalidCharsString = string.Join(", ", invalidFileNameChars.Select(c => char.IsControl(c) ? $"\\x{(int)c:X2}" : c.ToString()));
                     invalidCharsString = invalidCharsString.Substring(0, 24);
                     string msg = $"Report Name cannot contain any of the following characters: {invalidCharsString}";
-                    PopUp(msg);
+                    PopUp(this, msg);
                     return false;
                 }
                 if (priority < 1 || priority > 99)
                 {
-                    PopUp("Priority must be within the range of 1 to 99!");
+                    PopUp(this, "Priority must be within the range of 1 to 99!");
                     TxtPriority.Focus();
                     return false;
                 }
                 if (weight < 1 || weight > 99)
                 {
-                    PopUp("Weight must be within the range of 1 to 99!");
+                    PopUp(this, "Weight must be within the range of 1 to 99!");
                     TxtWeight.Focus();
                     return false;
                 }
@@ -349,21 +349,21 @@ namespace Finance_Tracker.Masters
                     default:
                         if ((duDtTxt < 1 || duDtTxt > 31))
                         {
-                            PopUp("Due Date must be within the range of 1 to 31!");
+                            PopUp(this, "Due Date must be within the range of 1 to 31!");
                             TxtDuDt.Focus();
                             return false;
                         }
                         break;
                     case Emp:
                         {
-                            PopUp("Type is required!");
+                            PopUp(this, "Type is required!");
                             DdlTypeA.Focus();
                             return false;
                         }
                     case "WEEKLY":
                         if (string.IsNullOrWhiteSpace(DdlWeekDay.SelectedValue))
                         {
-                            PopUp("Due Day is required!");
+                            PopUp(this, "Due Day is required!");
                             DdlWeekDay.Focus();
                             return false;
                         }
@@ -371,7 +371,7 @@ namespace Finance_Tracker.Masters
                         //case "MONTHLY":
                         //    if ((duDtTxt < 1 || duDtTxt > 31))
                         //    {
-                        //        PopUp("Due Date must be within the range of 1 to 31!");
+                        //        PopUp(this, "Due Date must be within the range of 1 to 31!");
                         //        TxtDuDt.Focus();
                         //        return false;
                         //    }
@@ -380,7 +380,7 @@ namespace Finance_Tracker.Masters
                         //    {
                         //        if (DdlQrtr.SelectedValue == "0")
                         //        {
-                        //            PopUp("Due Quarter is required!");
+                        //            PopUp(this, "Due Quarter is required!");
                         //            DdlQrtr.Focus();
                         //            return false;
                         //        }
@@ -389,7 +389,7 @@ namespace Finance_Tracker.Masters
                         //case "HALF YEARLY":
                         //    if (DdlHY.SelectedValue == "0")
                         //    {
-                        //        PopUp("Due Half is required!");
+                        //        PopUp(this, "Due Half is required!");
                         //        DdlHY.Focus();
                         //        return false;
                         //    }
@@ -403,7 +403,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return false;
             }
         }
@@ -431,7 +431,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -481,7 +481,7 @@ namespace Finance_Tracker.Masters
                         //DvGV.Visible = false;
                         GVReports.Visible = false;
                         BtnDlt.Visible = false;
-                        PopUp("No data found!");
+                        PopUp(this, "No data found!");
                     }
                     else
                     {
@@ -495,7 +495,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -514,7 +514,7 @@ namespace Finance_Tracker.Masters
             string jsonParam = ConstructJSON();
             if (SubMission("SP_Report_Delete", jsonParam))
             {
-                PopUp("Reports deleted successfully!");
+                PopUp(this, "Reports deleted successfully!");
                 ResetGVReports();
                 chkDltCntReports = 0;
                 BtnDlt.Enabled = false;
@@ -536,14 +536,14 @@ namespace Finance_Tracker.Masters
                 );
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(output.ToString());
+                    PopUp(this, output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return false;
             }
         }
@@ -658,7 +658,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -771,11 +771,6 @@ namespace Finance_Tracker.Masters
             );
         }
 
-        private void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-        }
-
         private void SetTooltip(DropDownList[] ddlLst = null, DropDownList ddl = null)
         {
             ddlLst?.ToList().ForEach(itm => itm.ToolTip = itm.SelectedItem.Text);
@@ -817,7 +812,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 

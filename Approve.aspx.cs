@@ -14,6 +14,7 @@ using System.Net.Configuration;
 using System.Threading.Tasks;
 using static System.DateTime;
 using static Finance_Tracker.DBOperations;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker
 {
@@ -35,7 +36,7 @@ namespace Finance_Tracker
             DBOprn = new DBOperations();
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp("Database connection could not be established. No operations will be performed");
+                PopUp(this, "Database connection could not be established. No operations will be performed");
                 return;
             }
         }
@@ -55,7 +56,7 @@ namespace Finance_Tracker
                     }
                     catch (Exception ex)
                     {
-                        PopUp(ex.Message);
+                        PopUp(this, ex.Message);
                     }
                 }
                 return dt;
@@ -84,7 +85,7 @@ namespace Finance_Tracker
                     }
                     catch (Exception ex)
                     {
-                        PopUp(ex.Message);
+                        PopUp(this, ex.Message);
                     }
                 }
                 return dt;
@@ -122,7 +123,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return null;
             }
         }
@@ -149,9 +150,9 @@ namespace Finance_Tracker
                 TxtMnth.Attributes.Add("autocomplete", "off");
 
                 if (!IsSmtpConfigValid())
-                    PopUp("Email settings could not be verified. No emails will be sent for approval/rejection!");
+                    PopUp(this, "Email settings could not be verified. No emails will be sent for approval/rejection!");
                 //else
-                //    PopUp("Email settings verified.!");
+                //    PopUp(this, "Email settings verified.!");
 
                 chkCountA = 0;
                 chKCountR = 0;
@@ -245,7 +246,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -253,13 +254,13 @@ namespace Finance_Tracker
         {
             if (TxtMnth.Text == string.Empty)
             {
-                PopUp("Please select a Month!");
+                PopUp(this, "Please select a Month!");
                 TxtMnth.Focus();
                 return;
             }
             if (!TryParseExact(TxtMnth.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
             {
-                PopUp("Please enter month in correct format like 'Jan-2024'!");
+                PopUp(this, "Please enter month in correct format like 'Jan-2024'!");
                 TxtMnth.Text = TextBoxWatermarkExtender3.WatermarkText;
                 TxtMnth.ToolTip = crntMnthDay1.ToString(SqlDateFormat) + "," + crntMnthLastDay.ToString(SqlDateFormat);
                 TxtMnth.Focus();
@@ -295,14 +296,9 @@ namespace Finance_Tracker
                 else
                 {
                     GVPendingDiv.Visible = false;
-                    PopUp("No data found!");
+                    PopUp(this, "No data found!");
                 }
             }
-        }
-
-        public void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         protected void CBApprovH_CheckedChanged(object sender, EventArgs e)
@@ -358,10 +354,10 @@ namespace Finance_Tracker
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
-                    PopUp("Tasks approved successfully!");
+                    PopUp(this, "Tasks approved successfully!");
                     if (mailSet != null && mailSet.Count > 0)
                         SendEmails(mailSet, "Tasks Approval Alert - Finance Tracker");
 
@@ -372,7 +368,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -466,7 +462,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp("Please enter the month in correct format!");
+                PopUp(this, "Please enter the month in correct format!");
                 TxtMnth.Text = TextBoxWatermarkExtender3.WatermarkText;
                 TxtMnth.ToolTip = crntMnthDay1.ToString(SqlDateFormat) + "," + crntMnthLastDay.ToString(SqlDateFormat);
             }
@@ -485,7 +481,7 @@ namespace Finance_Tracker
                 else
                 {
                     DivApproved.Visible = false;
-                    PopUp("No data found!");
+                    PopUp(this, "No data found!");
                 }
             }
         }
@@ -513,7 +509,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp($"Error occurred: \n {ex.Message}");
+                PopUp(this, $"Error occurred: \n {ex.Message}");
             }
         }
 
@@ -566,10 +562,10 @@ namespace Finance_Tracker
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
-                    PopUp("Tasks rejected successfully!");
+                    PopUp(this, "Tasks rejected successfully!");
 
                     ////await SendMultipleEmailsAsync(mailSet, "Tasks rejection");
 
@@ -583,7 +579,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -604,10 +600,10 @@ namespace Finance_Tracker
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
-                    PopUp("Tasks rejected successfully!");
+                    PopUp(this, "Tasks rejected successfully!");
                     if (mailSet != null && mailSet.Count > 0)
                         SendEmails(mailSet, "Tasks Rejection Alert - Finance Tracker");
 
@@ -617,7 +613,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -727,7 +723,7 @@ namespace Finance_Tracker
             };
             mail.To.Add(recipient);
             await smtp.SendMailAsync(mail);
-            PopUp("Mails Sent successfully");
+            PopUp(this, "Mails Sent successfully");
         }
 
         private void SendEmails(Dictionary<string, string> mailSet, string subject)
@@ -760,7 +756,7 @@ namespace Finance_Tracker
             }
             catch (Exception e)
             {
-                PopUp(e.Message);
+                PopUp(this, e.Message);
             }
         }
 

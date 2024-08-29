@@ -11,6 +11,7 @@ using System.Net.Configuration;
 using System.Configuration;
 using System.Net.NetworkInformation;
 using static Finance_Tracker.DBOperations;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker.Account
 {
@@ -28,7 +29,7 @@ namespace Finance_Tracker.Account
             RoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp("Database connection could not be established");
+                PopUp(this, "Database connection could not be established");
                 return;
             }
             if (!Page.IsPostBack)
@@ -44,7 +45,7 @@ namespace Finance_Tracker.Account
                 //}
 
                 if (!IsSmtpConfigValid())
-                    PopUp("Email settings could not be verified. No emails will be sent for registration!");
+                    PopUp(this, "Email settings could not be verified. No emails will be sent for registration!");
                 DdlRole.DataBind();
                 DdlLocn.DataBind();
                 TxtUsrId.Attributes.Add("autocomplete", "off");
@@ -70,7 +71,7 @@ namespace Finance_Tracker.Account
                     int usrRoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
                     if (usrRoleId != 4 && slctdRoleId == "4")
                     {
-                        PopUp("You are not authorized to create a super admin user!");
+                        PopUp(this, "You are not authorized to create a super admin user!");
                         return;
                     }
                     OleDbParameter[] paramCln =
@@ -97,23 +98,23 @@ namespace Finance_Tracker.Account
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
                     SendMail(email, usrName, usrId, pswd);
-                    PopUp("User added successfully!");
+                    PopUp(this, "User added successfully!");
                     ResetCtrls();
                 }
                 catch (Exception ex)
                 {
-                    PopUp(ex.Message);
+                    PopUp(this, ex.Message);
                 }
             }
         }
 
         private void SendMail(string email, string usrName, string usrId, string pswd)
         {
-            string host = DBOperations.Network.Host, hostPswd = DBOperations.Network.Password, from = DBOperations.Settings.From, hostName = DBOperations.Network.UserName;
+            string host = Network.Host, hostPswd = Network.Password, from = Settings.From, hostName = Network.UserName;
             int port = Network.Port;
             string subject = "Welcome to Finance Tracker";
             try
@@ -148,7 +149,7 @@ namespace Finance_Tracker.Account
             }
             catch (Exception e)
             {
-                PopUp(e.Message);
+                PopUp(this, e.Message);
             }
         }
 
@@ -156,37 +157,37 @@ namespace Finance_Tracker.Account
         {
             if (string.IsNullOrWhiteSpace(TxtUsrId.Text))
             {
-                PopUp("User Id is required");
+                PopUp(this, "User Id is required");
                 TxtUsrId.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtUsrName.Text))
             {
-                PopUp("User Name is required");
+                PopUp(this, "User Name is required");
                 TxtUsrName.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtPassword.Text))
             {
-                PopUp("Password is required");
+                PopUp(this, "Password is required");
                 TBEmail.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtConfirmPassword.Text))
             {
-                PopUp("Confirm Password is required");
+                PopUp(this, "Confirm Password is required");
                 TxtConfirmPassword.Focus();
                 return false;
             }
             if (!TxtConfirmPassword.Text.Equals(TxtPassword.Text))
             {
-                PopUp("The password and confirmation password do not match.");
+                PopUp(this, "The password and confirmation password do not match.");
                 TxtConfirmPassword.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TBEmail.Text))
             {
-                PopUp("Email is required");
+                PopUp(this, "Email is required");
                 TxtPassword.Focus();
                 return false;
             }
@@ -196,32 +197,27 @@ namespace Finance_Tracker.Account
             }
             catch (FormatException e)
             {
-                PopUp("Either email address is not in a recognized format or it contains non-ASCII characters.\n Please enter a valid email address!");
+                PopUp(this, "Either email address is not in a recognized format or it contains non-ASCII characters.\n Please enter a valid email address!");
                 return false;
             }
             catch (Exception e)
             {
-                PopUp(e.Message);
+                PopUp(this, e.Message);
                 return false;
             }
             if (DdlRole.SelectedValue == "0")
             {
-                PopUp("Role is required");
+                PopUp(this, "Role is required");
                 DdlRole.Focus();
                 return false;
             }
             if (DdlLocn.SelectedValue == "" && DdlRole.SelectedValue != "4")
             {
-                PopUp("Location is required for user other than Super Admin!");
+                PopUp(this, "Location is required for user other than Super Admin!");
                 DdlLocn.Focus();
                 return false;
             }
             return true;
-        }
-
-        public void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         private void ResetCtrls()
@@ -284,7 +280,7 @@ namespace Finance_Tracker.Account
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 

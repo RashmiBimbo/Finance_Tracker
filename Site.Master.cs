@@ -92,11 +92,6 @@ namespace Finance_Tracker
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
         }
 
-        private void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, GetType(), "showalert", "alert('" + msg + "');", true);
-        }
-
         protected void BtnLogOut_Click(object sender, EventArgs e)
         {
             Session.Abandon();
