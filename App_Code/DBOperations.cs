@@ -9,7 +9,7 @@ using System.Net.Configuration;
 using System.Net.NetworkInformation;
 using System.Web;
 using System.Web.UI;
-//using Finance_Tracker.App_Code;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker
 {
@@ -19,9 +19,6 @@ namespace Finance_Tracker
         public readonly string ConStrSecondary, ConStrPrimary;
         public OleDbConnection ConnSecondary, ConnPrimary;
         public const string Admin = "ADMIN", Corporate = "CORPORATE", Plant = "PLANT", SuperAdmin = "SUPERADMIN";
-        public const string Emp = "";
-        public static SmtpSection Settings;
-        public static SmtpNetworkElement Network;
 
         public static readonly Dictionary<string, string> LoginTypes = new Dictionary<string, string>
         {
@@ -31,56 +28,12 @@ namespace Finance_Tracker
             { "4", SuperAdmin }
         };
 
-        public static bool IsSmtpConfigValid()
-        {
-            Settings = ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
-            Network = Settings?.Network;
-            bool @return =
-                (Settings != null
-                && Network != null
-                && !string.IsNullOrWhiteSpace(Settings.From)
-                && !string.IsNullOrWhiteSpace(Network.Host)
-                && !string.IsNullOrWhiteSpace(Network.UserName)
-                && !string.IsNullOrWhiteSpace(Network.Password));
-            if (!@return) return false;
-            try
-            {
-                using (Ping ping = new Ping())
-                {
-                    PingReply reply = ping.Send(Network.Host, 1000); // Timeout set to 1 second
-                    return reply.Status == IPStatus.Success;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle other exceptions
-                //PopUp("Error checking SMTP server accessibility: " + ex.Message);
-                return false;
-            }
-        }
         public DBOperations()
         {
             ConnStrs = ConfigurationManager.ConnectionStrings;
             ConStrPrimary = ConnStrs["AppDBConnStrPrimary"].ConnectionString;
             ConStrSecondary = ConnStrs["AppDBConnStrSecondary"].ConnectionString;
             AuthenticatConns();
-        }
-
-        /// <summary>
-        /// checks if string is null, empty or just white space
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static bool IsEmpty(string input)
-        {
-            try
-            {
-                return string.IsNullOrWhiteSpace(input);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
         public OleDbConnection InitializeConnection(string constr)
@@ -117,12 +70,6 @@ namespace Finance_Tracker
                 AuthenticatCon = false;
             }
             return AuthenticatCon;
-        }
-
-        public void PopUp(Page page, string msg)
-        {
-            //ScriptManager.RegisterStartupScript(page, page.GetType(), "showalert", "alert('" + msg + "');", true);
-            ScriptManager.RegisterClientScriptBlock(page, page.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         public bool InsertUpdateValues(string query, OleDbConnection conn)
@@ -290,187 +237,6 @@ namespace Finance_Tracker
             {
                 adapter?.Dispose();
             }
-        }
-
-        public string GenrateNewID(string strTable, OleDbConnection conn, string strColmn = "pRowID")
-        {
-            string GenrateNewID;
-            try
-            {
-                string StrQry = " Select 'VC'+Right('00000000'+convert(varchar,(Convert(int,Right(Isnull(Max(" + strColmn + "),0),8)) +1)),8) as pRowID From " + strTable + "";
-                DataTable dtTemp = SelQuery(StrQry, conn ?? ConnPrimary);
-                GenrateNewID = dtTemp.Rows[0]["pRowID"].ToString();
-            }
-            catch (Exception ex)
-            {
-                GenrateNewID = "VC00000001";
-            }
-            return GenrateNewID;
-        }
-
-        // #Region " Genrate New Invoice ID"
-        // Public Function GenrateNewID(ByVal strTable As String, ByVal strDepot As String, ByVal monyr As String, ByVal tsaletype As String, Optional ByVal strColmn As String = "pRowID", Optional ByVal ConName As ConName = ConName.ConnectionString1) As String
-        // Try
-        // StrQry = " Select left('" & strDepot & "',2)+'/" & tsaletype & "/'+'" & monyr & "/'+Right('00000'+convert(varchar,(Convert(int,Right(Isnull(Max(" & strColmn & "),0),5)) +1)),5) as pRowID From " & strTable & " where Loading_Location='" & strDepot & "' and dbo.FN_GetMMYr(Route_managemnet_Date)='" & monyr & "' "
-        // dtTemp = SelQuery(StrQry, ConName)
-        // GenrateNewID = dtTemp.Rows(0).Item("pRowID")
-        // Catch ex As Exception
-        // GenrateNewID = "VC00000001"
-        // End Try
-        // Return GenrateNewID
-        // End Function
-        // #End Region
-
-        public int CountSundays(DateTime strdate)
-        {
-            DateTime today = strdate; // Date.Today
-            DateTime endOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
-            // get only last day of month
-            int day = endOfMonth.Day;
-
-            DateTime now = strdate; // Date.Now
-            int count;
-            count = 0;
-            for (int i = 0; i <= day - 1; i++)
-            {
-                DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                // Compare date with sunday
-                if (d.DayOfWeek == DayOfWeek.Sunday)
-                    count = count + 1;
-            }
-            return count;
-        }
-
-        public string GetDatesByMonth(string strDay, string strMonth, string strYear)
-        {
-            string dates = "";
-            DateTime today = new DateTime(Convert.ToInt32(strYear), Convert.ToInt32(strMonth), 1);
-            //"01-" & strMonth & "-" & strYear; // Date.Today
-            DateTime endOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
-            // get only last day of month
-            int day = endOfMonth.Day;
-
-            DateTime now = today; // Date.Now
-            switch (strDay.Trim())
-            {
-                case "Sunday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Sunday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-
-                        break;
-                    }
-
-                case "Monday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Monday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-                        break;
-                    }
-
-                case "Tuesday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Tuesday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-                        break;
-                    }
-
-                case "Wednesday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Wednesday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-                        break;
-                    }
-
-                case "Thursday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Thursday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-
-                        break;
-                    }
-
-                case "Friday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Friday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-
-                        break;
-                    }
-
-                case "Saturday":
-                    {
-                        for (int i = 0; i <= day - 1; i++)
-                        {
-                            DateTime d = new DateTime(now.Year, now.Month, i + 1);
-                            if (d.DayOfWeek == DayOfWeek.Saturday)
-                            {
-                                if (dates.Trim() == "")
-                                    dates = d.Date.ToString();
-                                else
-                                    dates = dates + "~" + System.Convert.ToString(d.Date);
-                            }
-                        }
-
-                        break;
-                    }
-            }
-
-            return dates;
         }
 
     }

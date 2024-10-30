@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Newtonsoft.Json;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker
 {
@@ -142,7 +143,7 @@ namespace Finance_Tracker
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -304,7 +305,7 @@ namespace Finance_Tracker
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -335,7 +336,7 @@ namespace Finance_Tracker
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -359,13 +360,13 @@ namespace Finance_Tracker
 
                     if ( !allowedExtensions.Contains(ext) )
                     {
-                        PopUp("Please upload .xls, .xlsx, .xlsm, .xlsb, .doc, .docx, .ppt, .pptx, .pdf, .zip file only");
+                        PopUp(this, "Please upload .xls, .xlsx, .xlsm, .xlsb, .doc, .docx, .ppt, .pptx, .pdf, .zip file only");
                         return;
                     }
 
                     if ( file.ContentLength == 0 )
                     {
-                        PopUp("Please do not enter empty file!");
+                        PopUp(this, "Please do not enter empty file!");
                         return;
                     }
 
@@ -386,14 +387,14 @@ namespace Finance_Tracker
                         Menu1.Items[1].Selected = true;
                         Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
                         GVReports2.DataBind();
-                        PopUp("Task updated successfully!");
+                        PopUp(this, "Task updated successfully!");
                         LblError.Text = "Task updated successfully!";
                         //delete old file
                     }
                     else if ( Menu1.Items[0].Text == "Add Task |" )
                     {
                         if ( !AddTaskToDB("SP_Add_Task", fullPath, Report_Id) ) return;
-                        PopUp("Task added successfully!");
+                        PopUp(this, "Task added successfully!");
                         LblError.Text = "Task added successfully!";
                     }
                     LblError.CssClass = "col-12 control-label text-success ";
@@ -401,7 +402,7 @@ namespace Finance_Tracker
                 }
                 catch ( Exception ex )
                 {
-                    PopUp(ex.Message);
+                    PopUp(this, ex.Message);
                     LblError.Text = ex.Message;
                     LblError.CssClass = "col-12 control-label text-danger ";
                 }
@@ -413,32 +414,32 @@ namespace Finance_Tracker
         {
             if ( DdlCatType1.SelectedIndex == 0 )
             {
-                PopUp("Please select a Category Type!");
+                PopUp(this, "Please select a Category Type!");
                 return false;
             }
             if ( DdlCat1.SelectedIndex == 0 )
             {
-                PopUp("Please select a Category!");
+                PopUp(this, "Please select a Category!");
                 return false;
             }
             if ( DdlReport1.SelectedIndex == 0 )
             {
-                PopUp("Please select a Report Name!");
+                PopUp(this, "Please select a Report Name!");
                 return false;
             }
             if ( string.IsNullOrEmpty(TxtMnth1.Text) )
             {
-                PopUp("Please select a month!");
+                PopUp(this, "Please select a month!");
                 return false;
             }
             if ( DdlType1.SelectedValue == "Weekly" && DdlWeek1.SelectedValue == "0" )
             {
-                PopUp("Please select a week!");
+                PopUp(this, "Please select a week!");
                 return false;
             }
             if ( !FUReport.HasFile )
             {
-                PopUp("Please upload a File!");
+                PopUp(this, "Please upload a File!");
                 return false;
             }
             return true;
@@ -463,7 +464,7 @@ namespace Finance_Tracker
 
             if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
             {
-                PopUp(output.ToString());
+                PopUp(this, output.ToString());
                 LblError.Text = output.ToString();
                 LblError.CssClass = "col-12 control-label text-danger ";
                 return false;
@@ -489,7 +490,7 @@ namespace Finance_Tracker
 
             if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
             {
-                PopUp(output.ToString());
+                PopUp(this, output.ToString());
                 LblError.Text = output.ToString();
                 LblError.CssClass = "col-12 control-label text-danger ";
                 return false;
@@ -522,7 +523,7 @@ namespace Finance_Tracker
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -552,7 +553,7 @@ namespace Finance_Tracker
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -606,16 +607,16 @@ namespace Finance_Tracker
 
                     if ( !string.IsNullOrWhiteSpace((string)output) ) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
-                    PopUp("Tasks submitted successfully!");
+                    PopUp(this, "Tasks submitted successfully!");
                     GVReports2.DataBind();
                 }
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
             chKCount = 0;
         }
@@ -829,7 +830,7 @@ namespace Finance_Tracker
             }
             catch ( Exception ex )
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -844,14 +845,8 @@ namespace Finance_Tracker
             else
             {
                 gv.Visible = false;
-                PopUp("No data found!");
+                PopUp(this, "No data found!");
             }
-        }
-
-        public void PopUp(string msg)
-        {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-            //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
     }
 }

@@ -13,6 +13,7 @@ using static Finance_Tracker.DBOperations;
 using System.Threading.Tasks;
 using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
 using System.Web.Services.Description;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker.Masters
 {
@@ -57,7 +58,7 @@ namespace Finance_Tracker.Masters
             DBOprn = new DBOperations();
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp("Database connection could not be established!");
+                PopUp(this, "Database connection could not be established!");
                 Response.Redirect("~/Default");
             }
         }
@@ -105,7 +106,7 @@ namespace Finance_Tracker.Masters
 
                 if (!IsSmtpConfigValid())
                 {
-                    PopUp("Email Settings could not be verified. No emails will be sent for registration!");
+                    PopUp(this, "Email Settings could not be verified. No emails will be sent for registration!");
                     //return;
                 }
                 Host = Network?.Host;
@@ -149,7 +150,8 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -166,7 +168,7 @@ namespace Finance_Tracker.Masters
                         //DvGV.Visible = false;
                         GVUsers.Visible = false;
                         BtnDlt.Visible = false;
-                        PopUp("No data found!");
+                        PopUp(this, "No data found!");
                     }
                     else
                     {
@@ -179,7 +181,8 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -197,12 +200,12 @@ namespace Finance_Tracker.Masters
             string jsonParam = ConstructJSON();
             if (string.IsNullOrWhiteSpace(jsonParam))
             {
-                PopUp("Error: The selected users could not be deleted!");
+                PopUp(this,"Error: The selected users could not be deleted!");
                 return;
             }
             if (SubMission("SP_Users_Delete", jsonParam))
             {
-                PopUp("User(s) deleted successfully!");
+                PopUp(this, "User(s) deleted successfully!");
                 ResetGVUsers();
                 DdlUser.DataBind();
                 BtnDlt.Enabled = false;
@@ -223,15 +226,16 @@ namespace Finance_Tracker.Masters
                     }
                 );
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
-                {
-                    PopUp(output.ToString());
+                {   
+                    PopUp(this, output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
                 return false;
             }
         }
@@ -247,11 +251,14 @@ namespace Finance_Tracker.Masters
             {
                 sNoColIndx = GVUsers.Columns.IndexOf(GVUsers.Columns.Cast<DataControlField>().ToList().First(col => col.HeaderText.Trim().ToUpper() == "SNO"));
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                LogError(ex);
+            }
 
             if (sNoColIndx < 0)
             {
-                PopUp("Column \"Sno\" was not found in GridView!");
+                PopUp(this, "Column \"Sno\" was not found in GridView!");
                 return Emp;
             }
             //chkDltCntReports = ToInt16(HFCnt.Value);
@@ -309,16 +316,13 @@ namespace Finance_Tracker.Masters
             }
         }
 
-        private void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-        }
-
         protected void BtnAction_Click(object sender, EventArgs e)
         {
             if (!(sender is LinkButton editBtn))
             {
-                PopUp("Error in editing!");
+                string msg = $"{DateTime.Now}: Error in editing!";
+                PopUp(this, msg);
+                LogMsg(msg);
                 return;
             }
             int rowIndex = ((GridViewRow)editBtn.NamingContainer).RowIndex;
@@ -326,7 +330,9 @@ namespace Finance_Tracker.Masters
 
             if (dRo is null || dRo.ItemArray.Length == 0)
             {
-                PopUp("Error in editing!");
+                string msg = $"{DateTime.Now}: Error in editing!";
+                PopUp(this, msg);
+                LogMsg(msg);
                 return;
             }
             string userId = dRo["User_Id"]?.ToString();
@@ -421,7 +427,8 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -466,7 +473,7 @@ namespace Finance_Tracker.Masters
                 int usrRoleId = Convert.ToInt32(Session["Role_Id"]?.ToString());
                 if (usrRoleId != 4 && slctdRoleId == 4)
                 {
-                    PopUp("You are not authorized to create a super admin user!");
+                    PopUp(this, "You are not authorized to create a super admin user!");
                     return false;
                 }
                 OleDbParameter[] paramCln =
@@ -492,16 +499,17 @@ namespace Finance_Tracker.Masters
 
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(output.ToString());
+                    PopUp(this, output.ToString());
                     return false;
                 }
-                PopUp("User added successfully!");
+                PopUp(this, "User added successfully!");
                 if (!(Network is null || Settings is null))
                     SendAddMail(email, usrName, usrId, pswd, slctdLocn, slctdRole);
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
                 return false;
             }
             return true;
@@ -533,10 +541,10 @@ namespace Finance_Tracker.Masters
 
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(output.ToString());
+                    PopUp(this, output.ToString());
                     return false;
                 }
-                PopUp("User details updated successfully!");
+                PopUp(this, "User details updated successfully!");
 
                 if (!(Network is null || Settings is null))
                     SendEditMail(usrName, slctdRole, email, slctdLocn, adrs);
@@ -569,9 +577,10 @@ namespace Finance_Tracker.Masters
                                 <p>Grupo Bimbo</p>";
                 SendMail(subject, msg, email);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PopUp(e.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -595,9 +604,10 @@ namespace Finance_Tracker.Masters
                                 <p>Grupo Bimbo</p>";
                 SendMail(subject, msg, email);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PopUp(e.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -611,15 +621,15 @@ namespace Finance_Tracker.Masters
             HostName = IsEmpty(HostName) ? Network.UserName : HostName;
             From = IsEmpty(From) ? Settings.From : From;
 
-            using (SmtpClient smtp = new SmtpClient(DBOperations.Network.Host, DBOperations.Network.Port)) // Your SMTP server
+            using (SmtpClient smtp = new SmtpClient(Network.Host, Network.Port)) // Your SMTP server
             {
                 smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new NetworkCredential(DBOperations.Network.UserName, DBOperations.Network.Password); // Your emailId credentials
+                smtp.Credentials = new NetworkCredential(Network.UserName, Network.Password); // Your emailId credentials
                 smtp.EnableSsl = false; // Enable SSL if required                   
 
                 MailMessage mail = new MailMessage
                 {
-                    From = new MailAddress(DBOperations.Settings.From, DBOperations.Network.UserName), // Your emailId address
+                    From = new MailAddress(Settings.From, Network.UserName), // Your emailId address
                     Subject = subject,
                     Body = msg,
                     IsBodyHtml = true
@@ -633,13 +643,13 @@ namespace Finance_Tracker.Masters
         {
             if (string.IsNullOrWhiteSpace(TxtUsrId.Text))
             {
-                PopUp("User Id is required");
+                PopUp(this, "User Id is required");
                 TxtUsrId.Focus();
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TxtUsrName.Text))
             {
-                PopUp("User Name is required");
+                PopUp(this, "User Name is required");
                 TxtUsrName.Focus();
                 return false;
             }
@@ -647,26 +657,26 @@ namespace Finance_Tracker.Masters
             {
                 if (string.IsNullOrWhiteSpace(TxtPassword.Text))
                 {
-                    PopUp("Password is required");
+                    PopUp(this, "Password is required");
                     TxtEmail.Focus();
                     return false;
                 }
                 if (string.IsNullOrWhiteSpace(TxtConfirmPassword.Text))
                 {
-                    PopUp("Confirm Password is required");
+                    PopUp(this, "Confirm Password is required");
                     TxtConfirmPassword.Focus();
                     return false;
                 }
                 if (!TxtConfirmPassword.Text.Equals(TxtPassword.Text))
                 {
-                    PopUp("The password and confirmation password do not match.");
+                    PopUp(this, "The password and confirmation password do not match.");
                     TxtConfirmPassword.Focus();
                     return false;
                 }
             }
             if (string.IsNullOrWhiteSpace(TxtEmail.Text))
             {
-                PopUp("Email is required");
+                PopUp(this, "Email is required");
                 TxtPassword.Focus();
                 return false;
             }
@@ -676,23 +686,25 @@ namespace Finance_Tracker.Masters
             }
             catch (FormatException e)
             {
-                PopUp("Either email address is not in a recognized format or it contains non-ASCII characters.\n Please enter a valid email address!");
+                PopUp(this, "Either email address is not in a recognized format or it contains non-ASCII characters.\n Please enter a valid email address!");
+                LogError(e);
                 return false;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PopUp(e.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
                 return false;
             }
             if (DdlRoleA.SelectedValue == "0")
             {
-                PopUp("Role is required");
+                PopUp(this, "Role is required");
                 DdlRoleA.Focus();
                 return false;
             }
             if (DdlLocnA.SelectedValue == "" && DdlRoleA.SelectedValue != "4")
             {
-                PopUp("Location is required for user other than Super Admin!");
+                PopUp(this, "Location is required for user other than Super Admin!");
                 DdlLocnA.Focus();
                 return false;
             }

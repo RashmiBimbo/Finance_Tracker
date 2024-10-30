@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker.ADMIN
 {
@@ -71,15 +69,15 @@ namespace Finance_Tracker.ADMIN
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
-                    PopUp("Category added successfully!");
+                    PopUp(this, "Category added successfully!");
                     ResetCtrls();
                 }
                 catch (Exception ex)
                 {
-                    PopUp(ex.Message);
+                    PopUp(this, ex.Message);
                 }
             }
         }
@@ -98,10 +96,6 @@ namespace Finance_Tracker.ADMIN
             GVCategory.DataSource = dt;
         }
 
-        private void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-        }
 
         private void SetTooltip(DropDownList ddl)
         {

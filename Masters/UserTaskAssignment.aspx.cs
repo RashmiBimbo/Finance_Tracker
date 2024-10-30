@@ -1,6 +1,4 @@
-﻿using AjaxControlToolkit.Bundling;
-using Newtonsoft.Json;
-using Org.BouncyCastle.Pqc.Crypto.Lms;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,12 +6,10 @@ using System.Data.OleDb;
 using System.Linq;
 using System.Net.Mail;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
-using Newtonsoft.Json.Linq;
-using Microsoft.Ajax.Utilities;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker.Masters
 {
@@ -86,7 +82,7 @@ namespace Finance_Tracker.Masters
             DBOprn = new DBOperations();
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp("Database connection could not be established!");
+                PopUp(this, "Database connection could not be established!");
                 Response.Redirect("~/Default");
             }
         }
@@ -130,14 +126,14 @@ namespace Finance_Tracker.Masters
                     chKCntGVAssign = 0;
 
                     if (!IsSmtpConfigValid())
-                        PopUp("Email settings could not be verified. No emails will be sent for task assignment!");
+                        PopUp(this, "Email settings could not be verified. No emails will be sent for task assignment!");
 
                     Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
                 }
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -302,7 +298,7 @@ namespace Finance_Tracker.Masters
                     {
                         if (DdlUsrType.SelectedIndex == 0)
                         {
-                            PopUp("Please select a user type");
+                            PopUp(this, "Please select a user type");
                             DdlUsrType.Focus();
                             return;
                         }
@@ -337,7 +333,7 @@ namespace Finance_Tracker.Masters
                 if (dt == null)
                 {
                     DivAdd.Visible = false;
-                    PopUp("No data found!");
+                    PopUp(this, "No data found!");
                 }
                 else
                     DivAdd.Visible = true;
@@ -383,7 +379,7 @@ namespace Finance_Tracker.Masters
             string jsonParam = ConstructJSON("1", GVAssign, GVAssignDS, out Dictionary<string, string> mailSet);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
-                PopUp("Tasks assigned successfully!");
+                PopUp(this, "Tasks assigned successfully!");
                 if (mailSet != null && mailSet.Count > 0)
                     SendEmails(mailSet, "Tasks Assignment Alert - Finance Tracker");
                 ResetGVAssign();
@@ -394,8 +390,8 @@ namespace Finance_Tracker.Masters
 
         private void SendEmails(Dictionary<string, string> mailSet, string subject)
         {
-            string host = DBOperations.Network.Host, pswd = DBOperations.Network.Password, from = DBOperations.Settings.From, usrName = DBOperations.Network.UserName;
-            int port = DBOperations.Network.Port;
+            string host = Network.Host, pswd = Network.Password, from = Settings.From, usrName = Network.UserName;
+            int port = Network.Port;
             try
             {
                 using (SmtpClient smtp = new SmtpClient(host, port)) // Your SMTP server
@@ -418,9 +414,10 @@ namespace Finance_Tracker.Masters
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PopUp(e.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -444,7 +441,7 @@ namespace Finance_Tracker.Masters
                 if (dt == null)
                 {
                     DivView.Visible = false;
-                    PopUp("No data found!");
+                    PopUp(this, "No data found!");
                 }
                 else
                     DivView.Visible = true;
@@ -491,7 +488,7 @@ namespace Finance_Tracker.Masters
             string jsonParam = ConstructJSON("0", GVView, GVViewDS, out _);
             if (SubMission("SP_Add_Update_TaskAssignment", jsonParam))
             {
-                PopUp("Tasks unassigned successfully!");
+                PopUp(this, "Tasks unassigned successfully!");
                 ResetGVView();
                 chKCntGVView = 0;
                 BtnUnAssign.Enabled = false;
@@ -552,7 +549,8 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -582,16 +580,12 @@ namespace Finance_Tracker.Masters
                 dt = DBOprn.GetDataProc
                     (proc, DBOprn.ConnPrimary, parms.ToArray());
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                PopUp(e.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
             return dt;
-        }
-
-        public void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         private string ConstructJSON(string activ, GridView gv, DataTable gvDS, out Dictionary<string, string> mailSet)
@@ -690,14 +684,14 @@ namespace Finance_Tracker.Masters
                 );
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(output.ToString());
+                    PopUp(this, output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return false;
             }
         }

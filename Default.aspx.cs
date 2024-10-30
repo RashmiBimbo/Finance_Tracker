@@ -28,10 +28,5 @@ namespace Finance_Tracker
             }
         }
 
-        public void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
-        }
-
     }
 }

@@ -10,6 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using static System.DateTime;
 using static Finance_Tracker.DBOperations;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker
 {
@@ -91,7 +92,8 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
                 return null;
             }
         }
@@ -117,7 +119,8 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
                 return null;
             }
         }
@@ -126,7 +129,7 @@ namespace Finance_Tracker
         {
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp("Database connection could not be established");
+                PopUp(this, "Database connection could not be established");
                 return;
             }
             if (!Page.IsPostBack)
@@ -312,7 +315,8 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -324,14 +328,14 @@ namespace Finance_Tracker
             {
                 if (TxtMnth.Text == string.Empty)
                 {
-                    PopUp("Please select a Month!");
+                    PopUp(this, "Please select a Month!");
                     TxtMnth.Focus();
                     return;
                 }
 
                 if (!TryParseExact(TxtMnth.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                 {
-                    PopUp("Please enter month in correct format like 'Jan-2024'!");
+                    PopUp(this, "Please enter month in correct format like 'Jan-2024'!");
                     return;
                 }
             }
@@ -355,14 +359,9 @@ namespace Finance_Tracker
                 {
                     GVReports.Visible = false;
                     DivExport.Visible = false;
-                    PopUp("No data found!");
+                    PopUp(this, "No data found!");
                 }
             }
-        }
-
-        public void PopUp(string msg)
-        {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         protected void LBLocn_Click(object sender, EventArgs e)
@@ -388,7 +387,8 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp($"Error occurred: \n {ex.Message}");
+                PopUp(this, $"Error occurred: \n {ex.Message}");
+                LogError(ex);
             }
         }
 
@@ -442,16 +442,17 @@ namespace Finance_Tracker
 
                     if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                     {
-                        PopUp(output.ToString());
+                        PopUp(this, output.ToString());
                         return;
                     }
-                    PopUp("Tasks rejected successfully!");
+                    PopUp(this, "Tasks rejected successfully!");
                     GVReports.DataBind();
                 }
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 
@@ -501,7 +502,7 @@ namespace Finance_Tracker
                 bool convert = TryParseExact(TB.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt);
                 if (!convert)
                 {
-                    PopUp("Please enter month in correct format like 'Jan-2024'");
+                    PopUp(this, "Please enter month in correct format like 'Jan-2024'");
                     TB.Text = TextBoxWatermarkExtender1.WatermarkText;
                     return;
                 }
@@ -515,7 +516,8 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
+                LogError(ex);
             }
         }
 

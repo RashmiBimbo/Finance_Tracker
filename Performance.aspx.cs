@@ -12,6 +12,7 @@ using System.Linq;
 using static System.DateTime;
 using static System.Convert;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using static Finance_Tracker.Common;
 
 namespace Finance_Tracker
 {
@@ -53,7 +54,7 @@ namespace Finance_Tracker
                     }
                     catch (Exception ex)
                     {
-                        PopUp(ex.Message);
+                        PopUp(this, ex.Message);
                     }
                 }
                 return dt;
@@ -100,7 +101,7 @@ namespace Finance_Tracker
                     }
                     catch (Exception ex)
                     {
-                        PopUp(ex.Message);
+                        PopUp(this, ex.Message);
                     }
                 }
                 return dt;
@@ -142,7 +143,7 @@ namespace Finance_Tracker
                     }
                     catch (Exception ex)
                     {
-                        PopUp(ex.Message);
+                        PopUp(this, ex.Message);
                     }
                 }
                 return dt;
@@ -188,7 +189,7 @@ namespace Finance_Tracker
                     }
                     catch (Exception ex)
                     {
-                        PopUp(ex.Message);
+                        PopUp(this, ex.Message);
                     }
                 }
                 return dt;
@@ -246,7 +247,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -299,7 +300,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -362,7 +363,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -373,13 +374,13 @@ namespace Finance_Tracker
 
             if (TxtMnthM.Text == Emp)
             {
-                PopUp("Please select a Month!");
+                PopUp(this, "Please select a Month!");
                 TxtMnthM.Focus();
                 return;
             }
             if (!TryParseExact(TxtMnthM.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
             {
-                //PopUp("Please enter month in correct format like 'Jan-2024'!");
+                //PopUp(this, "Please enter month in correct format like 'Jan-2024'!");
                 TxtMnthM.Focus();
                 return;
             }
@@ -391,7 +392,7 @@ namespace Finance_Tracker
             {
                 case "":
                     {
-                        PopUp("Please select Task type!");
+                        PopUp(this, "Please select Task type!");
                         DdlTypeM.Focus();
                         return;
                     }
@@ -399,7 +400,7 @@ namespace Finance_Tracker
                     {
                         if (DdlWeekM.SelectedValue == "0")
                         {
-                            PopUp("Please select a Week!");
+                            PopUp(this, "Please select a Week!");
                             DdlWeekM.Focus();
                             return;
                         }
@@ -409,7 +410,7 @@ namespace Finance_Tracker
                     //    {
                     //        if (DdlQrtrM.SelectedValue == "0")
                     //        {
-                    //            PopUp("Please select a quarter no.!");
+                    //            PopUp(this, "Please select a quarter no.!");
                     //            DdlQrtrM.Focus();
                     //            return;
                     //        }
@@ -419,7 +420,7 @@ namespace Finance_Tracker
                     //    {
                     //        if (DdlHY.SelectedValue == "0")
                     //        {
-                    //            PopUp("Please select a half no.!");
+                    //            PopUp(this, "Please select a half no.!");
                     //            DdlHY.Focus();
                     //            return;
                     //        }
@@ -452,13 +453,13 @@ namespace Finance_Tracker
                     else
                     {
                         DivGVBtnM.Visible = false;
-                        PopUp("No data found!");
+                        PopUp(this, "No data found!");
                     }
                 }
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -501,28 +502,28 @@ namespace Finance_Tracker
         {
             if (DdlTypeM.SelectedValue == "0")
             {
-                PopUp("Please select a type!");
+                PopUp(this, "Please select a type!");
                 DdlTypeM.Focus();
                 return;
             }
             if (string.IsNullOrEmpty(TxtMnthM.Text))
             {
-                PopUp("Please select a month!");
+                PopUp(this, "Please select a month!");
                 TxtMnthM.Focus();
                 return;
             }
             if (DdlTypeM.SelectedValue == "Weekly" && DdlWeekM.SelectedValue == "0")
             {
-                PopUp("Please select a week!");
+                PopUp(this, "Please select a week!");
                 DdlWeekM.Focus();
                 return;
             }
             string jsonParam = ConstructJSON_M();
-            //if (chkCnt == 0) PopUp("Please check any row to add!");
+            //if (chkCnt == 0) PopUp(this, "Please check any row to add!");
 
             if (SubMission("SP_Add_Multiple_Tasks", jsonParam))
             {
-                PopUp("Tasks added successfully!");
+                PopUp(this, "Tasks added successfully!");
                 GVAddDS = null;
                 GVAdd.DataSource = null;
                 GVAdd.DataBind();
@@ -538,7 +539,7 @@ namespace Finance_Tracker
 
             if (chkCnt == 0)
             {
-                PopUp("Please check any row to add!");
+                PopUp(this, "Please check any row to add!");
                 return jsonString;
             }
             DataTable dSrc = GVAddDS;
@@ -696,7 +697,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -743,7 +744,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -926,7 +927,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -947,7 +948,7 @@ namespace Finance_Tracker
                 bool convert = TryParseExact(TB.Text, MonthFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt);
                 if (!convert)
                 {
-                    //PopUp("Please enter month in correct format like Jan-2024");
+                    //PopUp(this, "Please enter month in correct format like Jan-2024");
                     TB.Text = TextBoxWatermarkExtender1.WatermarkText;
                     return;
                 }
@@ -989,7 +990,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -1037,7 +1038,7 @@ namespace Finance_Tracker
                     }
                     if (!FileOprn(FUReport.PostedFile, TxtMnthS.Text, weekNo, fileType, DdlReportS.SelectedItem.Text, out string fullPath, out string msg, dueDt))
                     {
-                        PopUp(msg);
+                        PopUp(this, msg);
                         return;
                     }
 
@@ -1047,14 +1048,14 @@ namespace Finance_Tracker
                         Menu1.Items[1].Selected = true;
                         Menu1_MenuItemClick(null, new MenuEventArgs(Menu1.Items[1]));
                         GVReports2.DataBind();
-                        PopUp("Task updated successfully!");
+                        PopUp(this, "Task updated successfully!");
                         LblError.Text = "Task updated successfully!";
                         //delete old file
                     }
                     else if (Menu1.Items[0].Text == "Add Task |")
                     {
                         if (!AddTaskToDB("SP_Add_Task", fullPath, Report_Id)) return;
-                        PopUp("Task added successfully!");
+                        PopUp(this, "Task added successfully!");
                         LblError.Text = "Task added successfully!";
                     }
                     LblError.CssClass = "col-12 control-label text-success ";
@@ -1063,7 +1064,7 @@ namespace Finance_Tracker
                 }
                 catch (Exception ex)
                 {
-                    PopUp(ex.Message);
+                    PopUp(this, ex.Message);
                     LblError.Text = ex.Message;
                     LblError.CssClass = "col-12 control-label text-danger ";
                 }
@@ -1125,7 +1126,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return false;
             }
         }
@@ -1134,37 +1135,37 @@ namespace Finance_Tracker
         {
             if (DdlCatTypeS.SelectedValue == "0")
             {
-                PopUp("Please select a Category Type!");
+                PopUp(this, "Please select a Category Type!");
                 DdlCatTypeS.Focus();
                 return false;
             }
             if (DdlCatS.SelectedValue == "0")
             {
-                PopUp("Please select a Category!");
+                PopUp(this, "Please select a Category!");
                 DdlCatS.Focus();
                 return false;
             }
             if (DdlReportS.SelectedValue == "0")
             {
-                PopUp("Please select a Report Name!");
+                PopUp(this, "Please select a Report Name!");
                 DdlReportS.Focus();
                 return false;
             }
             if (string.IsNullOrEmpty(TxtMnthS.Text))
             {
-                PopUp("Please select a month!");
+                PopUp(this, "Please select a month!");
                 TxtMnthS.Focus();
                 return false;
             }
             if (DdlTypeS.SelectedValue == "Weekly" && DdlWeekS.SelectedValue == "0")
             {
-                PopUp("Please select a week!");
+                PopUp(this, "Please select a week!");
                 DdlTypeS.Focus();
                 return false;
             }
             if (!FUReport.HasFile)
             {
-                PopUp("Please upload a File!");
+                PopUp(this, "Please upload a File!");
                 FUReport.Focus();
                 return false;
             }
@@ -1192,7 +1193,7 @@ namespace Finance_Tracker
 
             if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
             {
-                PopUp(output.ToString());
+                PopUp(this, output.ToString());
                 LblError.Text = output.ToString();
                 LblError.CssClass = "col-12 control-label text-danger ";
                 return false;
@@ -1219,7 +1220,7 @@ namespace Finance_Tracker
 
             if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
             {
-                PopUp(output.ToString());
+                PopUp(this, output.ToString());
                 LblError.Text = output.ToString();
                 LblError.CssClass = "col-12 control-label text-danger ";
                 return false;
@@ -1235,7 +1236,7 @@ namespace Finance_Tracker
             {
                 if (string.IsNullOrEmpty(TxtMnth2.Text) || !TryParse(TxtMnth2.Text, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                 {
-                    PopUp("Please select a month!");
+                    PopUp(this, "Please select a month!");
                     return;
                 }
                 GVReports2.DataSource = null;
@@ -1246,7 +1247,7 @@ namespace Finance_Tracker
             {
                 if (string.IsNullOrEmpty(TxtMnth3.Text) || !TryParse(TxtMnth3.Text, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                 {
-                    PopUp("Please select a month!");
+                    PopUp(this, "Please select a month!");
                     return;
                 }
                 GVReports3.DataSource = null;
@@ -1268,7 +1269,7 @@ namespace Finance_Tracker
                     if (dt == null)
                     {
                         GVReports2.Visible = false;
-                        PopUp("No data found!");
+                        PopUp(this, "No data found!");
                     }
                     else
                     {
@@ -1284,7 +1285,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -1328,7 +1329,7 @@ namespace Finance_Tracker
                 string jsonParam = ConstructJSON();
                 if (SubMission("SP_Submit_Tasks", jsonParam))
                 {
-                    PopUp("Tasks submitted successfully!");
+                    PopUp(this, "Tasks submitted successfully!");
                     GVReports2.DataSource = null;
                     GVReports2DS = null;
                     GVReports2.DataBind();
@@ -1338,7 +1339,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -1357,14 +1358,14 @@ namespace Finance_Tracker
                 );
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(output.ToString());
+                    PopUp(this, output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
                 return false;
             }
         }
@@ -1516,7 +1517,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -1569,17 +1570,12 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
         #endregion Edit Task
 
-        public void PopUp(string msg)
-        {
-            msg.Replace("'", Emp);
-            ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('" + msg + "');", true);
-        }
 
         protected void GVReports3_DataBinding(object sender, EventArgs e)
         {
@@ -1592,7 +1588,7 @@ namespace Finance_Tracker
                     if (dt == null)
                     {
                         GVReports3.Visible = false;
-                        PopUp("No data found!");
+                        PopUp(this, "No data found!");
                     }
                     else
                         GVReports3.Visible = true;
@@ -1600,7 +1596,7 @@ namespace Finance_Tracker
             }
             catch (Exception ex)
             {
-                PopUp(ex.Message);
+                PopUp(this, ex.Message);
             }
         }
 
@@ -1662,7 +1658,7 @@ namespace Finance_Tracker
         //    }
         //    catch (Exception ex)
         //    {
-        //        PopUp(ex.Message);
+        //        PopUp(this, ex.Message);
         //    }
         //}
     }

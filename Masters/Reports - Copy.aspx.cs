@@ -10,11 +10,11 @@ using System.Web.UI.WebControls;
 using static Finance_Tracker.DBOperations;
 using static System.Convert;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using static Finance_Tracker.Common;
+
 
 namespace Finance_Tracker.Masters
 {
-    public partial class Reports : Page
+    public partial class Users : Page
     {
         private string RoleId, LocId, UsrId, UsrName;
         private readonly DBOperations DBOprn;
@@ -23,11 +23,11 @@ namespace Finance_Tracker.Masters
         bool IsApprover, IsAdmin;
         public string DuType = "Date";
 
-        private DataTable GVReportsDS
+        private DataTable GVUsersDS
         {
             get
             {
-                DataTable dt = (DataTable)Session["Reports_GVReportsDS"];
+                DataTable dt = (DataTable)Session["Reports_GVUsersDS"];
                 if (!(dt?.Rows.Count > 0))
                 {
                     OleDbParameter[] paramCln = new OleDbParameter[]
@@ -35,7 +35,6 @@ namespace Finance_Tracker.Masters
                            new OleDbParameter("@Category_Id", DdlCatV.SelectedValue)
                            ,new OleDbParameter("@Category_Type_Id", DdlCatTypeV.SelectedValue)
                            ,new OleDbParameter("@Type", DdlTypeV.SelectedValue)
-                           ,new OleDbParameter("@Report_Id", DdlTasks.SelectedValue)
                         };
                     dt = DBOprn.GetDataProc("SP_Report_Get", DBOprn.ConnPrimary, paramCln);
                     if (dt.Rows.Count == 0)
@@ -47,16 +46,16 @@ namespace Finance_Tracker.Masters
             {
                 if (!(value?.Rows.Count > 0))
                     value = null;
-                Session["Reports_GVReportsDS"] = value;
+                Session["Reports_GVUsersDS"] = value;
             }
         }
 
-        public Reports()
+        public Users()
         {
             DBOprn = new DBOperations();
             if (!DBOprn.AuthenticatConns())
             {
-                PopUp(this, "Database connection could not be established!");
+                PopUp("Database connection could not be established!");
                 Response.Redirect("~/Default");
             }
         }
@@ -87,14 +86,12 @@ namespace Finance_Tracker.Masters
                 Session["DuType"] = "Date";
                 chkDltCntReports = 0;
                 //DdlTypeA.Attributes.Add("onchange", "ChngDueDtType(this.value)");
-                foreach (DropDownList ddl in new[] { DdlCatTypeA, DdlCatTypeV, DdlCatA, DdlCatV, DdlTypeA, DdlTypeV, DdlTasks })
-                    ddl?.DataBind();
-                //DdlCatTypeA.DataBind();
-                //DdlCatA.DataBind();
-                //DdlTypeA.DataBind();
-                //DdlCatTypeV.DataBind();
-                //DdlCatV.DataBind();
-                //DdlTypeV.DataBind();
+                DdlCatTypeA.DataBind();
+                DdlCatA.DataBind();
+                DdlTypeA.DataBind();
+                DdlCatTypeV.DataBind();
+                DdlCatV.DataBind();
+                DdlTypeV.DataBind();
                 Menu_MenuItemClick(Menu, new MenuEventArgs(Menu.Items[0]));
             }
         }
@@ -114,7 +111,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
             }
         }
 
@@ -127,7 +124,7 @@ namespace Finance_Tracker.Masters
                     FillDdl(DdlCatA, "SP_Get_Categories", "0", "Select", DdlCatTypeA,
                         new OleDbParameter[]
                         {
-                            new OleDbParameter("@Type_Id", DdlCatTypeA.SelectedValue)
+                        new OleDbParameter("@Type_Id", DdlCatTypeA.SelectedValue)
                         }
                     );
                 }
@@ -136,20 +133,20 @@ namespace Finance_Tracker.Masters
                     FillDdl(DdlCatV, "SP_Get_Categories", "0", "All", null,
                         new OleDbParameter[]
                         {
-                            new OleDbParameter("@Type_Id", DdlCatTypeV.SelectedValue)
+                        new OleDbParameter("@Type_Id", DdlCatTypeV.SelectedValue)
                         }
                     );
                 }
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
             }
         }
 
         protected void DdlCatType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DropDownList ddl = null, prntDdl = null, ddlTasks = null; ;
+            DropDownList ddl = null, prntDdl = null;
             if (sender.Equals(DdlCatTypeA))
             {
                 ddl = DdlCatA;
@@ -159,11 +156,9 @@ namespace Finance_Tracker.Masters
             {
                 ddl = DdlCatV;
                 prntDdl = DdlCatTypeV;
-                ddlTasks = DdlTasks;
             }
             SetTooltip(null, prntDdl);
             ddl.DataBind();
-            ddlTasks?.DataBind();
         }
 
         protected void Menu_MenuItemClick(object sender, MenuEventArgs e)
@@ -201,18 +196,18 @@ namespace Finance_Tracker.Masters
                     if (add)
                     {
                         ResetTabAdd();
-                        PopUp(this, "Report added successfully!");
+                        PopUp("Report added successfully!");
                     }
                     else
                     {
-                        PopUp(this, "Report updated successfully!");
-                        BtnCncl_Click(BtnCncl, null);
                         ResetGVReports();
+                        BtnCncl_Click(BtnCncl, null);
+                        PopUp("Report updated successfully!");
                     }
                 }
                 catch (Exception ex)
                 {
-                    PopUp(this, ex.Message);
+                    PopUp(ex.Message);
                 }
             }
         }
@@ -284,14 +279,14 @@ namespace Finance_Tracker.Masters
 
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(this, output.ToString());
+                    PopUp(output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
                 return false;
             }
         }
@@ -308,19 +303,19 @@ namespace Finance_Tracker.Masters
 
                 if (DdlCatTypeA.SelectedValue == "0")
                 {
-                    PopUp(this, "Category Type is required!");
+                    PopUp("Category Type is required!");
                     DdlCatTypeA.Focus();
                     return false;
                 }
                 if (DdlCatA.SelectedValue == "0")
                 {
-                    PopUp(this, "Category is required!");
+                    PopUp("Category is required!");
                     DdlCatA.Focus();
                     return false;
                 }
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    PopUp(this, "Report Name is required!");
+                    PopUp("Report Name is required!");
                     TxtReportName.Focus();
                     return false;
                 }
@@ -329,18 +324,18 @@ namespace Finance_Tracker.Masters
                     string invalidCharsString = string.Join(", ", invalidFileNameChars.Select(c => char.IsControl(c) ? $"\\x{(int)c:X2}" : c.ToString()));
                     invalidCharsString = invalidCharsString.Substring(0, 24);
                     string msg = $"Report Name cannot contain any of the following characters: {invalidCharsString}";
-                    PopUp(this, msg);
+                    PopUp(msg);
                     return false;
                 }
                 if (priority < 1 || priority > 99)
                 {
-                    PopUp(this, "Priority must be within the range of 1 to 99!");
+                    PopUp("Priority must be within the range of 1 to 99!");
                     TxtPriority.Focus();
                     return false;
                 }
                 if (weight < 1 || weight > 99)
                 {
-                    PopUp(this, "Weight must be within the range of 1 to 99!");
+                    PopUp("Weight must be within the range of 1 to 99!");
                     TxtWeight.Focus();
                     return false;
                 }
@@ -349,21 +344,21 @@ namespace Finance_Tracker.Masters
                     default:
                         if ((duDtTxt < 1 || duDtTxt > 31))
                         {
-                            PopUp(this, "Due Date must be within the range of 1 to 31!");
+                            PopUp("Due Date must be within the range of 1 to 31!");
                             TxtDuDt.Focus();
                             return false;
                         }
                         break;
                     case Emp:
                         {
-                            PopUp(this, "Type is required!");
+                            PopUp("Type is required!");
                             DdlTypeA.Focus();
                             return false;
                         }
                     case "WEEKLY":
                         if (string.IsNullOrWhiteSpace(DdlWeekDay.SelectedValue))
                         {
-                            PopUp(this, "Due Day is required!");
+                            PopUp("Due Day is required!");
                             DdlWeekDay.Focus();
                             return false;
                         }
@@ -371,7 +366,7 @@ namespace Finance_Tracker.Masters
                         //case "MONTHLY":
                         //    if ((duDtTxt < 1 || duDtTxt > 31))
                         //    {
-                        //        PopUp(this, "Due Date must be within the range of 1 to 31!");
+                        //        PopUp("Due Date must be within the range of 1 to 31!");
                         //        TxtDuDt.Focus();
                         //        return false;
                         //    }
@@ -380,7 +375,7 @@ namespace Finance_Tracker.Masters
                         //    {
                         //        if (DdlQrtr.SelectedValue == "0")
                         //        {
-                        //            PopUp(this, "Due Quarter is required!");
+                        //            PopUp("Due Quarter is required!");
                         //            DdlQrtr.Focus();
                         //            return false;
                         //        }
@@ -389,7 +384,7 @@ namespace Finance_Tracker.Masters
                         //case "HALF YEARLY":
                         //    if (DdlHY.SelectedValue == "0")
                         //    {
-                        //        PopUp(this, "Due Half is required!");
+                        //        PopUp("Due Half is required!");
                         //        DdlHY.Focus();
                         //        return false;
                         //    }
@@ -403,7 +398,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
                 return false;
             }
         }
@@ -431,7 +426,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
             }
         }
 
@@ -474,28 +469,27 @@ namespace Finance_Tracker.Masters
             {
                 if (GVReports.DataSource == null)
                 {
-                    DataTable dt = GVReportsDS;
+                    DataTable dt = GVUsersDS;
                     GVReports.DataSource = dt;
                     if (dt == null)
                     {
                         //DvGV.Visible = false;
                         GVReports.Visible = false;
                         BtnDlt.Visible = false;
-                        PopUp(this, "No data found!");
+                        PopUp("No data found!");
                     }
                     else
                     {
                         GVReports.Visible = true;
                         //DvGV.Visible = true;
-                        //while(!BtnDlt.Visible)
-                            BtnDlt.Visible = true;
+                        BtnDlt.Visible = true;
                     }
                 }
                 BtnDlt.Visible = GVReports.Visible;
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
             }
         }
 
@@ -514,7 +508,7 @@ namespace Finance_Tracker.Masters
             string jsonParam = ConstructJSON();
             if (SubMission("SP_Report_Delete", jsonParam))
             {
-                PopUp(this, "Reports deleted successfully!");
+                PopUp("Reports deleted successfully!");
                 ResetGVReports();
                 chkDltCntReports = 0;
                 BtnDlt.Enabled = false;
@@ -536,14 +530,14 @@ namespace Finance_Tracker.Masters
                 );
                 if (!string.IsNullOrWhiteSpace((string)output)) //Error occurred
                 {
-                    PopUp(this, output.ToString());
+                    PopUp(output.ToString());
                     return false;
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
                 return false;
             }
         }
@@ -560,7 +554,7 @@ namespace Finance_Tracker.Masters
             {
                 if (chkCnt < 1) break;
 
-                DataRow dRo = GVReportsDS.Select("Sno = " + gvRow.Cells[2].Text)?[0];
+                DataRow dRo = GVUsersDS.Select("Sno = " + gvRow.Cells[2].Text)?[0];
                 if (dRo is null) continue;
 
                 CheckBox cb = (CheckBox)gvRow.Cells[0].Controls[1];
@@ -597,7 +591,7 @@ namespace Finance_Tracker.Masters
                 LinkButton btn = sender as LinkButton;
                 Control ctrl = btn.NamingContainer;
                 int rowIndex = ((GridViewRow)ctrl).RowIndex;
-                DataRow dRo = GVReportsDS?.Select($"Sno = {rowIndex + 1}")[0];
+                DataRow dRo = GVUsersDS?.Select($"Sno = {rowIndex + 1}")[0];
 
                 if (dRo is null || dRo.ItemArray.Length == 0) return;
 
@@ -658,18 +652,12 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
             }
         }
 
         protected void DdlType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (sender != null && sender.Equals(DdlTypeV))
-            {
-                DdlTasks.DataBind();
-                return;
-            }
-
             SetTooltip(null, DdlTypeA);
             DvDuDt.Visible = true;
             DvTxtDuDt.Visible = false;
@@ -728,7 +716,7 @@ namespace Finance_Tracker.Masters
         private void ResetGVReports()
         {
             GVReports.DataSource = null;
-            GVReportsDS = null;
+            GVUsersDS = null;
             GVReports.DataBind();
         }
 
@@ -747,34 +735,21 @@ namespace Finance_Tracker.Masters
             FillDdl((DropDownList)sender, "SP_ReportTypes_Get", Emp, slctTxt, null, null, "TypeName", "TypeId");
         }
 
-        protected void DdlCatV_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddl = null, ddlTasks = null;
-            if (sender.Equals(DdlCatV))
-            {
-                ddl = DdlCatV;
-                ddlTasks = DdlTasks;
-            }
-            SetTooltip(null, ddl);
-            ddlTasks?.DataBind();
-        }
+        //protected void DdlType_DataBinding(object sender, EventArgs e)
+        //{
+        //    FillDdl((DropDownList)sender, "SP_Report_Type_Get", Emp, "All", null, null, "ReportType", "ReportType");
+        //}
 
-        protected void DdlTasks_DataBinding(object sender, EventArgs e)
+        private void PopUp(string msg)
         {
-            FillDdl(DdlTasks, "SP_Report_Get", "0", "All", null,
-                new OleDbParameter[]
-                {
-                     new OleDbParameter("@Category_Id", DdlCatV.SelectedValue)
-                    ,new OleDbParameter("@Category_Type_Id", DdlCatTypeV.SelectedValue)
-                    ,new OleDbParameter("@Type", DdlTypeV.SelectedValue)
-                }, "Report_Name", "Report_Id"
-            );
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "showalert", "alert('" + msg + "');", true);
         }
 
         private void SetTooltip(DropDownList[] ddlLst = null, DropDownList ddl = null)
         {
-            ddlLst?.ToList().ForEach(itm => itm.ToolTip = itm.SelectedItem.Text);
-            if (!(ddl is null))
+            if (ddlLst != null)
+                ddlLst.ToList().ForEach(itm => itm.ToolTip = itm.SelectedItem.Text);
+            else if (ddl != null)
                 ddl.ToolTip = ddl.SelectedItem.Text;
         }
 
@@ -812,7 +787,7 @@ namespace Finance_Tracker.Masters
             }
             catch (Exception ex)
             {
-                PopUp(this, ex.Message);
+                PopUp(ex.Message);
             }
         }
 
